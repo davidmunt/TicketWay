@@ -1,0 +1,14 @@
+<div class="concert-card">
+  <h1 class="concert-title">{{ concert.name }}</h1>
+  <h3 class="concert-protagonist">{{ concert.protagonist }}</h3>
+  <h4 class="concert-description">{{ concert.description }}</h4>
+  <h4 class="concert-direction">{{ concert.direction }}</h4>
+  <button
+    class="first-button"
+    type="button"
+    [routerLink]="['/updateconcert', concert.slug]"
+  >
+    Update
+  </button>
+  <button type="button" (click)="deleteConcert(concert.slug)">Delete</button>
+</div>

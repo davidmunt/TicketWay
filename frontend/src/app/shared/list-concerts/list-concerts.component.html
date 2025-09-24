@@ -1,0 +1,11 @@
+<div *ngIf="isLoading">Cargando conciertos...</div>
+<div *ngIf="errorMessage">{{ errorMessage }}</div>
+<ul *ngIf="!isLoading && !errorMessage && concerts.length > 0">
+  <li *ngFor="let concert of concerts; let i = index">
+    <app-card-concert [concert]="concert" (deleted)="onConcertDeleted($event)">
+    </app-card-concert>
+  </li>
+</ul>
+<div *ngIf="!isLoading && !errorMessage && concerts.length === 0">
+  No hay conciertos disponibles.
+</div>

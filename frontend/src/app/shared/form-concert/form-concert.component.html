@@ -1,0 +1,95 @@
+<div *ngIf="loading">Cargando...</div>
+<div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+
+<div *ngIf="!loading && !errorMessage" class="form">
+  <div class="form-header">
+    <h4 *ngIf="update" id="form-title">Modificar Concierto:</h4>
+    <h4 *ngIf="!update" id="form-title">Crear Concierto</h4>
+  </div>
+
+  <div class="form-body">
+    <form id="concert-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <div class="form-div-input">
+        <label for="name" class="form-label">Nombre del concierto</label>
+        <input
+          id="name"
+          formControlName="name"
+          type="text"
+          class="form-input"
+          placeholder="Ej: Rock Fest 2025"
+          required
+        />
+        <div class="invalid-feedback">El nombre es obligatorio.</div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-div-input">
+        <label for="date" class="form-label">Fecha y hora</label>
+        <input
+          id="date"
+          formControlName="date"
+          type="datetime-local"
+          class="form-input"
+          required
+        />
+        <div class="invalid-feedback">La fecha es obligatoria.</div>
+      </div>
+
+      <!-- Direction -->
+      <div class="form-div-input">
+        <label for="direction" class="form-label">Dirección</label>
+        <input
+          id="direction"
+          formControlName="direction"
+          type="text"
+          class="form-input"
+          placeholder="Ej: Palau Sant Jordi, Barcelona"
+          required
+        />
+        <div class="invalid-feedback">La dirección es obligatoria.</div>
+      </div>
+
+      <!-- Protagonist -->
+      <div class="form-div-input">
+        <label for="protagonist" class="form-label">
+          Protagonista / Artista
+        </label>
+        <input
+          id="protagonist"
+          formControlName="protagonist"
+          type="text"
+          class="form-input"
+          placeholder="Ej: Metallica"
+          required
+        />
+        <div class="invalid-feedback">El protagonista es obligatorio.</div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-div-input">
+        <label for="description" class="form-label">Descripción</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-input"
+          rows="4"
+          placeholder="Descripción breve del concierto (opcional)"
+        ></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-buttons">
+        <button type="submit" class="btn-send" id="btn-send">Guardar</button>
+        <button
+          type="button"
+          class="btn-cancell"
+          id="btn-cancell"
+          routerLink="/home"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

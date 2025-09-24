@@ -1,0 +1,50 @@
+.concert-card {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px;
+  flex: 1 1 calc(33.333% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.concert-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.concert-protagonist {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.concert-description,
+.concert-direction {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.concert-card button {
+  background-color: #888888;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.concert-card button:hover {
+  background-color: #585858;
+}
+
+.first-button {
+  margin-bottom: 5px;
+}
