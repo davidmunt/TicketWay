@@ -2,15 +2,57 @@ footer {
   background-color: #252525;
   color: white;
   width: 100%;
-  height: 150px;
   margin-top: 5%;
   text-align: center;
+
+  display: flex;
+  flex-direction: column; /* primero el título arriba */
+  align-items: center;
+  padding: 40px 250px; /* espacio interno */
 }
 
-.text_footer {
-  padding-top: 30px;
+.footer_title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #11487b;
+  font-family: "Playfair Display", serif;
+  margin-bottom: 20px; /* separa el título del contenido */
+}
+
+.footer_div {
+  display: flex;
+  justify-content: space-between; /* redes izq - texto der */
+  align-items: center;
+  width: 100%; /* ocupa todo el ancho */
+  max-width: 1200px; /* opcional, para que no se estire demasiado */
+}
+
+.social_media {
+  display: flex;
+  flex-direction: column; /* título arriba, iconos debajo */
+  align-items: center;
+  gap: 10px;
+}
+
+.social_media_title {
+  margin-bottom: 10px; /* separa el título de los iconos */
+}
+
+.social_icons {
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* 2 columnas */
+  gap: 15px; /* espacio entre iconos */
 }
 
 .logo_footer {
   max-width: 50px;
+  transition: transform 0.2s ease;
+}
+
+.logo_footer:hover {
+  transform: scale(1.1); /* animación al pasar el mouse */
+}
+
+.text_footer {
+  padding: 0; /* quitamos el padding-top fijo */
 }

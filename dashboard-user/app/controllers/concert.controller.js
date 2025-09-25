@@ -6,7 +6,9 @@ const createConcert = async (req, res) => {
     const concertData = {
       name: req.body.name || null,
       price: req.body.price || 0,
+      venue: req.body.venue || null,
       description: req.body.description || null,
+      date: req.body.date || null,
       img: req.body.img || null,
       images: req.body.images || [],
       category: req.body.category || null,
@@ -33,10 +35,7 @@ const createConcert = async (req, res) => {
 const getAllConcerts = async (req, res) => {
   try {
     const concerts = await Concert.find();
-    return res.status(200).json({
-      concerts: await Promise.all(concerts.map((concert) => concert.toConcertResponse())),
-      concert_count: concerts.length,
-    });
+    return res.status(200).json(await Promise.all(concerts.map((concert) => concert.toConcertResponse())));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener los conciertos", error: error.message });
   }
@@ -49,9 +48,7 @@ const getOneConcert = async (req, res) => {
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
-    return res.status(200).json({
-      concert: await concert.toConcertResponse(),
-    });
+    return res.status(200).json(await concert.toConcertResponse());
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener el concierto", error: error.message });
   }

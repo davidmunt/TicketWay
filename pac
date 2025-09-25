@@ -1,0 +1,49 @@
+{
+  "name": "ticketway",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^16.2.0",
+    "@angular/common": "^16.2.0",
+    "@angular/compiler": "^16.2.0",
+    "@angular/forms": "^16.2.0",
+    "@angular/localize": "^16.2.7",
+    "@angular/platform-browser": "^16.2.0",
+    "@angular/platform-browser-dynamic": "^16.2.0",
+    "@angular/router": "^16.2.0",
+    "@ng-bootstrap/ng-bootstrap": "^15.1.1",
+    "@ngneat/tailwind": "^7.0.3",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2",
+    "bootstrap-icons": "^1.11.1",
+    "dotenv": "^16.3.1",
+    "ngx-bootstrap": "^11.0.2",
+    "ngx-infinite-scroll": "^16.0.0",
+    "ngx-toastr": "^17.0.2",
+    "popper.js": "^1.16.1",
+    "rxjs": "~7.8.0",
+    "sweetalert2": "^11.6.13",
+    "swiper": "^11.1.14",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.13.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.2.3",
+    "@angular/compiler-cli": "^16.2.0",
+    "@types/jasmine": "~4.3.0",
+    "jasmine-core": "~4.6.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.1.3"
+  }
+}

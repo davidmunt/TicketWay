@@ -8,9 +8,7 @@ const getCarouselCategory = async (req, res) => {
       return res.status(404).json({ message: "No se encontraron categorias" });
     }
 
-    return res.status(200).json({
-      categories: categories.map((category) => category.toCategoryCarouselResponse()),
-    });
+    return res.status(200).json(categories.map((category) => category.toCategoryCarouselResponse()));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener las categorias", error: error.message });
   }
@@ -23,9 +21,7 @@ const getCarouselConcert = async (req, res) => {
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
-    return res.status(200).json({
-      concert: concert.toConcertCarouselResponse(),
-    });
+    return res.status(200).json(concert.toConcertCarouselResponse());
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener el concierto", error: error.message });
   }

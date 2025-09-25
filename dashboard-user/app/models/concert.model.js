@@ -54,11 +54,12 @@ ConcertSchema.methods.toConcertResponse = async function () {
     description: this.description,
     category: this.category,
     img: this.img,
+    images: this.images,
   };
 };
 
 // Metodo para carrusel
-ConcertSchema.methods.toConcertCarouselResponse = async function () {
+ConcertSchema.methods.toConcertCarouselResponse = function () {
   return {
     images: this.images,
   };

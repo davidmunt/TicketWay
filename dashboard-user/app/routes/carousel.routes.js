@@ -1,8 +1,9 @@
 module.exports = (app) => {
   const carousel = require("../controllers/carousel.controller");
 
-  //GET ALL
+  //GET carousel all Categories
   app.get("/carousel", carousel.getCarouselCategory);
-  //GET ALL IMAGES FROM ONE PRODUCT
+
+  //GET Carousel of images from one Product
   app.get("/carousel/:slug", carousel.getCarouselConcert);
 };

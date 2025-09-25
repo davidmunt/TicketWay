@@ -3,9 +3,7 @@ const Category = require("../models/category.model.js");
 const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    return res.status(200).json({
-      categories: categories.map((cat) => cat.toCategoryResponse()),
-    });
+    return res.status(200).json(categories.map((cat) => cat.toCategoryResponse()));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener categorias", error: error.message });
   }
@@ -18,7 +16,7 @@ const getOneCategory = async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Categoria no encontrada" });
     }
-    return res.status(200).json({ category: category.toCategoryResponse() });
+    return res.status(200).json(category.toCategoryResponse());
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener la categoria", error: error.message });
   }
@@ -26,15 +24,23 @@ const getOneCategory = async (req, res) => {
 
 const createCategory = async (req, res) => {
   try {
-    const { category_name, image } = req.body;
-    if (!category_name || !image) {
-      return res.status(400).json({ message: "Falta rellenar los datos de nombre o imagen" });
+    const { name, image } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "El nombre de la categoría es obligatorio" });
     }
-    const category = new Category({ category_name, image });
-    const newCategory = await category.save();
-    return res.status(201).json({ category: newCategory.toCategoryResponse() });
+    const newCategory = new Category({
+      name,
+      image,
+    });
+    await newCategory.save();
+    return res.status(201).json({
+      category: newCategory.toCategoryResponse(),
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Error al crear la categoria", error: error.message });
+    return res.status(500).json({
+      message: "Error al crear la categoria",
+      error: error.message,
+    });
   }
 };
 
