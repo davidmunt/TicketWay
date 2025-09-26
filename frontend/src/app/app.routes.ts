@@ -13,6 +13,10 @@ export const appRoutes: Routes = [
     path: "shop",
     loadComponent: () => import("./pages/shop/shop.component").then((c) => c.ShopComponent),
   },
+  {
+    path: "details/:slug",
+    loadComponent: () => import("./pages/details/details.component").then((c) => c.DetailsComponent),
+  },
   // {
   //   path: "updateconcert/:slug",
   //   loadComponent: () => import("./pages/form-concert/form-concert.component").then((c) => c.FormConcertComponent),

@@ -1,8 +1,8 @@
-.div_list_concerts {
+.div_list_categories {
   margin-top: 40px;
 }
 
-.div_list_concerts ul {
+.div_list_categories ul {
   display: flex;
   flex-wrap: wrap; /* 🔹 Permite saltar de fila */
   justify-content: center;
@@ -10,7 +10,7 @@
   margin: 0;
 }
 
-.div_list_concerts ul li {
+.div_list_categories ul li {
   width: calc(33.33% - 20px); /* 🔹 máximo 3 por fila */
   list-style: none;
   display: flex;

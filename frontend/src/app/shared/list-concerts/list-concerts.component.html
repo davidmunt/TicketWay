@@ -1,11 +1,18 @@
-<div *ngIf="isLoading" class="charging_concerts">Cargando conciertos...</div>
-<div *ngIf="errorMessage" class="error_concerts">{{ errorMessage }}</div>
+@if (isLoading) {
+<div class="charging_concerts">Cargando conciertos...</div>
+} @else if (errorMessage) {
+<div class="error_concerts">{{ errorMessage }}</div>
+} @else if (!isLoading && !errorMessage) {
 <h1 class="counter">Conciertos: {{ concerts.length }} Resultados</h1>
-<div *ngIf="!isLoading && !errorMessage && concerts.length > 0" class="div_list_concerts">
+<div class="div_list_concerts">
   <ul>
-    <li *ngFor="let concert of concerts; let i = index">
+    @for (concert of concerts; track concert.name) {
+    <li>
       <app-card-concert [concert]="concert"> </app-card-concert>
     </li>
+    } @empty {
+    <li class="no_concerts">No hay conciertos disponibles</li>
+    }
   </ul>
 </div>
-<div *ngIf="!isLoading && !errorMessage && concerts.length === 0" class="no_concerts">No hay conciertos disponibles.</div>
+}

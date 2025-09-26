@@ -16,7 +16,7 @@ import { CarouselItemsComponent } from "../carousel-items/carousel-items.compone
 export class CarouselComponent implements OnInit {
   items_carousel!: CarouselHome[];
   items_details!: CarouselDetails[];
-  slug_details!: string | null;
+  slug_details!: string;
   page!: String;
   isLoading = true;
   errorMessage = "";
@@ -36,7 +36,7 @@ export class CarouselComponent implements OnInit {
       this.page = "details";
       this.carouselService.get_carousel_concert(this.slug_details).subscribe((data: any) => {
         this.items_details = data.images;
-        console.log(this.items_details);
+        // console.log(this.items_details);
       });
     } else {
       this.page = "categories";

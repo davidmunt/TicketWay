@@ -1,11 +1,17 @@
-<div class="div_list_concerts">
+@if (isLoading) {
+<div class="charging_categories">Cargando categorias...</div>
+} @else if (errorMessage) {
+<div class="error_categories">{{ errorMessage }}</div>
+} @else if (!isLoading && !errorMessage) {
+<div class="div_list_categories">
   <ul>
     @for (category of categories; track category.name) {
     <li>
       <app-card-category [category]="category"></app-card-category>
     </li>
     } @empty {
-    <li class="no_concerts">No hay categorías disponibles.</li>
+    <li class="no_categories">No hay categorías disponibles</li>
     }
   </ul>
 </div>
+}

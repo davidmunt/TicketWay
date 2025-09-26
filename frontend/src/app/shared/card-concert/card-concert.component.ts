@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Concert } from "../../core/models";
-import { ConcertService } from "../../core/services";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -16,8 +15,7 @@ export class CardConcertComponent implements OnInit {
 
   dia: number;
   mes: string;
-
-  constructor(private concertService: ConcertService) {}
+  concLength: number;
 
   ngOnInit(): void {
     const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
@@ -25,5 +23,6 @@ export class CardConcertComponent implements OnInit {
     this.dia = fecha.getDate();
     let month = fecha.getMonth();
     this.mes = meses[month];
+    this.concLength = Object.keys(this.concert).length;
   }
 }

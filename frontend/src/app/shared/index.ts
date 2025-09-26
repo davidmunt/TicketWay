@@ -4,6 +4,6 @@ export * from "./list-concerts/list-concerts.component";
 export * from "./list-categories/list-categories.component";
 export * from "./card-concert/card-concert.component";
 export * from "./card-category/card-category.component";
-export * from "./carousel-categories/carousel-categories.component";
 export * from "./carousel/carousel.component";
 export * from "./carousel-items/carousel-items.component";
+export * from "./card-info-concert/card-info-concert.component";

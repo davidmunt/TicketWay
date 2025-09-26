@@ -57,3 +57,28 @@
   cursor: pointer;
   z-index: 3;
 }
+
+/* --------------------------------------------------- */
+
+/* Contenedor general del carousel de detalles */
+.details-carousel {
+  width: 100%;
+  height: 550px; /* igual que el de categorías para uniformidad */
+  position: relative;
+  overflow: hidden;
+  background-color: black;
+}
+
+/* Cada slide del carousel */
+.details-carousel swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+
+/* Imagen de cada slide */
+.details-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* se ajusta sin deformar */
+  display: block;
+}

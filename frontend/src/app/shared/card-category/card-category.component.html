@@ -1,3 +1,4 @@
+@if (this.catLength > 0) {
 <div class="category-card">
   <img class="category-img" [src]="category.image" alt="{{ category.name }}" />
   <div class="category-text">
@@ -6,3 +7,4 @@
     <button class="category-btn" routerLink="/shop">Entradas</button>
   </div>
 </div>
+}

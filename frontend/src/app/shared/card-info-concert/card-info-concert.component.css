@@ -1,0 +1,36 @@
+.card-info-concert {
+  width: 80%; /* centrado en la pantalla */
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+
+  text-align: left; /* <<--- alinea todo a la izquierda */
+}
+
+/* Título destacado */
+.card-info-concert .concert-name {
+  font-size: 2.3em;
+  font-weight: bold;
+  color: #195b98;
+  margin-bottom: 20px;
+  margin-left: 20px; /* menos separación */
+}
+
+/* Fecha y venue */
+.card-info-concert .concert-date,
+.card-info-concert .concert-venue {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: #333;
+  margin: 10px 0 15px 20px; /* un poco más de espacio entre ellos */
+}
+
+/* Descripción */
+.card-info-concert .concert-description {
+  font-size: 1.05em;
+  color: #555;
+  margin-top: 20px;
+  margin-left: 20px; /* igual que los demás */
+  margin-right: 20px; /* opcional */
+}

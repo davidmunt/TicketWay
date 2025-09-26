@@ -1,16 +1,13 @@
+@if (this.concLength > 0) {
 <div class="concert-card">
-  <!-- FECHA -->
   <div class="concert-date">
     <span class="month">{{ mes }}</span>
     <span class="day">{{ dia }}</span>
   </div>
-
-  <!-- INFO -->
   <div class="concert-info">
     <p class="concert-venue">{{ concert.venue }}</p>
     <p class="concert-category">{{ concert.category }}</p>
   </div>
-
-  <!-- BOTÓN -->
-  <button class="concert-like">Entradas ></button>
+  <button class="concert-like" [routerLink]="['/details', concert.slug]">Entradas ></button>
 </div>
+}

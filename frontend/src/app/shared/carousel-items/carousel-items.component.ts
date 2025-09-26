@@ -18,14 +18,5 @@ export class CarouselItemsComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    if (this.page === "home") {
-      console.log("llefa aqui");
-      console.log(this.categories);
-    }
-    if (this.page === "details") {
-      console.log("llefa aqui");
-      console.log(this.jobs_details);
-    }
-  }
+  ngOnInit(): void {}
 }

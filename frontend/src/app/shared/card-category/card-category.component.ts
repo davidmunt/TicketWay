@@ -13,8 +13,11 @@ import { CommonModule } from "@angular/common";
 })
 export class CardCategoryComponent implements OnInit {
   @Input() category: Category = {} as Category;
+  catLength: number;
 
   constructor(private categoryService: CategoryService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.catLength = Object.keys(this.category).length;
+  }
 }

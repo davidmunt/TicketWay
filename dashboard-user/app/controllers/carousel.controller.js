@@ -7,7 +7,6 @@ const getCarouselCategory = async (req, res) => {
     if (!categories || categories.length === 0) {
       return res.status(404).json({ message: "No se encontraron categorias" });
     }
-
     return res.status(200).json(categories.map((category) => category.toCategoryCarouselResponse()));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener las categorias", error: error.message });
