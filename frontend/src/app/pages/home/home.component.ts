@@ -5,11 +5,13 @@ import { appRoutes } from "../../app.routes";
 import { CategoriesListComponent } from "../../shared/list-categories/list-categories.component";
 import { CarouselCategoriesComponent } from "../../shared/carousel-categories/carousel-categories.component";
 
+import { CarouselComponent } from "../../shared/carousel/carousel.component";
+
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
   standalone: true,
-  imports: [RouterModule, CommonModule, CarouselCategoriesComponent, CategoriesListComponent],
+  imports: [RouterModule, CommonModule, CarouselCategoriesComponent, CategoriesListComponent, CarouselComponent],
 })
 export class HomeComponent {}

@@ -1,0 +1,30 @@
+@if (page === 'categories') {
+<div class="slider-categories">
+  <swiper-container slides-per-view="1" space-between="50" navigation pagination="true">
+    @for (category of categories; track category.name) {
+    <swiper-slide>
+      <div class="slide-category">
+        <img [src]="category.image" alt="" class="slide-image" />
+        <div class="slide-content">
+          <h2 class="slide-title">{{ category.name }}</h2>
+          <h4 class="slide-description">{{ category.description }}</h4>
+          <button class="slide-btn" routerLink="/shop">Entradas</button>
+        </div>
+      </div>
+    </swiper-slide>
+    } @empty {
+    <h3 class="empty-categories">No hay categorias disponibles</h3>
+    }
+  </swiper-container>
+</div>
+} @else if (page === 'details'){
+<swiper-container slides-per-view="1" space-between="50" navigation pagination="true">
+  @for (concertSrc of jobs_details; track $index) {
+  <swiper-slide>
+    <img [src]="concertSrc" alt="" />
+  </swiper-slide>
+  } @empty {
+  <h3 class="empty-categories">Este concierto no tiene imagenes</h3>
+  }
+</swiper-container>
+}
