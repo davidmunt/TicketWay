@@ -1,34 +1,20 @@
-.div_list_concerts {
-  display: flex;
-  justify-content: center; /* centra las filas horizontalmente */
-  padding: 20px;
+.counter {
+  margin-top: 20px;
+  margin-left: 10px;
 }
 
 .div_list_concerts ul {
-  display: flex;
-  flex-wrap: wrap; /* permite que las cards pasen a la siguiente fila */
-  gap: 20px; /* espacio entre cards */
+  list-style: none;
   padding: 0;
   margin: 0;
-  justify-content: center; /* centra las cards si hay menos de 2 en la fila */
-  list-style: none;
-  width: 100%;
-  max-width: 1200px; /* opcional: para que no se estiren demasiado */
 }
 
-.div_list_concerts ul li {
-  flex: 1 1 calc(50% - 20px); /* máximo 2 cards por fila */
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center; /* centra la card dentro del li */
+.div_list_concerts li {
+  border-bottom: 1px solid #ddd; /* línea separadora */
+  padding: 20px 0;
+  width: 70%;
 }
 
-/* Opcional: mensajes de carga o error */
-.charging_concerts,
-.error_concerts,
-.no_concerts {
-  text-align: center;
-  font-size: 20px;
-  color: #252525;
-  padding: 20px;
+.div_list_concerts li:last-child {
+  border-bottom: none; /* quitar línea en el último */
 }

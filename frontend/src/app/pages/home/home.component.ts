@@ -2,7 +2,6 @@ import { RouterLink, RouterModule } from "@angular/router";
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { appRoutes } from "../../app.routes";
-import { ConcertsListComponent } from "../../shared/list-concerts/list-concerts.component";
 import { CategoriesListComponent } from "../../shared/list-categories/list-categories.component";
 import { CarouselCategoriesComponent } from "../../shared/carousel-categories/carousel-categories.component";
 
@@ -11,6 +10,6 @@ import { CarouselCategoriesComponent } from "../../shared/carousel-categories/ca
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
   standalone: true,
-  imports: [RouterModule, RouterLink, CommonModule, ConcertsListComponent, CarouselCategoriesComponent, CategoriesListComponent],
+  imports: [RouterModule, CommonModule, CarouselCategoriesComponent, CategoriesListComponent],
 })
 export class HomeComponent {}

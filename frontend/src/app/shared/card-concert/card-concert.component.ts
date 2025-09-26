@@ -14,7 +14,16 @@ import { CommonModule } from "@angular/common";
 export class CardConcertComponent implements OnInit {
   @Input() concert: Concert = {} as Concert;
 
+  dia: number;
+  mes: string;
+
   constructor(private concertService: ConcertService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+    const fecha = new Date(this.concert.date);
+    this.dia = fecha.getDate();
+    let month = fecha.getMonth();
+    this.mes = meses[month];
+  }
 }
