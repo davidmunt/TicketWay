@@ -1,9 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { RouterLink, RouterModule } from "@angular/router";
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
-import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { HeaderComponent } from "../shared/layout/header/header.component";
 import { FooterComponent } from "../shared/layout/footer/footer.component";

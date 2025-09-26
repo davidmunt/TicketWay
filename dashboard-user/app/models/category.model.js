@@ -12,6 +12,10 @@ const CategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   image: {
     type: String,
     required: true,
@@ -32,6 +36,7 @@ CategorySchema.methods.toCategoryResponse = function () {
   return {
     slug: this.slug,
     name: this.name,
+    description: this.description,
     image: this.image,
   };
 };
@@ -41,6 +46,7 @@ CategorySchema.methods.toCategoryCarouselResponse = function () {
   return {
     slug: this.slug,
     name: this.name,
+    description: this.description,
     image: this.image,
   };
 };

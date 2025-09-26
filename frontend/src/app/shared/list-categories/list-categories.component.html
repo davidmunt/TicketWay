@@ -1,0 +1,11 @@
+<div class="div_list_concerts">
+  <ul>
+    @for (category of categories; track category.name) {
+    <li>
+      <app-card-category [category]="category"></app-card-category>
+    </li>
+    } @empty {
+    <li class="no_concerts">No hay categorías disponibles.</li>
+    }
+  </ul>
+</div>

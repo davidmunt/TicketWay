@@ -6,14 +6,14 @@ import { ApiService } from "./api.service";
 @Injectable({
   providedIn: "root",
 })
-export class CategoryService {
+export class CarouselService {
   constructor(private apiService: ApiService) {}
 
-  get_categories(): Observable<CarouselHome[]> {
+  get_carousel_categories(): Observable<CarouselHome[]> {
     return this.apiService.get(`/carousel/`);
   }
 
-  get_category(slug: String): Observable<CarouselDetails> {
+  get_carousel_concert(slug: String): Observable<CarouselDetails> {
     return this.apiService.get(`/carousel/${slug}`);
   }
 }

@@ -24,12 +24,13 @@ const getOneCategory = async (req, res) => {
 
 const createCategory = async (req, res) => {
   try {
-    const { name, image } = req.body;
+    const { name, description, image } = req.body;
     if (!name) {
       return res.status(400).json({ message: "El nombre de la categoría es obligatorio" });
     }
     const newCategory = new Category({
       name,
+      description,
       image,
     });
     await newCategory.save();

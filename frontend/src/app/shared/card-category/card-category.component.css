@@ -1,0 +1,50 @@
+.category-card {
+  width: 100%;
+  max-width: 350px; /* tamaño de card */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+  background: none; /* sin fondo */
+  border: none; /* sin borde */
+}
+
+/* Imagen */
+.category-img {
+  width: 100%;
+  height: 200px; /* todas las imágenes misma altura */
+  object-fit: cover; /* recorta para que no se deforme */
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Texto */
+.category-description {
+  font-size: 16px;
+  color: #444; /* gris oscuro */
+  margin: 8px 0;
+}
+
+.category-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px 0 10px 0;
+  color: #111; /* negro */
+}
+
+/* Botón */
+.category-btn {
+  background: none;
+  border: none;
+  color: #11487b; /* azul similar al ejemplo */
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  align-self: flex-start; /* botón alineado a la izquierda */
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.category-btn:hover {
+  color: #0d3b66;
+}

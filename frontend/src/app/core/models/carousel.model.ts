@@ -1,7 +1,8 @@
 export interface CarouselHome {
   slug?: String;
   image?: String;
-  category_name?: String;
+  description?: string;
+  name?: String;
 }
 
 export interface CarouselDetails {

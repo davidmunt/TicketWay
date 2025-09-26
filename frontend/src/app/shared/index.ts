@@ -1,5 +1,7 @@
-export * from './layout/footer/footer.component';
-export * from './layout/header/header.component';
-// export * from './show-authed.directive';
-export * from './list-concerts/list-concerts.component';
-export * from './card-concert/card-concert.component';
+export * from "./layout/footer/footer.component";
+export * from "./layout/header/header.component";
+export * from "./list-concerts/list-concerts.component";
+export * from "./list-categories/list-categories.component";
+export * from "./card-concert/card-concert.component";
+export * from "./carousel-categories/carousel-categories.component";
+export * from "./card-category/card-category.component";
