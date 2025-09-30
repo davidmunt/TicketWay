@@ -20,6 +20,7 @@ const CategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  concerts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Concert" }],
 });
 
 CategorySchema.plugin(uniqueValidator, { msg: "already taken" });
@@ -31,8 +32,18 @@ CategorySchema.pre("validate", function (next) {
   next();
 });
 
-// Formato de respuesta general
 CategorySchema.methods.toCategoryResponse = function () {
+  return {
+    slug: this.slug,
+    id_cat: this._id,
+    name: this.name,
+    description: this.description,
+    image: this.image,
+    concerts: this.concerts,
+  };
+};
+
+CategorySchema.methods.toCategoryCarouselResponse = function () {
   return {
     slug: this.slug,
     name: this.name,
@@ -41,14 +52,19 @@ CategorySchema.methods.toCategoryResponse = function () {
   };
 };
 
-// Formato reducido para carrusel
-CategorySchema.methods.toCategoryCarouselResponse = function () {
-  return {
-    slug: this.slug,
-    name: this.name,
-    description: this.description,
-    image: this.image,
-  };
+CategorySchema.methods.addConcert = function (concert_id) {
+  if (this.concerts.indexOf(concert_id) === -1) {
+    this.concerts.push(concert_id);
+  }
+  return this.save();
+};
+
+///no funciona por alguna razon
+CategorySchema.methods.removeConcert = function (concert_id) {
+  if (this.concerts.indexOf(concert_id) !== -1) {
+    this.concerts.remove(concert_id);
+  }
+  return this.save();
 };
 
 module.exports = mongoose.model("Category", CategorySchema);

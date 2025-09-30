@@ -11,22 +11,22 @@ const createConcert = async (req, res) => {
       date: req.body.date || null,
       img: req.body.img || null,
       images: req.body.images || [],
-      category: req.body.category || null,
+      id_cat: req.body.id_cat || null,
     };
-    if (concertData.category) {
-      const category = await Category.findOne({ slug: concertData.category }).exec();
-      if (!category) {
-        return res.status(400).json({ message: "Categoría no encontrada" });
-      }
+
+    const id_cat = req.body.id_cat;
+    const category = await Category.findOne({ _id: id_cat }).exec();
+    if (!category) {
+      res.status(400).json({ message: "Ha ocurrido un error al buscar la categoria" });
     }
+
     const newConcert = new Concert(concertData);
     await newConcert.save();
     if (!newConcert) {
       return res.status(400).json({ message: "Error al crear el concierto" });
     }
-    return res.status(201).json({
-      concert: await newConcert.toConcertResponse(),
-    });
+    await category.addConcert(newConcert._id);
+    return res.status(201).json({ concert: await newConcert.toConcertResponse() });
   } catch (error) {
     return res.status(500).json({ message: "Error al crear el concierto", error: error.message });
   }
@@ -61,10 +61,14 @@ const deleteOneConcert = async (req, res) => {
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
+    const id_cat = concert.id_cat;
+    const category = await Category.findOne({ _id: id_cat }).exec();
+    if (!category) {
+      return res.status(404).json({ message: "Categoria del concierto no encontrada" });
+    }
     await Concert.deleteOne({ _id: concert._id });
-    return res.status(200).json({
-      message: "Concierto eliminado",
-    });
+    await category.removeConcert(concert._id);
+    return res.status(200).json({ message: "Concierto eliminado" });
   } catch (error) {
     return res.status(500).json({ message: "Error al eliminar el concierto", error: error.message });
   }
