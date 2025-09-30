@@ -11,7 +11,7 @@ import { CarouselItemsComponent } from "../carousel-items/carousel-items.compone
   styleUrls: ["./carousel.component.css"],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true,
-  imports: [RouterLink, CommonModule, CarouselItemsComponent],
+  imports: [CommonModule, CarouselItemsComponent],
 })
 export class CarouselComponent implements OnInit {
   items_carousel!: CarouselHome[];

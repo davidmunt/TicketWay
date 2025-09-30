@@ -15,6 +15,8 @@ export class CardConcertComponent implements OnInit {
 
   dia: number;
   mes: string;
+  anyo: number;
+  horario: string;
   concLength: number;
 
   ngOnInit(): void {
@@ -22,6 +24,10 @@ export class CardConcertComponent implements OnInit {
     const fecha = new Date(this.concert.date);
     this.dia = fecha.getDate();
     let month = fecha.getMonth();
+    let hora = fecha.getHours();
+    this.anyo = fecha.getFullYear();
+    let minutes = fecha.getMinutes().toString().padStart(2, "0");
+    this.horario = `${hora} : ${minutes}`;
     this.mes = meses[month];
     this.concLength = Object.keys(this.concert).length;
   }

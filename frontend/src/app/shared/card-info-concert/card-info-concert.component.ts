@@ -9,7 +9,7 @@ import { CommonModule } from "@angular/common";
   templateUrl: "./card-info-concert.component.html",
   styleUrls: ["./card-info-concert.component.css"],
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [CommonModule],
 })
 export class CardInfoConcertComponent implements OnInit {
   slug: string;

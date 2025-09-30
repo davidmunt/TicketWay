@@ -16,4 +16,8 @@ export class ConcertService {
   get_concert(slug: String): Observable<Concert> {
     return this.apiService.get(`/concerts/${slug}`);
   }
+
+  get_concerts_by_category(slug: String): Observable<Concert[]> {
+    return this.apiService.get(`/concerts/category/${slug}`);
+  }
 }

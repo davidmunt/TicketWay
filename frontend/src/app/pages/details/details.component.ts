@@ -9,6 +9,6 @@ import { CardInfoConcertComponent } from "../../shared/card-info-concert/card-in
   templateUrl: "./details.component.html",
   styleUrls: ["./details.component.css"],
   standalone: true,
-  imports: [RouterModule, RouterLink, CommonModule, CardInfoConcertComponent, CarouselComponent],
+  imports: [RouterModule, CommonModule, CardInfoConcertComponent, CarouselComponent],
 })
 export class DetailsComponent {}

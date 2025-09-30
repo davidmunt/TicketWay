@@ -4,7 +4,6 @@ export interface Concert {
   date: string;
   venue: string;
   description: string;
-  category: string;
-  img: string;
+  id_cat: string;
   images: string[];
 }

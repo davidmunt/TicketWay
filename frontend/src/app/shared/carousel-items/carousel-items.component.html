@@ -8,7 +8,7 @@
         <div class="slide-content">
           <h2 class="slide-title">{{ category.name }}</h2>
           <h4 class="slide-description">{{ category.description }}</h4>
-          <button class="slide-btn" routerLink="/shop">Entradas</button>
+          <button class="slide-btn" [routerLink]="['/shop/categories', category.slug]">Entradas</button>
         </div>
       </div>
     </swiper-slide>
