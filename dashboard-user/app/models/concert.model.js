@@ -24,9 +24,6 @@ const ConcertSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  img: {
-    type: String,
-  },
   images: [String],
   id_cat: {
     type: String,
@@ -50,7 +47,6 @@ ConcertSchema.methods.toConcertResponse = async function () {
     date: this.date,
     venue: this.venue,
     description: this.description,
-    img: this.img,
     images: this.images,
     id_cat: this.id_cat,
   };

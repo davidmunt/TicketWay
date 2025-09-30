@@ -7,6 +7,9 @@ module.exports = (app) => {
   // GET one Concert
   app.get("/concerts/:slug", concerts.getOneConcert);
 
+  // GET Concerts by One Category
+  app.get("/concerts/category/:slug", concerts.getAllConcertsFromCategory);
+
   // Create a new Concert
   app.post("/concerts", concerts.createConcert);
 

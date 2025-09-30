@@ -9,7 +9,6 @@ const createConcert = async (req, res) => {
       venue: req.body.venue || null,
       description: req.body.description || null,
       date: req.body.date || null,
-      img: req.body.img || null,
       images: req.body.images || [],
       id_cat: req.body.id_cat || null,
     };
@@ -54,6 +53,26 @@ const getOneConcert = async (req, res) => {
   }
 };
 
+const getAllConcertsFromCategory = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const categoria = await Category.findOne({ slug }).exec();
+    if (!categoria) {
+      return res.status(400).json({ message: "Categoria no encontrada", error: error.message });
+    }
+    return res.status(200).json(
+      await Promise.all(
+        categoria.concerts.map(async (concert_id) => {
+          const concert = await Concert.findById(concert_id);
+          return concert.toConcertResponse();
+        })
+      )
+    );
+  } catch (error) {
+    return res.status(500).json({ message: "Error al obtener los conciertos", error: error.message });
+  }
+};
+
 const deleteOneConcert = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -78,5 +97,6 @@ module.exports = {
   createConcert,
   getAllConcerts,
   getOneConcert,
+  getAllConcertsFromCategory,
   deleteOneConcert,
 };
