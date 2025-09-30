@@ -1,6 +1,6 @@
 @if (page === 'categories') {
 <div class="slider-categories">
-  <swiper-container slides-per-view="1" space-between="50" navigation pagination="true">
+  <swiper-container slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
     @for (category of categories; track category.name) {
     <swiper-slide>
       <div class="slide-category">
@@ -18,7 +18,7 @@
   </swiper-container>
 </div>
 } @else if (page === 'details'){
-<swiper-container class="details-carousel" slides-per-view="1" space-between="50" navigation pagination="true">
+<swiper-container class="details-carousel" slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
   @for (concertSrc of jobs_details; track $index) {
   <swiper-slide>
     <img [src]="concertSrc" alt="" />

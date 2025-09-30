@@ -9,7 +9,10 @@ import { ApiService } from "./api.service";
 export class CategoryService {
   constructor(private apiService: ApiService) {}
 
-  get_categories(): Observable<Category[]> {
+  get_categories(offset?: number, limit?: number): Observable<Category[]> {
+    if (offset !== undefined && limit !== undefined) {
+      return this.apiService.get(`/categories?offset=${offset}&limit=${limit}`);
+    }
     return this.apiService.get(`/categories/`);
   }
 

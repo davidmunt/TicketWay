@@ -2,7 +2,8 @@ const Category = require("../models/category.model.js");
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const { offset, limit } = req.query;
+    const categories = await Category.find().skip(offset).limit(limit);
     return res.status(200).json(
       await Promise.all(
         categories.map(async (cat) => {
@@ -44,10 +45,7 @@ const createCategory = async (req, res) => {
       category: newCategory.toCategoryResponse(),
     });
   } catch (error) {
-    return res.status(500).json({
-      message: "Error al crear la categoria",
-      error: error.message,
-    });
+    return res.status(500).json({ message: "Error al crear la categoria", error: error.message });
   }
 };
 
