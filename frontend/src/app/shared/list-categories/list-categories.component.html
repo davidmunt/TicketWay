@@ -1,6 +1,4 @@
-@if (isLoading) {
-<div class="charging_categories">Cargando categorias...</div>
-} @else if (errorMessage) {
+@if (errorMessage) {
 <div class="error_categories">{{ errorMessage }}</div>
 } @else if (!isLoading && !errorMessage) {
 <div class="div_list_categories">

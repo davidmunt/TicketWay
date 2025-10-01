@@ -28,16 +28,16 @@ export class CategoriesListComponent implements OnInit {
   }
 
   loadCategories(): void {
-    // this.isLoading = true;
-    this.errorMessage = "";
     if (this.allLoaded == false) {
+      this.isLoading = true;
+      this.errorMessage = "";
       this.categoryService.get_categories(this.offset, this.limit).subscribe({
         next: (data) => {
-          console.log(data);
           if (data.length < this.limit) {
             this.allLoaded = true;
           }
-          data.forEach((cat) => this.categories.push(cat));
+          // console.log(data);
+          data.map((category) => this.categories.push(category));
           this.offset += this.limit;
           this.isLoading = false;
         },

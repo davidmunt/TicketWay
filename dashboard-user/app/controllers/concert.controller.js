@@ -33,7 +33,8 @@ const createConcert = async (req, res) => {
 
 const getAllConcerts = async (req, res) => {
   try {
-    const concerts = await Concert.find();
+    const { offset, limit } = req.query;
+    const concerts = await Concert.find().skip(offset).limit(limit);
     return res.status(200).json(await Promise.all(concerts.map((concert) => concert.toConcertResponse())));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener los conciertos", error: error.message });
