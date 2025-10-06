@@ -10,4 +10,8 @@ export default [
     path: "categories/:slug",
     loadComponent: () => import("./shop.component").then((c) => c.ShopComponent),
   },
+  {
+    path: ":filters",
+    loadComponent: () => import("./shop.component").then((c) => c.ShopComponent),
+  },
 ] as Route[];

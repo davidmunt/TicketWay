@@ -1,0 +1,45 @@
+<div class="filters">
+  <div class="row">
+    <!-- Category -->
+    <div class="category">
+      <div class="form-group">
+        <select class="select" name="category" id="category" [(ngModel)]="category" (change)="filter_concerts()">
+          <option disabled selected value="">Category</option>
+          <option *ngFor="let category of categories" [value]="category.category_id">{{ category.name }}</option>
+        </select>
+      </div>
+    </div>
+    <!-- Artist -->
+    <div class="artist">
+      <div class="form-group">
+        <select class="form-control" name="artist" id="artist" [(ngModel)]="artist" (change)="filter_concerts()">
+          <option disabled selected value="">Artist</option>
+          <option *ngFor="let artist of artists" [value]="artist.artist_id">{{ artist.name }}</option>
+        </select>
+      </div>
+    </div>
+    <!-- Venue -->
+    <div class="venue">
+      <div class="form-group">
+        <select class="form-control" name="venue" id="venue" [(ngModel)]="venue" (change)="filter_concerts()">
+          <option disabled selected value="">Venue</option>
+          <option *ngFor="let venue of venues" [value]="venue.venue_id">{{ venue.name }}</option>
+        </select>
+      </div>
+    </div>
+    <!-- Price Range Slider -->
+    <div class="range-price">
+      <label class="range-price-label">Precio</label>
+      <mat-slider class="range-price-slider" min="0" max="10000" discrete showTickMarks>
+        <input matSliderStartThumb [(ngModel)]="price_min" (input)="filter_concerts()" />
+        <input matSliderEndThumb [(ngModel)]="price_max" (input)="filter_concerts()" />
+      </mat-slider>
+      <div class="range-price-text">De {{ price_min }} a {{ price_max }} €</div>
+    </div>
+    <!-- // -->
+    <div class="filter-btns">
+      <button type="button" class="filter-btns" (click)="remove_filters()">Remove filters</button>
+    </div>
+    <!-- // -->
+  </div>
+</div>

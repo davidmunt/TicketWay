@@ -7,3 +7,5 @@ export * from "./card-category/card-category.component";
 export * from "./carousel/carousel.component";
 export * from "./carousel-items/carousel-items.component";
 export * from "./card-info-concert/card-info-concert.component";
+export * from "./filters/filters.component";
+export * from "./search/search.component";
