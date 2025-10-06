@@ -36,8 +36,8 @@ ArtistSchema.pre("validate", async function (next) {
 ArtistSchema.methods.toArtistResponse = async function () {
   return {
     slug: this.slug,
+    artist_id: this._id,
     name: this.name,
-    id: this._id,
     nationality: this.nationality,
     description: this.description,
     images: this.images,

@@ -31,6 +31,8 @@ mongoose
   });
 
 require("../routes/category.routes")(app);
+require("../routes/artist.router.js")(app);
+require("../routes/venue.router.js")(app);
 require("../routes/concert.routes")(app);
 require("../routes/carousel.routes")(app);
 

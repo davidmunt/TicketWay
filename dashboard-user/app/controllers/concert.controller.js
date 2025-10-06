@@ -1,41 +1,39 @@
 const Concert = require("../models/concert.model.js");
 const Category = require("../models/category.model.js");
-
-const createConcert = async (req, res) => {
-  try {
-    const concertData = {
-      name: req.body.name || null,
-      price: req.body.price || 0,
-      venue: req.body.venue || null,
-      description: req.body.description || null,
-      date: req.body.date || null,
-      images: req.body.images || [],
-      id_cat: req.body.id_cat || null,
-    };
-
-    const id_cat = req.body.id_cat;
-    const category = await Category.findOne({ _id: id_cat }).exec();
-    if (!category) {
-      res.status(400).json({ message: "Ha ocurrido un error al buscar la categoria" });
-    }
-
-    const newConcert = new Concert(concertData);
-    await newConcert.save();
-    if (!newConcert) {
-      return res.status(400).json({ message: "Error al crear el concierto" });
-    }
-    await category.addConcert(newConcert._id);
-    return res.status(201).json({ concert: await newConcert.toConcertResponse() });
-  } catch (error) {
-    return res.status(500).json({ message: "Error al crear el concierto", error: error.message });
-  }
-};
+const Artist = require("../models/artist.model.js");
 
 const getAllConcerts = async (req, res) => {
   try {
-    const { offset, limit } = req.query;
-    const concerts = await Concert.find().skip(offset).limit(limit);
-    return res.status(200).json(await Promise.all(concerts.map((concert) => concert.toConcertResponse())));
+    let query = {};
+    let getQueryParam = (varQuery, otherResult) => {
+      return varQuery != "undefined" && varQuery ? varQuery : otherResult;
+    };
+    let limit = getQueryParam(req.query.limit, 3);
+    let offset = getQueryParam(req.query.offset, 0);
+    let category = getQueryParam(req.query.category, "");
+    let venue = getQueryParam(req.query.venue, "");
+    let artist = getQueryParam(req.query.artist, "");
+    let name = getQueryParam(req.query.name, "");
+    let price_min = getQueryParam(req.query.price_min, 0);
+    let price_max = getQueryParam(req.query.price_max, Number.MAX_SAFE_INTEGER);
+    let nameReg = new RegExp(name, "i");
+    query = {
+      name: { $regex: nameReg },
+      $and: [{ price: { $gte: price_min } }, { price: { $lte: price_max } }],
+    };
+
+    if (category != "") {
+      query.category = category;
+    }
+    if (venue != "") {
+      query.venue = venue;
+    }
+    if (artist != "") {
+      query.artists = artist;
+    }
+    const concerts = await Concert.find(query).limit(Number(limit)).skip(Number(offset));
+    const concerts_count = await Concert.find(query).countDocuments();
+    return res.status(200).json({ concerts: await Promise.all(concerts.map((concert) => concert.toConcertResponse())), concerts_count: concerts_count });
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener los conciertos", error: error.message });
   }
@@ -74,6 +72,41 @@ const getAllConcertsFromCategory = async (req, res) => {
   }
 };
 
+const createConcert = async (req, res) => {
+  try {
+    const concertData = {
+      name: req.body.name || null,
+      price: req.body.price || 0,
+      venue: req.body.venue || null,
+      description: req.body.description || null,
+      date: req.body.date || null,
+      images: req.body.images || [],
+      category: req.body.category || null,
+    };
+    const id_cat = req.body.category;
+    const category = await Category.findOne({ _id: id_cat }).exec();
+    if (!category) {
+      res.status(400).json({ message: "Ha ocurrido un error al buscar la categoria" });
+    }
+
+    const id_artist = req.body.artist;
+    const artist = await Artist.findOne({ _id: id_artist }).exec();
+    if (!artist) {
+      res.status(400).json({ message: "Ha ocurrido un error al buscar el Artista" });
+    }
+
+    const newConcert = new Concert(concertData);
+    await newConcert.save();
+    if (!newConcert) {
+      return res.status(400).json({ message: "Error al crear el concierto" });
+    }
+    await category.addConcert(newConcert._id);
+    return res.status(201).json({ concert: await newConcert.toConcertResponse() });
+  } catch (error) {
+    return res.status(500).json({ message: "Error al crear el concierto", error: error.message });
+  }
+};
+
 const deleteOneConcert = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -81,7 +114,7 @@ const deleteOneConcert = async (req, res) => {
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
-    const id_cat = concert.id_cat;
+    const id_cat = concert.category;
     const category = await Category.findOne({ _id: id_cat }).exec();
     if (!category) {
       return res.status(404).json({ message: "Categoria del concierto no encontrada" });
@@ -95,9 +128,9 @@ const deleteOneConcert = async (req, res) => {
 };
 
 module.exports = {
-  createConcert,
   getAllConcerts,
   getOneConcert,
   getAllConcertsFromCategory,
+  createConcert,
   deleteOneConcert,
 };

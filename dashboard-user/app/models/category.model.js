@@ -36,7 +36,7 @@ CategorySchema.pre("validate", function (next) {
 CategorySchema.methods.toCategoryResponse = function () {
   return {
     slug: this.slug,
-    id_cat: this._id,
+    category_id: this._id,
     name: this.name,
     description: this.description,
     image: this.image,

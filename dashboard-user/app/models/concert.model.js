@@ -16,8 +16,8 @@ const ConcertSchema = mongoose.Schema({
     type: Date,
     required: true,
   },
-  venue: {
-    type: String,
+  price: {
+    type: Number,
     required: true,
   },
   description: {
@@ -25,10 +25,9 @@ const ConcertSchema = mongoose.Schema({
     required: true,
   },
   images: [String],
-  id_cat: {
-    type: String,
-    required: true,
-  },
+  venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+  artists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true }],
 });
 
 ConcertSchema.plugin(uniqueValidator, { msg: "already taken" });
@@ -43,12 +42,15 @@ ConcertSchema.pre("validate", async function (next) {
 ConcertSchema.methods.toConcertResponse = async function () {
   return {
     slug: this.slug,
+    concert_id: this._id,
     name: this.name,
     date: this.date,
-    venue: this.venue,
+    price: this.price,
     description: this.description,
     images: this.images,
-    id_cat: this.id_cat,
+    venue: this.venue,
+    category: this.category,
+    artists: this.artists,
   };
 };
 

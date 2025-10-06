@@ -48,6 +48,7 @@ VenueSchema.pre("validate", async function (next) {
 VenueSchema.methods.toVenueResponse = async function () {
   return {
     slug: this.slug,
+    venue_id: this._id,
     name: this.name,
     country: this.country,
     id: this._id,
