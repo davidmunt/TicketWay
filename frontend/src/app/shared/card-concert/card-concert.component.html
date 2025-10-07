@@ -8,7 +8,8 @@
   <div class="concert-info">
     <p class="concert-schedule">{{ horario }}</p>
     <p class="concert-venue">{{ concert.venue }}</p>
-    <p class="concert-category">{{ concert.id_cat }}</p>
+    <p class="concert-venue">{{ concert.name }}</p>
+    <p class="concert-category">{{ concert.category }}</p>
   </div>
   <button class="concert-like" [routerLink]="['/details', concert.slug]">Entradas ></button>
 </div>

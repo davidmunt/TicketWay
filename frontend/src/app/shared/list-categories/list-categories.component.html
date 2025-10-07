@@ -3,7 +3,7 @@
 } @else if (!isLoading && !errorMessage) {
 <div class="div_list_categories">
   <ul infiniteScroll [infiniteScrollDistance]="4" [infiniteScrollThrottle]="150" (scrolled)="onScroll()">
-    @for (category of categories; track category.id_cat) {
+    @for (category of categories; track category.category_id) {
     <li>
       <app-card-category [category]="category"></app-card-category>
     </li>
