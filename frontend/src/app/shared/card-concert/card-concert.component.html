@@ -10,6 +10,7 @@
     <p class="concert-venue">{{ concert.venue }}</p>
     <p class="concert-venue">{{ concert.name }}</p>
     <p class="concert-category">{{ concert.category }}</p>
+    <p class="concert-category">id: {{ concert.concert_id }}</p>
   </div>
   <button class="concert-like" [routerLink]="['/details', concert.slug]">Entradas ></button>
 </div>

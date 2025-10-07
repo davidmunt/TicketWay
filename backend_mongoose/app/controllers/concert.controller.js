@@ -8,7 +8,7 @@ const getAllConcerts = async (req, res) => {
     let getQueryParam = (varQuery, otherResult) => {
       return varQuery != "undefined" && varQuery ? varQuery : otherResult;
     };
-    let limit = getQueryParam(req.query.limit, 3);
+    let limit = getQueryParam(req.query.limit, 4);
     let offset = getQueryParam(req.query.offset, 0);
     let category = getQueryParam(req.query.category, "");
     let venue = getQueryParam(req.query.venue, "");
@@ -31,7 +31,7 @@ const getAllConcerts = async (req, res) => {
     if (artist != "") {
       query.artists = artist;
     }
-    const concerts = await Concert.find(query);
+    const concerts = await Concert.find(query).limit(Number(limit)).skip(Number(offset));
     // const concerts = await Concert.find(query).limit(Number(limit)).skip(Number(offset));
     console.log(`${concerts} conce`);
     const concerts_count = await Concert.find(query).countDocuments();

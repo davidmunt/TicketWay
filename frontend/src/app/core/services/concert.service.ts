@@ -27,7 +27,6 @@ export class ConcertService {
   }
 
   get_concerts_by_category(slug: String): Observable<Concert[]> {
-    // console.log(slug);
     return this.apiService.get(user_port, `/concerts/category/${slug}`);
   }
 

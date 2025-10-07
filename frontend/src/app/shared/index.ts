@@ -9,3 +9,4 @@ export * from "./carousel-items/carousel-items.component";
 export * from "./card-info-concert/card-info-concert.component";
 export * from "./filters/filters.component";
 export * from "./search/search.component";
+export * from "./pagination/pagination.component";

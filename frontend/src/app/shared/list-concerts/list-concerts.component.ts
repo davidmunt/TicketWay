@@ -8,6 +8,7 @@ import { CommonModule, Location } from "@angular/common";
 import { CardConcertComponent } from "../card-concert/card-concert.component";
 import { FiltersComponent } from "../filters/filters.component";
 import { SearchComponent } from "../search/search.component";
+import { PaginationComponent } from "../pagination/pagination.component";
 import { LucideAngularModule } from "lucide-angular";
 import { ActivatedRoute } from "@angular/router";
 import { Artist, Category, Filters, Venue } from "src/app/core";
@@ -17,7 +18,7 @@ import { Artist, Category, Filters, Venue } from "src/app/core";
   templateUrl: "./list-concerts.component.html",
   styleUrls: ["./list-concerts.component.css"],
   standalone: true,
-  imports: [CommonModule, CardConcertComponent, LucideAngularModule, FiltersComponent, SearchComponent],
+  imports: [CommonModule, CardConcertComponent, LucideAngularModule, FiltersComponent, SearchComponent, PaginationComponent],
 })
 export class ConcertsListComponent implements OnInit {
   concerts: Concert[] = [];
@@ -34,7 +35,7 @@ export class ConcertsListComponent implements OnInit {
   totalPages: Array<number> = [];
   currentPage: number = 1;
 
-  constructor(private ConcertService: ConcertService, private route: ActivatedRoute, private CategoryService: CategoryService, private ArtistService: ArtistService, private VenueService: VenueService) {}
+  constructor(private ConcertService: ConcertService, private route: ActivatedRoute, private CategoryService: CategoryService, private ArtistService: ArtistService, private VenueService: VenueService, private Location: Location) {}
 
   ngOnInit(): void {
     // this.slug = this.route.snapshot.params["slug"];
@@ -72,8 +73,6 @@ export class ConcertsListComponent implements OnInit {
     this.ConcertService.get_concerts_by_category(this.slug).subscribe((data: any) => {
       this.concerts = data;
       // this.totalPages = Array.from(new Array(Math.ceil(data.product_count / this.limit)), (val, index) => index + 1);
-      console.log(data);
-      console.log("conciertos por categoria");
     });
   }
 
@@ -81,10 +80,7 @@ export class ConcertsListComponent implements OnInit {
     this.filters = filters;
     this.ConcertService.get_concerts_filter(filters).subscribe((data: any) => {
       this.concerts = data.concerts;
-      console.log(data.concerts);
-      console.log("filtros aplicados");
       this.totalPages = Array.from(new Array(Math.ceil(data.concerts_count / this.limit)), (val, index) => index + 1);
-      console.log(data.concerts_count);
     });
   }
 
@@ -100,39 +96,40 @@ export class ConcertsListComponent implements OnInit {
   getListForCategory() {
     this.CategoryService.get_categories().subscribe((data: any) => {
       this.categories = data;
-      console.log(this.categories);
     });
   }
 
   getListForArtist() {
     this.ArtistService.get_artists().subscribe((data: any) => {
       this.artists = data;
-      console.log(this.artists);
     });
   }
 
   getListForVenue() {
     this.VenueService.get_venues().subscribe((data: any) => {
       this.venues = data;
-      console.log(this.venues);
     });
   }
 
-  // setPageTo(pageNumber: number) {
-  //   this.currentPage = pageNumber;
-  //   if (typeof this.routeFilters === "string") {
-  //     this.refreshRouteFilter();
-  //   }
-  //   if (this.limit) {
-  //     this.filters.limit = this.limit;
-  //     this.filters.offset = this.limit * (this.currentPage - 1);
-  //   }
-  //   if (this.currentPage == null || this.currentPage == 1) {
-  //     this.Location.replaceState("/shop/");
-  //   } else {
-  //     this.Location.replaceState("/shop/" + btoa(JSON.stringify(this.filters)));
-  //   }
-  //   this.get_list_filtered(this.filters);
-  //   console.log(`Current page: ${this.currentPage}`);
-  // }
+  setPageTo(pageNumber: number) {
+    this.currentPage = pageNumber;
+    if (typeof this.routeFilters === "string") {
+      this.refreshRouteFilter();
+    }
+    console.log("filtros: ");
+    console.log(this.filters);
+    if (this.limit) {
+      this.filters.limit = this.limit;
+      this.filters.offset = this.limit * (this.currentPage - 1);
+    }
+    if (this.currentPage == null || this.currentPage == 1) {
+      console.log("filtros: ");
+      console.log(this.filters);
+      this.Location.replaceState("/shop/" + btoa(JSON.stringify(this.filters)));
+    } else {
+      this.Location.replaceState("/shop/" + btoa(JSON.stringify(this.filters)));
+    }
+    this.get_list_filtered(this.filters);
+    console.log(`Current page: ${this.currentPage}`);
+  }
 }

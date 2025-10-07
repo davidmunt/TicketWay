@@ -1,3 +1,5 @@
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
 /* ==== FILTROS PRINCIPALES ==== */
 .filters {
   width: 90%;
@@ -62,9 +64,6 @@
 
 .range-price-slider {
   width: 100%;
-}
-
-.range-price-slider {
   --mdc-slider-handle-color: #195b98;
   --mdc-slider-handle-shape: 50%;
   --mdc-slider-handle-size: 20px;
@@ -105,4 +104,18 @@
     align-items: center;
     margin-top: 10px;
   }
+}
+
+/* Fuerza el estilo del mat-slider */
+.mdc-slider__thumb {
+  border-radius: 50% !important;
+  background-color: #195b98 !important;
+}
+
+.mdc-slider__track--active_fill {
+  background-color: #195b98 !important;
+}
+
+.mdc-slider__track--inactive {
+  background-color: #ccc !important;
 }

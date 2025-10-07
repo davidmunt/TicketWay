@@ -1,0 +1,15 @@
+<div class="pagination">
+  <nav *ngIf="totalPages?.length && totalPages.length > 1">
+    <ul class="pagination pg-blue">
+      <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }" (click)="changePage(currentPage - 1)">
+        <span class="page-link">Previous</span>
+      </li>
+      <li class="page-item" [ngClass]="{ active: pageNumber === currentPage }" *ngFor="let pageNumber of totalPages" (click)="changePage(pageNumber)">
+        <span class="page-link">{{ pageNumber }}</span>
+      </li>
+      <li class="page-item" [ngClass]="{ disabled: currentPage === totalPages.length }" (click)="changePage(currentPage + 1)">
+        <span class="page-link">Next</span>
+      </li>
+    </ul>
+  </nav>
+</div>

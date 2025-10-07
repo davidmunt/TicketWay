@@ -1,3 +1,5 @@
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
 /* Reseteamos márgenes del body y html */
 html,
 body {
