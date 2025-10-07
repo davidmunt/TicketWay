@@ -7,6 +7,7 @@ import { Concert } from "../../core/models/concert.model";
 import { CommonModule, Location } from "@angular/common";
 import { CardConcertComponent } from "../card-concert/card-concert.component";
 import { FiltersComponent } from "../filters/filters.component";
+import { SearchComponent } from "../search/search.component";
 import { LucideAngularModule } from "lucide-angular";
 import { ActivatedRoute } from "@angular/router";
 import { Artist, Category, Filters, Venue } from "src/app/core";
@@ -16,7 +17,7 @@ import { Artist, Category, Filters, Venue } from "src/app/core";
   templateUrl: "./list-concerts.component.html",
   styleUrls: ["./list-concerts.component.css"],
   standalone: true,
-  imports: [CommonModule, CardConcertComponent, LucideAngularModule, FiltersComponent],
+  imports: [CommonModule, CardConcertComponent, LucideAngularModule, FiltersComponent, SearchComponent],
 })
 export class ConcertsListComponent implements OnInit {
   concerts: Concert[] = [];
@@ -75,34 +76,6 @@ export class ConcertsListComponent implements OnInit {
       console.log("conciertos por categoria");
     });
   }
-
-  // get_products_by_cat(): void {
-  //   if (this.slug_Category !== null) {
-  //     this.productService.getProductsByCategory(this.slug_Category).subscribe((data: any) => {
-  //       this.products = data.products;
-  //       this.totalPages = Array.from(new Array(Math.ceil(data.product_count / this.limit)), (val, index) => index + 1);
-  //       console.log(data.products);
-  //       console.log(this.totalPages);
-  //     });
-  //   }
-  // }
-
-  // get_list_filtered(): void {
-  //   this.isLoading = true;
-  //   this.errorMessage = "";
-  //   this.concertService.get_concerts().subscribe({
-  //     next: (data) => {
-  //       console.log(data);
-  //       data.map((concert) => this.concerts.push(concert));
-  //       this.isLoading = false;
-  //     },
-  //     error: (e) => {
-  //       console.error(e);
-  //       this.errorMessage = "Ocurrió un error al cargar los conciertos.";
-  //       this.isLoading = false;
-  //     },
-  //   });
-  // }
 
   get_list_filtered(filters: Filters) {
     this.filters = filters;

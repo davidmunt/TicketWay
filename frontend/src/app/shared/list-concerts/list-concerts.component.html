@@ -1,3 +1,4 @@
+<app-search (searchEvent)="get_list_filtered($event)"></app-search>
 <app-filters (eventofiltros)="get_list_filtered($event)" [categories]="categories" [artists]="artists" [venues]="venues"></app-filters>
 <h1 class="counter">Conciertos: {{ concerts.length }} Resultados</h1>
 <div class="div_list_concerts">
