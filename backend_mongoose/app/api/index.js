@@ -35,6 +35,8 @@ require("../routes/artist.router.js")(app);
 require("../routes/venue.router.js")(app);
 require("../routes/concert.routes")(app);
 require("../routes/carousel.routes")(app);
+require("../routes/auth.router.js")(app);
+require("../routes/user.router.js")(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor Express en el puerto ${process.env.PORT}`);

@@ -32,10 +32,7 @@ const getAllConcerts = async (req, res) => {
       query.artists = artist;
     }
     const concerts = await Concert.find(query).limit(Number(limit)).skip(Number(offset));
-    // const concerts = await Concert.find(query).limit(Number(limit)).skip(Number(offset));
-    console.log(`${concerts} conce`);
     const concerts_count = await Concert.find(query).countDocuments();
-    console.log(`${concerts_count} total`);
     return res.status(200).json({ concerts: await Promise.all(concerts.map((concert) => concert.toConcertResponse())), concerts_count: concerts_count });
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener los conciertos", error: error.message });
@@ -118,13 +115,13 @@ const deleteOneConcert = async (req, res) => {
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
-    const id_cat = concert.category;
-    const category = await Category.findOne({ _id: id_cat }).exec();
-    if (!category) {
-      return res.status(404).json({ message: "Categoria del concierto no encontrada" });
-    }
+    // const id_cat = concert.category;
+    // const category = await Category.findOne({ _id: id_cat }).exec();
+    // if (!category) {
+    //   return res.status(404).json({ message: "Categoria del concierto no encontrada" });
+    // }
     await Concert.deleteOne({ _id: concert._id });
-    await category.removeConcert(concert._id);
+    // await category.removeConcert(concert._id);
     return res.status(200).json({ message: "Concierto eliminado" });
   } catch (error) {
     return res.status(500).json({ message: "Error al eliminar el concierto", error: error.message });
