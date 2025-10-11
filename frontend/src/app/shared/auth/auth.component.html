@@ -1,0 +1,30 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="row">
+      <div class="col">
+        <h1 class="auth-title">{{ title }}</h1>
+
+        <form class="auth-form" [formGroup]="authForm" (ngSubmit)="submitForm()">
+          <fieldset [disabled]="isSubmitting">
+            <fieldset class="form-username">
+              <input formControlName="username" placeholder="Username" class="form-control form-control-lg" type="text" *ngIf="authType === 'register'" />
+            </fieldset>
+            <fieldset class="form-email">
+              <input formControlName="email" placeholder="Email" class="form-control form-control-lg" type="text" />
+            </fieldset>
+            <fieldset class="form-password">
+              <input formControlName="password" placeholder="Password" class="form-control form-control-lg" type="password" />
+            </fieldset>
+            <p class="auth-sugestion">
+              <a class="auth-sugestion-text" [routerLink]="['/auth/login']" *ngIf="authType === 'register'">Have an account? Click here</a>
+              <a class="auth-sugestion-text" [routerLink]="['/auth/register']" *ngIf="authType === 'login'">Need an account? Click here</a>
+            </p>
+            <button class="auth-btn" [disabled]="!authForm.valid" type="submit">
+              {{ title }}
+            </button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

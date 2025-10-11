@@ -1,0 +1,110 @@
+/* Fondo general de la página de login/register */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f6f7; /* gris muy claro, limpio y moderno */
+  font-family: "Poppins", sans-serif;
+}
+
+/* ==== CONTENEDOR DEL LOGIN ==== */
+.auth-container {
+  background-color: #ffffff;
+  padding: 40px 45px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+/* ==== TÍTULO ==== */
+.auth-title {
+  font-size: 26px;
+  color: #195b98;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+/* ==== FORMULARIO ==== */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ==== INPUTS ==== */
+.auth-form input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: #195b98;
+  box-shadow: 0 0 0 3px rgba(25, 91, 152, 0.1);
+}
+
+.form-username {
+  margin-bottom: 10px;
+}
+
+.form-email {
+  margin-bottom: 10px;
+}
+
+/* ==== SUGERENCIA (login/register link) ==== */
+.auth-sugestion {
+  margin-top: 8px; /* pequeña separación del último input */
+  margin-bottom: 14px; /* espacio con el botón */
+  color: #666;
+  font-size: 14px;
+}
+
+.auth-sugestion-text {
+  color: #195b98;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-sugestion-text:hover {
+  text-decoration: underline;
+}
+
+/* ==== BOTÓN ==== */
+.auth-btn {
+  background-color: #195b98;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-btn:hover {
+  background-color: #144d80;
+  transform: translateY(-1px);
+}
+
+.auth-btn:disabled {
+  background-color: #aac4de;
+  cursor: not-allowed;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px 25px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+  }
+}

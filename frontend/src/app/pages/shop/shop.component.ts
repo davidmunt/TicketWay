@@ -9,7 +9,7 @@ import { ConcertsListComponent } from "../../shared/list-concerts/list-concerts.
   templateUrl: "./shop.component.html",
   styleUrls: ["./shop.component.css"],
   standalone: true,
-  imports: [RouterModule, RouterLink, CommonModule, ConcertsListComponent],
+  imports: [RouterModule, CommonModule, ConcertsListComponent],
 })
 export class ShopComponent {}
 
