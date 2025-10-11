@@ -1,7 +1,7 @@
 @if (page === 'categories') {
 <div class="slider-categories">
   <swiper-container slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
-    @for (category of categories; track category.name) {
+    @for (category of categories; track category.category_id) {
     <swiper-slide>
       <div class="slide-category">
         <img [src]="category.image" alt="" class="slide-image" />

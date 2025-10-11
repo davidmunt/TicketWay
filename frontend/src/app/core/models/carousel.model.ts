@@ -3,6 +3,7 @@ export interface CarouselHome {
   image?: String;
   description?: string;
   name?: String;
+  category_id?: String;
 }
 
 export interface CarouselDetails {
