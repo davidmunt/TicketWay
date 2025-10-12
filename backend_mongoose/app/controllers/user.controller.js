@@ -39,21 +39,15 @@ const userLogin = asyncHandler(async (req, res) => {
   if (!match) return res.status(401).json({ message: "Unauthorized" });
   // Generate tokens
   const accessToken = generateAccessToken(loginUser);
-  console.log("----------------------------------------------------");
-  console.log(accessToken);
-  console.log("----------------------------------------------------");
   const refreshToken = await RefreshToken.findOne({ userId: loginUser._id }).exec();
-  console.log(refreshToken);
   if (!refreshToken) {
     const refreshToken = generateRefreshToken(loginUser);
     await new RefreshToken({
       token: refreshToken,
       userId: loginUser._id,
-      expiryDate: new Date(Date.now() + 2 * 60 * 60 * 1000),
+      expiryDate: new Date(Date.now() + 10 * 60 * 60 * 1000),
     }).save();
   }
-  console.log("----------------------------------------------------");
-  console.log(accessToken);
   res.status(200).json({
     user: await loginUser.toUserResponse(accessToken),
   });
@@ -65,7 +59,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User Not Found" });
   }
-  console.log(user);
   const accessToken = req.newAccessToken;
   const refreshToken = await RefreshToken.findOne({ userId: user._id }).exec();
   // if(refreshToken.expiryDate )

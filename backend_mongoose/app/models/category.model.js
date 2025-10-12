@@ -51,6 +51,7 @@ CategorySchema.methods.toCategoryCarouselResponse = function () {
     name: this.name,
     description: this.description,
     image: this.image,
+    category_id: this._id,
   };
 };
 

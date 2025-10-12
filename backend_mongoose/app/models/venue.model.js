@@ -51,7 +51,6 @@ VenueSchema.methods.toVenueResponse = async function () {
     venue_id: this._id,
     name: this.name,
     country: this.country,
-    id: this._id,
     city: this.city,
     direction: this.direction,
     description: this.description,

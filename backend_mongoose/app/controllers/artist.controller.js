@@ -48,7 +48,7 @@ const createArtist = async (req, res) => {
     });
     await newArtist.save();
     // await Promise.all(categorias.map((cat) => cat.addArtist(newArtist._id)));
-    return res.status(201).json(newArtist.toArtistResponse());
+    return res.status(201).json(await newArtist.toArtistResponse());
   } catch (error) {
     return res.status(500).json({ message: "Error al crear el Artista", error: error.message });
   }

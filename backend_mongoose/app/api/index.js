@@ -30,13 +30,14 @@ mongoose
     process.exit();
   });
 
-require("../routes/category.routes")(app);
+require("../routes/category.router.js")(app);
 require("../routes/artist.router.js")(app);
 require("../routes/venue.router.js")(app);
-require("../routes/concert.routes")(app);
-require("../routes/carousel.routes")(app);
+require("../routes/concert.router.js")(app);
+require("../routes/carousel.router.js")(app);
 require("../routes/auth.router.js")(app);
 require("../routes/user.router.js")(app);
+require("../routes/profile.routes.js")(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor Express en el puerto ${process.env.PORT}`);
