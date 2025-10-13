@@ -1,0 +1,15 @@
+<div class="profile-page">
+  <div class="user-info">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <img [src]="profile.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" alt="user image" class="user-img" />
+          <h4>{{ profile.username }}</h4>
+          <p>{{ profile.bio }}</p>
+          <!-- <a [routerLink]="['/settings']" [hidden]="!isUser" class="btn btn-sm btn-outline-secondary action-btn"> <i class="ion-gear-a"></i> Edit Profile Settings </a> -->
+          <a (click)="logout()" class="btn btn-sm btn-outline-secondary action-btn">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

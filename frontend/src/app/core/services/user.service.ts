@@ -25,34 +25,24 @@ export class UserService {
 
   populate() {
     const token = this.jwtService.getToken();
-    // const jwt_access = token.access_token;
-    console.log(token);
 
     if (token) {
-      console.log(`sí hay access`);
       const headers = new HttpHeaders({
         "Content-Type": "application/json",
         Authorization: `Token ${token}`,
       });
-      console.log(headers);
       this.apiService.get(user_port, "/user", { headers }).subscribe(
         (data) => {
-          console.log("entra");
           return this.setAuth({ ...data.user, token });
         },
-        // (err) => console.log(err)
         (err) => this.purgeAuth()
       );
     } else {
-      console.log(`no hay access`);
       this.purgeAuth();
     }
   }
 
   setAuth(user: User) {
-    console.log(user);
-    // this.jwtService.saveToken(user.accessToken, user.refreshToken);
-    console.log(`intenta guardar token`);
     this.jwtService.saveToken(user.accessToken);
     this.currentUserSubject.next(user);
     this.currentUser.subscribe((userData) => {}).unsubscribe();
@@ -64,30 +54,12 @@ export class UserService {
     // Set current user to an empty object
     this.currentUserSubject.next({} as User);
     this.isAuthenticatedSubject.next(false);
-    console.log("logout");
-    console.log(this.getCurrentUser());
-    console.log(this.isAuthenticated);
-    console.log(this.currentUser);
-    console.log("logout");
   }
-
-  // attemptAuth(type: any, credentials: any): Observable<User> {
-  //   const route = type === "login" ? "/login" : "";
-  //   console.log(credentials);
-  //   let response = this.apiService.post(user_port, `/user${route}`, { user: credentials });
-  //   console.log(`response`);
-  //   response.subscribe((res: any) => {
-  //     console.log(res.user);
-  //     console.log(`response`);
-  //   });
-  //   return response;
-  // }
 
   attemptAuth(type: string, credentials: any): Observable<User> {
     const route = type === "login" ? "/login" : "";
     return this.apiService.post(user_port, `/user${route}`, { user: credentials }).pipe(
       map((res: any) => {
-        console.log("✅ Login response:", res);
         this.setAuth(res.user); // 👈 AQUÍ guardamos el token y emitimos el usuario
         return res.user;
       })

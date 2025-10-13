@@ -6,3 +6,5 @@ export * from "./artist.service";
 export * from "./venue.service";
 export * from "./user.service";
 export * from "./jwt.service";
+export * from "./profile.service";
+export * from "./profile.resolver.service";
