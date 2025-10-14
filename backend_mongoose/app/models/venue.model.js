@@ -33,7 +33,6 @@ const VenueSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  // concerts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Concert" }],
 });
 
 VenueSchema.plugin(uniqueValidator, { msg: "already taken" });

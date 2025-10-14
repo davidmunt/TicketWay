@@ -47,7 +47,6 @@ const createArtist = async (req, res) => {
       categories,
     });
     await newArtist.save();
-    // await Promise.all(categorias.map((cat) => cat.addArtist(newArtist._id)));
     return res.status(201).json(await newArtist.toArtistResponse());
   } catch (error) {
     return res.status(500).json({ message: "Error al crear el Artista", error: error.message });
@@ -62,7 +61,6 @@ const deleteArtist = async (req, res) => {
       return res.status(404).json({ message: "Artista no encontrado" });
     }
     const categorias = await Category.find({ _id: { $in: artist.categories } });
-    // await Promise.all(categorias.map((cat) => cat.removeArtist(artist._id)));
     await Artist.deleteOne({ _id: artist._id });
     return res.status(200).json({ message: "Artista eliminado correctamente" });
   } catch (error) {

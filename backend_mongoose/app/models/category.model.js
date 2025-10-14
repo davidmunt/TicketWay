@@ -70,17 +70,4 @@ CategorySchema.methods.removeConcert = function (concert_id) {
   return this.save();
 };
 
-//Artistas
-// CategorySchema.methods.addArtist = function (artist_id) {
-//   if (!this.artists.some((a) => a.equals(artist_id))) {
-//     this.artists.push(artist_id);
-//   }
-//   return this.save();
-// };
-
-// CategorySchema.methods.removeArtist = function (artist_id) {
-//   this.artists.pull(artist_id);
-//   return this.save();
-// };
-
 module.exports = mongoose.model("Category", CategorySchema);
