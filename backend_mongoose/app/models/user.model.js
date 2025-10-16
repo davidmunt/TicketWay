@@ -48,12 +48,22 @@ userSchema.methods.toUserResponse = async function (jwt_access) {
   };
 };
 
-userSchema.methods.toProfileJSON = function (user) {
+// userSchema.methods.toProfileUser = async function () {
+//   return {
+//     username: this.username,
+//     email: this.email,
+//     bio: this.bio,
+//     image: this.image,
+//   };
+// };
+
+userSchema.methods.toProfileJSON = function (isFollowing) {
   return {
     username: this.username,
+    email: this.email,
     bio: this.bio,
-    image: this.image,
-    following: user ? user.isFollowing(this._id) : false,
+    image: this.image || null,
+    following: !!isFollowing,
   };
 };
 

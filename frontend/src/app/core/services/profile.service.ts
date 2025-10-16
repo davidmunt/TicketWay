@@ -14,6 +14,7 @@ export class ProfilesService {
   constructor(private apiService: ApiService) {}
 
   get(username: string): Observable<Profile> {
-    return this.apiService.get(user_port, "/profile/" + username).pipe(map((data: { profile: Profile }) => data.profile));
+    let res = this.apiService.get(user_port, "/profile/" + username).pipe(map((data: { profile: Profile }) => data.profile));
+    return res;
   }
 }

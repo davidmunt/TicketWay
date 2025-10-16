@@ -33,7 +33,7 @@ export const HttpTokenInterceptor: HttpInterceptorFn = (req, next) => {
   };
 
   if (token) {
-    console.log("🔐 Interceptor activado, token enviado:", token);
+    //console.log("🔐 Interceptor activado, token enviado:", token);
     headersConfig["Authorization"] = `Token ${token}`;
   }
 

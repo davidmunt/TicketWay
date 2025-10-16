@@ -31,14 +31,13 @@ const verifyJWT = async (req, res, next) => {
     } else {
       let accessToken = token;
       if (decoded.exp < Date.now() / 1000) {
-        // Token has expired, generate a new access token
         accessToken = generateAccessToken(loginUser);
         res.setHeader("Authorization", `Token ${accessToken}`);
       }
       req.userId = loginUser.id;
       req.userEmail = loginUser.email;
-      req.newAccessToken = accessToken; // Attach the new or valid access token
-      next(); // Proceed to the next middleware/route
+      req.newAccessToken = accessToken;
+      next();
     }
   } catch (error) {
     return res.status(403).json({ message: "Forbidden: Invalid token", error: error.message });

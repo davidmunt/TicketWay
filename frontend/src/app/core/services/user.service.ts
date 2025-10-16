@@ -30,7 +30,6 @@ export class UserService {
         "Content-Type": "application/json",
         Authorization: `Token ${token}`,
       });
-      const fullUrl = `${user_port}/user`;
       this.apiService.get(user_port, "/user", { headers }).subscribe({
         next: (data) => {
           return this.setAuth({ ...data.user, token });
@@ -73,14 +72,24 @@ export class UserService {
     return this.currentUserSubject.value;
   }
 
-  getUserProfile(): Observable<User> {
-    return this.apiService.get(user_port, `/profile/${this.currentUserSubject.value.username}`, undefined).pipe(
+  getUserProfile(username?: string): Observable<User> {
+    // const userToFetch = username ?? this.currentUserSubject.value.username;
+    return this.apiService.get(user_port, "/user/profile/", undefined).pipe(
       map((data: any) => {
-        // this.currentUserSubject.next(data.profile);
-        return data.profile;
+        return data.user;
       })
     );
   }
+
+  // getUserProfile(username?): Observable<User> {
+  //   username ?? username : this.currentUserSubject.value.username;
+  //   return this.apiService.get(user_port, `/profile/${this.currentUserSubject.value.username}`, undefined).pipe(
+  //     map((data: any) => {
+  //       // this.currentUserSubject.next(data.profile);
+  //       return data.profile;
+  //     })
+  //   );
+  // }
 
   update(user: User): Observable<User> {
     const token = this.jwtService.getToken();

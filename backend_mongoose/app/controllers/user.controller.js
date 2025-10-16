@@ -2,7 +2,6 @@ const asyncHandler = require("express-async-handler");
 const argon2 = require("argon2");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/authService");
 const RefreshToken = require("../models/refreshToken.model");
-const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -84,6 +83,9 @@ const userLogin = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   try {
     const email = req.userEmail;
+    if (!email) {
+      return res.status(400).json({ message: "El email es obligatorio" });
+    }
     const user = await User.findOne({ email }).exec();
     if (!user) {
       return res.status(404).json({ message: "User Not Found" });
@@ -96,6 +98,30 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Error al conseguir los datos del usuario", error: error.message });
   }
+});
+
+// const getUserProfile = asyncHandler(async (req, res) => {
+//   const username = req.username;
+//   const user = await User.findOne({ username }).exec();
+//   if (!user) {
+//     return res.status(404).json({ message: "Usuario no encontrado" });
+//   }
+//   const profileUser = await user.toProfileUser();
+//   res.status(200).json({
+//     user: profileUser,
+//   });
+// });
+
+const getUserProfile = asyncHandler(async (req, res) => {
+  const email = req.userEmail;
+  const user = await User.findOne({ email }).exec();
+  if (!user) {
+    return res.status(404).json({ message: "Usuario no encontrado" });
+  }
+  const profileUser = await user.toProfileUser();
+  res.status(200).json({
+    user: profileUser,
+  });
 });
 
 const updateUser = asyncHandler(async (req, res) => {
@@ -135,5 +161,6 @@ module.exports = {
   registerUser,
   userLogin,
   getCurrentUser,
+  getUserProfile,
   updateUser,
 };

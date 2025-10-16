@@ -36,7 +36,6 @@ export class CategoriesListComponent implements OnInit {
           if (data.length < this.limit) {
             this.allLoaded = true;
           }
-          // console.log(data);
           data.map((category) => this.categories.push(category));
           this.offset += this.limit;
           this.isLoading = false;

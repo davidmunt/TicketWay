@@ -47,15 +47,12 @@ export class FiltersComponent implements OnInit {
     }
     if (this.category) {
       this.filters.category = this.category;
-      // console.log(this.filters.category);
     }
     if (this.artist) {
       this.filters.artist = this.artist;
-      // console.log(this.filters.artist);
     }
     if (this.venue) {
       this.filters.venue = this.venue;
-      // console.log(this.filters.venue);
     }
     this.price_calc(this.price_min, this.price_max);
     this.filters.price_min = this.price_min ? this.price_min : undefined;

@@ -56,21 +56,40 @@ export class ProfileComponentComponent implements OnInit {
   // }
 
   ngOnInit() {
-    this.userService.getUserProfile().subscribe({
-      next: (userProfile) => {
-        this.user = userProfile;
-        this.profileForm.patchValue(this.user);
-        this.cd.detectChanges();
-      },
-      error: (err) => {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to load user profile.",
-        });
-      },
-    });
+    this.route.data
+      .pipe(
+        concatMap((data: { profile: Profile }) => {
+          this.profile = data.profile;
+          return this.userService.currentUser.pipe(
+            tap((userData: User) => {
+              this.currentUser = userData;
+              this.isUser = this.currentUser.username === this.profile.username;
+            })
+          );
+        })
+      )
+      .subscribe(() => {
+        this.cd.markForCheck();
+      });
   }
+
+  // ngOnInit() {
+  //   // let username = this.route.params["username"];
+  //   this.userService.getUserProfile().subscribe({
+  //     next: (userProfile) => {
+  //       this.user = userProfile;
+  //       this.profileForm.patchValue(this.user);
+  //       this.cd.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: "Failed to load user profile.",
+  //       });
+  //     },
+  //   });
+  // }
 
   logout() {
     this.userService.purgeAuth();
