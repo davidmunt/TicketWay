@@ -24,12 +24,9 @@ export class HeaderComponent implements OnInit {
   constructor(private userService: UserService, private cd: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit() {
-    // console.log(this.currentUser);
     this.userService.currentUser.subscribe((userData) => {
-      // console.log(userData);
       this.currentUser = userData;
       this.cd.markForCheck();
-      console.log(this.currentUser);
     });
   }
 

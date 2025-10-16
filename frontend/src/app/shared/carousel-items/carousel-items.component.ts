@@ -13,10 +13,18 @@ import { CommonModule } from "@angular/common";
 })
 export class CarouselItemsComponent implements OnInit {
   @Input() categories!: CarouselHome[];
-  @Input() jobs_details!: CarouselDetails[];
+  @Input() concerts_details!: CarouselDetails[];
   @Input() page!: String;
 
   constructor() {}
 
   ngOnInit(): void {}
+
+  getCategoryImageUrl(imagePath: String): string {
+    return `assets/imgs/categories/${imagePath}`;
+  }
+
+  getConcertImageUrl(concert: any): string {
+    return `assets/imgs/concerts/${concert}`;
+  }
 }

@@ -12,6 +12,8 @@ import { CommonModule } from "@angular/common";
 })
 export class CardConcertComponent implements OnInit {
   @Input() concert: Concert = {} as Concert;
+  @Input() artists: any[];
+  @Input() venues: any[];
 
   dia: number;
   mes: string;
@@ -30,5 +32,13 @@ export class CardConcertComponent implements OnInit {
     this.horario = `${hora} : ${minutes}`;
     this.mes = meses[month];
     this.concLength = Object.keys(this.concert).length;
+  }
+
+  get artistName(): string {
+    return this.artists.find((a) => a._id === this.concert.artist)?.name || "Sin artista";
+  }
+
+  get venueName(): string {
+    return this.venues.find((v) => v.venue_id === this.concert.venue)?.name || "Sin venue";
   }
 }

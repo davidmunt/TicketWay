@@ -21,4 +21,8 @@ export const appRoutes: Routes = [
     path: "auth",
     loadChildren: () => import("./pages/auth/auth.routes"),
   },
+  {
+    path: "profile",
+    loadChildren: () => import("./pages/profile/profile.routing"),
+  },
 ];

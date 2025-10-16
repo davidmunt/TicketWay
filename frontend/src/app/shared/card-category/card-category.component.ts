@@ -20,4 +20,8 @@ export class CardCategoryComponent implements OnInit {
   ngOnInit(): void {
     this.catLength = Object.keys(this.category).length;
   }
+
+  getImageUrl(imagePath: string): string {
+    return `assets/imgs/categories/${imagePath}`;
+  }
 }

@@ -1,0 +1,113 @@
+/* === CONTENEDOR PRINCIPAL === */
+.settings-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container.page {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 50px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* === FORMULARIO === */
+form {
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+/* === LABELS === */
+label {
+  font-weight: 600;
+  color: #195b98;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* === INPUTS Y TEXTAREAS === */
+.form-control {
+  width: 100%; /* 👈 Asegura que ocupen todo el ancho disponible */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+textarea.form-control {
+  resize: vertical; /* Permite ajustar solo en vertical */
+  min-height: 120px;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #195b98;
+  box-shadow: 0 0 0 3px rgba(25, 91, 152, 0.15);
+}
+
+/* Margen adicional para espaciado entre campos */
+.form-margin {
+  margin-bottom: 10px;
+}
+
+/* === BOTÓN === */
+.btn-primary {
+  background-color: #195b98;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%; /* ocupa todo el ancho */
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: #144d80;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* === HR === */
+hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin-top: 30px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .container.page {
+    padding: 25px 20px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  .form-control {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .btn-primary {
+    font-size: 15px;
+  }
+}

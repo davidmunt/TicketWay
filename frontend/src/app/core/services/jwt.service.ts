@@ -4,9 +4,17 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class JwtService {
-  getToken(): String {
-    return window.localStorage["access_token"];
+  private readonly ACCESS_TOKEN_KEY = "access_token";
+  private readonly REFRESH_TOKEN_KEY = "refresh_token";
+
+  getToken(): string | null {
+    const token = localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    return token;
   }
+
+  // getToken(): String {
+  //   return window.localStorage["access_token"];
+  // }
 
   // getToken(): any {
   //   const jwt = {
@@ -16,13 +24,23 @@ export class JwtService {
   //   return jwt;
   // }
 
-  saveToken(access_token: String, refresh_token?: String) {
-    window.localStorage["access_token"] = access_token;
-    window.localStorage["refresh_token"] = refresh_token;
+  // saveToken(access_token: String, refresh_token?: String) {
+  //   window.localStorage["access_token"] = access_token;
+  //   window.localStorage["refresh_token"] = refresh_token;
+  // }
+
+  saveToken(access_token: string, refresh_token?: string) {
+    if (access_token) localStorage.setItem(this.ACCESS_TOKEN_KEY, access_token);
+    if (refresh_token) localStorage.setItem(this.REFRESH_TOKEN_KEY, refresh_token);
   }
 
   destroyToken() {
-    window.localStorage.removeItem("access_token");
-    window.localStorage.removeItem("refresh_token");
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
+
+  // destroyToken() {
+  //   window.localStorage.removeItem("access_token");
+  //   window.localStorage.removeItem("refresh_token");
+  // }
 }

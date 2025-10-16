@@ -1,10 +1,14 @@
-<app-search (searchEvent)="get_list_filtered($event)"></app-search>
-<app-filters (eventofiltros)="get_list_filtered($event)" [categories]="categories" [artists]="artists" [venues]="venues"></app-filters>
+<div class="search-filters-box">
+  <app-search (searchEvent)="get_list_filtered($event)"></app-search>
+  <app-filters (eventofiltros)="get_list_filtered($event)" [categories]="categories" [artists]="artists" [venues]="venues"></app-filters>
+</div>
+<!-- <app-search (searchEvent)="get_list_filtered($event)"></app-search>
+<app-filters (eventofiltros)="get_list_filtered($event)" [categories]="categories" [artists]="artists" [venues]="venues"></app-filters> -->
 <h1 class="counter">Conciertos: {{ concerts.length }} Resultados</h1>
 <div class="div_list_concerts">
   <ul *ngFor="let concert of concerts" class="list_concerts">
     <li>
-      <app-card-concert [concert]="concert"> </app-card-concert>
+      <app-card-concert [concert]="concert" [artists]="artists" [venues]="venues"> </app-card-concert>
     </li>
   </ul>
 </div>

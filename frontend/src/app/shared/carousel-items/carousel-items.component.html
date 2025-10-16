@@ -1,10 +1,8 @@
-@if (page === 'categories') {
-<div class="slider-categories">
+<div *ngIf="page === 'categories'" class="slider-categories">
   <swiper-container slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
-    @for (category of categories; track category.category_id) {
-    <swiper-slide>
+    <swiper-slide *ngFor="let category of categories">
       <div class="slide-category">
-        <img [src]="category.image" alt="" class="slide-image" />
+        <img [src]="getCategoryImageUrl(category.image)" alt="" class="slide-image" />
         <div class="slide-content">
           <h2 class="slide-title">{{ category.name }}</h2>
           <h4 class="slide-description">{{ category.description }}</h4>
@@ -12,19 +10,10 @@
         </div>
       </div>
     </swiper-slide>
-    } @empty {
-    <h3 class="empty-categories">No hay categorias disponibles</h3>
-    }
   </swiper-container>
 </div>
-} @else if (page === 'details'){
-<swiper-container class="details-carousel" slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
-  @for (concertSrc of jobs_details; track $index) {
-  <swiper-slide>
-    <img [src]="concertSrc" alt="" />
+<swiper-container *ngIf="page === 'details'" class="details-carousel" slides-per-view="1" space-between="50" navigation="true" pagination="true" loop="true" autoplay='{"delay": 3000, "disableOnInteraction": false}'>
+  <swiper-slide *ngFor="let concertSrc of concerts_details">
+    <img [src]="getConcertImageUrl(concertSrc)" alt="" />
   </swiper-slide>
-  } @empty {
-  <h3 class="empty-categories">Este concierto no tiene imagenes</h3>
-  }
 </swiper-container>
-}

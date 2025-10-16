@@ -1,15 +1,8 @@
-@if (errorMessage) {
-<div class="error_categories">{{ errorMessage }}</div>
-} @else if (!isLoading && !errorMessage) {
-<div class="div_list_categories">
-  <ul infiniteScroll [infiniteScrollDistance]="4" [infiniteScrollThrottle]="150" (scrolled)="onScroll()">
-    @for (category of categories; track category.category_id) {
-    <li>
+<div *ngIf="errorMessage" class="error_categories">{{ errorMessage }}</div>
+<div *ngIf="!isLoading && !errorMessage" class="div_list_categories" infiniteScroll [infiniteScrollDistance]="4" [infiniteScrollThrottle]="150" (scrolled)="onScroll()">
+  <ul>
+    <li *ngFor="let category of categories">
       <app-card-category [category]="category"></app-card-category>
     </li>
-    } @empty {
-    <li class="no_categories">No hay categorías disponibles</li>
-    }
   </ul>
 </div>
-}

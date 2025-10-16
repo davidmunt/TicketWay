@@ -12,7 +12,7 @@ import { ShowAuthedDirective } from "src/app/shared";
   templateUrl: "./auth.component.html",
   styleUrls: ["./auth.component.css"],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ShowAuthedDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponentComponent implements OnInit {
@@ -47,8 +47,6 @@ export class AuthComponentComponent implements OnInit {
     this.errors = { errors: {} };
 
     const credentials = this.authForm.value;
-    console.log(credentials);
-    console.log(this.authType);
     this.userService.attemptAuth(this.authType, credentials).subscribe(
       (data) => {
         // console.log(data);

@@ -25,25 +25,29 @@ export class UserService {
 
   populate() {
     const token = this.jwtService.getToken();
-
     if (token) {
       const headers = new HttpHeaders({
         "Content-Type": "application/json",
         Authorization: `Token ${token}`,
       });
-      this.apiService.get(user_port, "/user", { headers }).subscribe(
-        (data) => {
+      const fullUrl = `${user_port}/user`;
+      this.apiService.get(user_port, "/user", { headers }).subscribe({
+        next: (data) => {
           return this.setAuth({ ...data.user, token });
         },
-        (err) => this.purgeAuth()
-      );
+        error: (err) => {
+          console.error("Error en populate:", err);
+          this.purgeAuth();
+        },
+      });
     } else {
+      console.warn("No hay token, purgando auth");
       this.purgeAuth();
     }
   }
 
   setAuth(user: User) {
-    this.jwtService.saveToken(user.accessToken);
+    this.jwtService.saveToken(user.token);
     this.currentUserSubject.next(user);
     this.currentUser.subscribe((userData) => {}).unsubscribe();
     this.isAuthenticatedSubject.next(true);
@@ -51,7 +55,6 @@ export class UserService {
 
   purgeAuth() {
     this.jwtService.destroyToken();
-    // Set current user to an empty object
     this.currentUserSubject.next({} as User);
     this.isAuthenticatedSubject.next(false);
   }
@@ -60,7 +63,7 @@ export class UserService {
     const route = type === "login" ? "/login" : "";
     return this.apiService.post(user_port, `/user${route}`, { user: credentials }).pipe(
       map((res: any) => {
-        this.setAuth(res.user); // 👈 AQUÍ guardamos el token y emitimos el usuario
+        this.setAuth(res.user);
         return res.user;
       })
     );
@@ -68,6 +71,15 @@ export class UserService {
 
   getCurrentUser(): User {
     return this.currentUserSubject.value;
+  }
+
+  getUserProfile(): Observable<User> {
+    return this.apiService.get(user_port, `/profile/${this.currentUserSubject.value.username}`, undefined).pipe(
+      map((data: any) => {
+        // this.currentUserSubject.next(data.profile);
+        return data.profile;
+      })
+    );
   }
 
   update(user: User): Observable<User> {

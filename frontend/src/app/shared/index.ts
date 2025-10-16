@@ -11,4 +11,6 @@ export * from "./filters/filters.component";
 export * from "./search/search.component";
 export * from "./pagination/pagination.component";
 export * from "./auth/auth.component";
+export * from "./profile/profile.component";
+export * from "./settings/settings.component";
 export * from "./show-authed.directive";

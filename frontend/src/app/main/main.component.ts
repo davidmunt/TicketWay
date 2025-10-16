@@ -4,6 +4,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { HeaderComponent } from "../shared/layout/header/header.component";
 import { FooterComponent } from "../shared/layout/footer/footer.component";
+import { UserService } from "../core/services/user.service";
 
 @Component({
   selector: "app-main",
@@ -13,5 +14,8 @@ import { FooterComponent } from "../shared/layout/footer/footer.component";
   imports: [RouterModule, HeaderComponent, FooterComponent, HttpClientModule, CommonModule],
 })
 export class MainComponent implements OnInit {
-  ngOnInit(): void {}
+  constructor(private userService: UserService) {}
+  ngOnInit(): void {
+    this.userService.populate();
+  }
 }

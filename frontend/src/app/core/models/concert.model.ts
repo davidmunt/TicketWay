@@ -6,5 +6,6 @@ export interface Concert {
   venue: string;
   description: string;
   category: string;
+  artist: string;
   images: string[];
 }

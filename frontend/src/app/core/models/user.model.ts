@@ -3,6 +3,6 @@ export interface User {
   email: string;
   bio: string;
   image: string;
-  accessToken: string;
+  token: string;
   refreshToken: string;
 }

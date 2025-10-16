@@ -116,20 +116,15 @@ export class ConcertsListComponent implements OnInit {
     if (typeof this.routeFilters === "string") {
       this.refreshRouteFilter();
     }
-    console.log("filtros: ");
-    console.log(this.filters);
     if (this.limit) {
       this.filters.limit = this.limit;
       this.filters.offset = this.limit * (this.currentPage - 1);
     }
     if (this.currentPage == null || this.currentPage == 1) {
-      console.log("filtros: ");
-      console.log(this.filters);
       this.Location.replaceState("/shop/" + btoa(JSON.stringify(this.filters)));
     } else {
       this.Location.replaceState("/shop/" + btoa(JSON.stringify(this.filters)));
     }
     this.get_list_filtered(this.filters);
-    console.log(`Current page: ${this.currentPage}`);
   }
 }

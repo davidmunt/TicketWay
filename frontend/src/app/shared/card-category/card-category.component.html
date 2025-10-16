@@ -1,10 +1,8 @@
-@if (this.catLength > 0) {
-<div [routerLink]="['/shop/categories', category.slug]" class="category-card">
-  <img class="category-img" [src]="category.image" alt="{{ category.name }}" />
+<div *ngIf="this.catLength > 0" [routerLink]="['/shop/categories', category.slug]" class="category-card">
+  <img class="category-img" [src]="getImageUrl(category.image)" alt="{{ category.name }}" />
   <div class="category-text">
     <h4 class="category-description">{{ category.description }}</h4>
     <h1 class="category-title">{{ category.name }}</h1>
     <button class="category-btn" [routerLink]="['/shop/categories', category.slug]">Entradas</button>
   </div>
 </div>
-}

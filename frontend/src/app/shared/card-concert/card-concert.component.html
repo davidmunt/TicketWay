@@ -1,5 +1,4 @@
-@if (this.concLength > 0) {
-<div class="concert-card">
+<div *ngIf="this.concLength > 0" class="concert-card">
   <div class="concert-date">
     <span class="month">{{ mes }}</span>
     <span class="day">{{ dia }}</span>
@@ -7,11 +6,9 @@
   </div>
   <div class="concert-info">
     <p class="concert-schedule">{{ horario }}</p>
-    <p class="concert-venue">{{ concert.venue }}</p>
+    <p class="concert-venue">{{ venueName }}</p>
     <p class="concert-venue">{{ concert.name }}</p>
-    <p class="concert-category">{{ concert.category }}</p>
-    <p class="concert-category">id: {{ concert.concert_id }}</p>
+    <p class="concert-category">{{ artistName }}</p>
   </div>
   <button class="concert-like" [routerLink]="['/details', concert.slug]">Entradas ></button>
 </div>
-}

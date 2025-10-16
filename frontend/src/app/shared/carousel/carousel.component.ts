@@ -36,12 +36,10 @@ export class CarouselComponent implements OnInit {
       this.page = "details";
       this.carouselService.get_carousel_concert(this.slug_details).subscribe((data: any) => {
         this.items_details = data.images;
-        // console.log(this.items_details);
       });
     } else {
       this.page = "categories";
       this.carouselService.get_carousel_categories().subscribe((data: any) => {
-        // console.log(data);
         this.items_carousel = data;
       });
     }
