@@ -157,10 +157,42 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+const followUser = async (req, res) => {
+  try {
+    const { userFollowId } = req.params;
+    const userId = req.userId;
+    const user = await User.findById(userId).exec();
+    if (!user) {
+      return res.status(404).json({ message: "User not found", result: false });
+    }
+    const userToFollow = await User.findById(userFollowId).exec();
+    if (!userToFollow) {
+      return res.status(404).json({ message: "User to follow not found", result: false });
+    }
+    const isFollowing = user.following.includes(userFollowId);
+    if (isFollowing) {
+      user.following = user.following.filter((id) => id !== userFollowId);
+      await user.save();
+      return res.status(200).json({ message: "Unfollowed user successfully", result: true });
+    } else {
+      user.following.push(userFollowId);
+      await user.save();
+      return res.status(200).json({ message: "Followed user successfully", result: true });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error while following or unfollowing user",
+      error: error.message,
+      result: false,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   userLogin,
   getCurrentUser,
   getUserProfile,
   updateUser,
+  followUser,
 };

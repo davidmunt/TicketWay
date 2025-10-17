@@ -10,4 +10,7 @@ module.exports = (app) => {
 
   // Update User
   app.put("/user/", verifyJWT, userController.updateUser);
+
+  // Follow User
+  app.post("/user/follow/:userFollowId", verifyJWT, userController.followUser);
 };
