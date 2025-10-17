@@ -1,5 +1,6 @@
 module.exports = (app) => {
   const concerts = require("../controllers/concert.controller.js");
+  const verifyJWT = require("../middleware/verifyJWT");
 
   // GET all Concerts
   app.get("/concerts", concerts.getAllConcerts);
@@ -15,4 +16,10 @@ module.exports = (app) => {
 
   //Delete a Concert
   app.delete("/concerts/:slug", concerts.deleteOneConcert);
+
+  //Favorite Concert
+  app.post("/concerts/favorite/:slug", verifyJWT, concerts.favoriteConcert);
+
+  //Unfavorite Concert
+  app.delete("/concerts/favorite/:slug", verifyJWT, concerts.unfavoriteConcert);
 };

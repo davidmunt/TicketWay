@@ -1,7 +1,8 @@
 const Concert = require("../models/concert.model.js");
 const Category = require("../models/category.model.js");
 const Artist = require("../models/artist.model.js");
-const Venue = require("../models/artist.model.js");
+const Venue = require("../models/venue.model.js");
+const User = require("../models/user.model.js");
 
 const getAllConcerts = async (req, res) => {
   try {
@@ -132,10 +133,56 @@ const deleteOneConcert = async (req, res) => {
   }
 };
 
+const favoriteConcert = async (req, res) => {
+  const id = req.userId;
+  const { slug } = req.params;
+  const loginUser = await User.findById(id).exec();
+  if (!loginUser) {
+    return res.status(401).json({
+      message: "Usuario no encontrado",
+    });
+  }
+  const concert = await Concert.findOne({ slug }).exec();
+  if (!concert) {
+    return res.status(401).json({
+      message: "Trabajo no encontrado",
+    });
+  }
+  await loginUser.favorite(concert._id);
+  const updatedConcert = await concert.updateFavoriteCount();
+  return res.status(200).json({
+    concert: await updatedConcert.toConcertResponse(loginUser),
+  });
+};
+
+const unfavoriteConcert = async (req, res) => {
+  const id = req.userId;
+  const { slug } = req.params;
+  const loginUser = await User.findById(id).exec();
+  if (!loginUser) {
+    return res.status(401).json({
+      message: "Usuario no encontrado",
+    });
+  }
+  const concert = await Concert.findOne({ slug }).exec();
+  if (!concert) {
+    return res.status(401).json({
+      message: "Trabajo no encontrado",
+    });
+  }
+  await loginUser.unfavorite(concert._id);
+  await concert.updateFavoriteCount();
+  return res.status(200).json({
+    concert: await concert.toConcertResponse(loginUser),
+  });
+};
+
 module.exports = {
   getAllConcerts,
   getOneConcert,
   getAllConcertsFromCategory,
   createConcert,
   deleteOneConcert,
+  favoriteConcert,
+  unfavoriteConcert,
 };
