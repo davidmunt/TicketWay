@@ -66,14 +66,14 @@ userSchema.methods.toUserResponse = async function (jwt_access) {
   };
 };
 
-// userSchema.methods.toProfileUser = async function () {
-//   return {
-//     username: this.username,
-//     email: this.email,
-//     bio: this.bio,
-//     image: this.image,
-//   };
-// };
+userSchema.methods.toProfileUser = async function () {
+  return {
+    username: this.username,
+    email: this.email,
+    bio: this.bio,
+    image: this.image,
+  };
+};
 
 userSchema.methods.toProfileJSON = function (isFollowing) {
   return {

@@ -1,14 +1,13 @@
-// module.exports = (app) => {
-//   const { verifyJWT } = require("../middleware/verifyJWT");
-//   const verifyJWTOptional = require("../middleware/verifyJWTOptional");
-//   const comment = require("../controllers/comment.controller");
+module.exports = (app) => {
+  const verifyJWT = require("../middleware/verifyJWT");
+  const comment = require("../controllers/comment.controller");
 
-//   // GET ALL COMMENTS
-//   app.get("/:slug/comments", verifyJWTOptional, comment.getCommentsFromJob);
+  //POST Comment
+  app.post("/comments/:slug", verifyJWT, comment.addCommentsToConcert);
 
-//   // ADD COMMENT
-//   app.post("/:slug/comments", verifyJWT, comment.addCommentsToJob);
+  //GET Comments from concert
+  app.get("/comments/:slug", comment.getCommentsFromConcert);
 
-//   // DELETE COMMENT
-//   app.delete("/:slug/comments/:id", verifyJWT, comment.deleteComment);
-// };
+  //DELETE Comment from concert
+  app.delete("/comments/:id/concerts/:slug", verifyJWT, comment.deleteCommentFromConcert);
+};

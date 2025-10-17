@@ -38,6 +38,7 @@ require("../routes/carousel.router.js")(app);
 require("../routes/auth.router.js")(app);
 require("../routes/user.router.js")(app);
 require("../routes/profile.router.js")(app);
+require("../routes/comment.router.js")(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor Express en el puerto ${process.env.PORT}`);

@@ -33,6 +33,7 @@ const ConcertSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
 });
 
 ConcertSchema.plugin(uniqueValidator, { msg: "already taken" });
@@ -72,6 +73,17 @@ ConcertSchema.methods.toConcertCarouselResponse = function () {
   return {
     images: this.images,
   };
+};
+
+ConcertSchema.methods.addComment = function (commentId) {
+  console.log(`Unshift this: ${commentId}`);
+  this.comments.unshift(commentId);
+  return this.save();
+};
+
+ConcertSchema.methods.deleteComment = function (commentId) {
+  this.comments.pull(commentId);
+  return this.save();
 };
 
 module.exports = mongoose.model("Concert", ConcertSchema);
