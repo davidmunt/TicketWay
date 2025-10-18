@@ -1,0 +1,159 @@
+/* === CONTENEDOR PRINCIPAL === */
+.comment-section {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* === LISTA DE COMENTARIOS === */
+.comment-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comment-section li + li {
+  margin-top: 15px;
+}
+
+/* === TARJETA DE CADA COMENTARIO === */
+.comment-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background-color: #f8f9fb;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.2s ease;
+}
+
+.comment-card:hover {
+  box-shadow: 0 2px 6px rgba(25, 91, 152, 0.15);
+}
+
+/* === IMAGEN DE USUARIO === */
+.comment-card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #195b98;
+}
+
+/* === TEXTO DEL COMENTARIO === */
+.comment-body {
+  flex: 1;
+}
+
+.comment-body p {
+  margin: 0 0 5px;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.comment-body small {
+  color: #777;
+  font-size: 13px;
+}
+
+/* === BOTÓN DE ELIMINAR === */
+.comment-card button {
+  background: transparent;
+  border: none;
+  color: #c0392b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.comment-card button:hover {
+  color: #a5281a;
+}
+
+/* === FORMULARIO PARA AGREGAR COMENTARIOS === */
+.form-add-comment {
+  margin-top: 30px;
+}
+
+.form-add-comment h4 {
+  color: #195b98;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Campo de texto */
+.form-text input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.form-text input:focus {
+  border-color: #195b98;
+  outline: none;
+}
+
+/* Botón de agregar comentario */
+.add-comment-btn {
+  align-self: flex-end;
+  background-color: #195b98;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-comment-btn:hover {
+  background-color: #144d80;
+  box-shadow: 0 2px 6px rgba(25, 91, 152, 0.3);
+}
+
+.add-comment-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .comment-section {
+    padding: 20px;
+  }
+
+  .comment-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comment-card img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .add-comment-btn {
+    width: 100%;
+  }
+}

@@ -26,21 +26,17 @@ const commentSchema = new mongoose.Schema(
 
 commentSchema.methods.toCommentResponse = async function (user) {
   const authorObj = await User.findById(this.author).exec();
-  if (!authorObj) {
-    return {
-      id: this._id,
-      text: this.text,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      author: null,
-    };
+  let userIsAuthor = false;
+  if (user && authorObj && String(authorObj._id) === String(user._id)) {
+    userIsAuthor = true;
   }
   return {
-    id: this._id,
+    commentId: this._id,
     text: this.text,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
-    author: await authorObj.toProfileUser(user),
+    author: await authorObj.toMessageResponse(authorObj),
+    userIsAuthor: userIsAuthor,
   };
 };
 

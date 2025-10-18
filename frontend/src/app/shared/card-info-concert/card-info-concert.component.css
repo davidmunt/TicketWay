@@ -1,49 +1,102 @@
+/* === CONTENEDOR PRINCIPAL === */
 .card-info-concert {
-  width: 80%; /* centrado en la pantalla */
-  padding: 20px;
-  box-sizing: border-box;
-  font-family: "Arial", sans-serif;
+  width: 90%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  font-family: "Poppins", "Arial", sans-serif;
   line-height: 1.6;
-
-  text-align: left; /* <<--- alinea todo a la izquierda */
+  text-align: left;
+  box-sizing: border-box;
 }
 
-/* Título destacado */
-.card-info-concert .concert-name {
-  font-size: 2.3em;
-  font-weight: bold;
+/* === TÍTULO PRINCIPAL === */
+.concert-name {
+  font-size: 2.4rem;
+  font-weight: 700;
   color: #195b98;
-  margin-bottom: 20px;
-  margin-left: 20px; /* menos separación */
+  margin-bottom: 10px;
 }
 
-/* Fecha y venue */
-.card-info-concert .concert-date,
-.card-info-concert .concert-venue {
-  font-size: 1.2em;
-  font-weight: 500;
-  color: #333;
-  margin: 10px 0 15px 20px; /* un poco más de espacio entre ellos */
-}
-
-/* Descripción */
-.card-info-concert .concert-description {
-  font-size: 1.05em;
+/* === FECHA Y PRECIO === */
+.concert-date {
+  font-size: 1.2rem;
   color: #555;
-  margin-top: 20px;
-  margin-left: 20px; /* igual que los demás */
-  margin-right: 20px; /* opcional */
+  margin-bottom: 5px;
 }
 
+.concert-price {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* === BOTÓN FAVORITO === */
 .heart-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 24px;
-  color: #ccc;
+  font-size: 1.5rem;
+  color: #bbb;
+  transition: all 0.25s ease;
+  margin-bottom: 20px;
+  margin-left: 3px;
+}
+
+.heart-button:hover {
+  color: #e74c3c;
+  transform: scale(1.15);
 }
 
 .heart-button.favorited {
   color: #e74c3c;
-  text-shadow: 0 0 2px black;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.heart-button .counter {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* === VENUE === */
+.concert-venue {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* === DESCRIPCIÓN === */
+.concert-description {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  line-height: 1.7;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .card-info-concert {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .concert-name {
+    font-size: 1.8rem;
+  }
+
+  .concert-price {
+    font-size: 1.2rem;
+  }
+
+  .heart-button {
+    font-size: 1.3rem;
+  }
 }

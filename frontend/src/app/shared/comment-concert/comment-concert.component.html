@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<div class="comment-section">
+  <div *ngIf="comments() as cList">
+    <ul>
+      <li *ngFor="let comment of cList">
+        <div class="comment-card">
+          <img [src]="comment.authorImage" alt="user" />
+          <div class="comment-body">
+            <small>
+              <a [routerLink]="['/profile', comment.authorUserName]" class="author-link">
+                {{ comment.authorUserName }}
+              </a>
+            </small>
+            <p>{{ comment.text }}</p>
+          </div>
+          <button *ngIf="comment.userIsAuthor" (click)="deleteComment(comment.commentId)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="form-add-comment">
+    <h4 class="form-add-comment">Comment</h4>
+    <form class="form" [formGroup]="commentForm" (ngSubmit)="createComment()">
+      <fieldset [disabled]="isSubmitting">
+        <fieldset class="form-text">
+          <input formControlName="text" placeholder="Message" class="form-control form-control-lg" type="text" />
+        </fieldset>
+        <button class="add-comment-btn" [disabled]="!commentForm.valid" type="submit">Add comment</button>
+      </fieldset>
+    </form>
+  </div>
+</div>
