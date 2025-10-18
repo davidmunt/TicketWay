@@ -34,3 +34,16 @@
   margin-left: 20px; /* igual que los demás */
   margin-right: 20px; /* opcional */
 }
+
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
+}
+
+.heart-button.favorited {
+  color: #e74c3c;
+  text-shadow: 0 0 2px black;
+}

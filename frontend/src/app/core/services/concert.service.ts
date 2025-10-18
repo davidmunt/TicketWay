@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable, map } from "rxjs";
+import { Injectable, signal } from "@angular/core";
+import { Observable, map, tap } from "rxjs";
 import { Concert, Filters } from "../models";
 import { ApiService } from "./api.service";
 import { environment } from "../../../environments/evironment";
@@ -13,6 +13,8 @@ let options: { params?: HttpParams } = {};
   providedIn: "root",
 })
 export class ConcertService {
+  private _concert = signal<Concert | null>(null);
+  concert = this._concert.asReadonly();
   constructor(private apiService: ApiService) {}
 
   get_concerts(offset?: number, limit?: number): Observable<Concert[]> {
@@ -22,8 +24,12 @@ export class ConcertService {
     return this.apiService.get(user_port, `/concerts/`, options);
   }
 
-  get_concert(slug: String): Observable<Concert> {
-    return this.apiService.get(user_port, `/concerts/${slug}`);
+  // get_concert(slug: String): Observable<Concert> {
+  //   return this.apiService.get(user_port, `/concerts/${slug}`);
+  // }
+
+  get_concert(slug: string): Observable<Concert> {
+    return this.apiService.get(user_port, `/concerts/${slug}`).pipe(tap((data: any) => this._concert.set(data)));
   }
 
   get_concerts_by_category(slug: String): Observable<Concert[]> {
@@ -47,5 +53,43 @@ export class ConcertService {
       }
     });
     return this.apiService.get(user_port, `/concerts/`, { params });
+  }
+
+  // favourite_concert(slug: String): Observable<Concert> {
+  //   return this.apiService.post(user_port, `/concerts/favorite/${slug}`);
+  // }
+
+  // unfavourite_concert(slug: String): Observable<Concert> {
+  //   return this.apiService.delete(user_port, `/concerts/favorite/${slug}`);
+  // }
+
+  favourite_concert(slug: string): Observable<{ isCompleted: boolean }> {
+    return this.apiService.post(user_port, `/concerts/favorite/${slug}`).pipe(
+      tap((res: any) => {
+        if (res.isCompleted && this._concert()) {
+          const current = this._concert()!;
+          this._concert.set({
+            ...current,
+            favorited: true,
+            favoritesCount: current.favoritesCount + 1,
+          });
+        }
+      })
+    );
+  }
+
+  unfavourite_concert(slug: string): Observable<{ isCompleted: boolean }> {
+    return this.apiService.delete(user_port, `/concerts/favorite/${slug}`).pipe(
+      tap((res: any) => {
+        if (res.isCompleted && this._concert()) {
+          const current = this._concert()!;
+          this._concert.set({
+            ...current,
+            favorited: false,
+            favoritesCount: current.favoritesCount - 1,
+          });
+        }
+      })
+    );
   }
 }

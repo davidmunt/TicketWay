@@ -1,38 +1,41 @@
-import { Component, OnInit, Input, EventEmitter } from "@angular/core";
-import { Concert } from "../../core/models";
+import { Component, OnInit } from "@angular/core";
 import { ConcertService } from "../../core/services";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { constructLoginUrlTree } from "../../core/guards/auth-guard.service";
 
 @Component({
   selector: "app-card-info-concert",
-  templateUrl: "./card-info-concert.component.html",
-  styleUrls: ["./card-info-concert.component.css"],
   standalone: true,
   imports: [CommonModule],
+  templateUrl: "./card-info-concert.component.html",
+  styleUrls: ["./card-info-concert.component.css"],
 })
 export class CardInfoConcertComponent implements OnInit {
-  slug: string;
-  concert: Concert;
-  page!: String;
-  isLoading = true;
-  errorMessage = "";
+  concert = this.concertService.concert; // ✅ usamos el signal
 
-  constructor(private concertService: ConcertService, private route: ActivatedRoute) {}
+  constructor(private concertService: ConcertService, private route: ActivatedRoute, private readonly router: Router) {}
 
   ngOnInit(): void {
-    if (!this.slug) {
-      this.errorMessage = "Ha habido un error al seleccionar el concierto";
-    }
-    this.slug = this.route.snapshot.params["slug"];
-    this.loadConcertInfo(this.slug);
+    const slug = this.route.snapshot.params["slug"];
+    this.concertService.get_concert(slug).subscribe();
   }
 
-  loadConcertInfo(slug): void {
-    this.isLoading = true;
-    this.concertService.get_concert(slug).subscribe((data: any) => {
-      this.concert = data;
-      this.isLoading = false;
-    });
+  toggleFavourite(slug: string, favorited: boolean): void {
+    if (favorited) {
+      this.concertService.unfavourite_concert(slug).subscribe({
+        error: () => {
+          console.error("❌ Error al quitar favorito");
+          this.router.navigateByUrl(constructLoginUrlTree(this.router));
+        },
+      });
+    } else {
+      this.concertService.favourite_concert(slug).subscribe({
+        error: () => {
+          console.error("❌ Error al marcar favorito");
+          this.router.navigateByUrl(constructLoginUrlTree(this.router));
+        },
+      });
+    }
   }
 }

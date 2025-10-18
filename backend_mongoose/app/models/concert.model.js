@@ -29,6 +29,10 @@ const ConcertSchema = mongoose.Schema({
   venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
   artists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true }],
+  favorited: {
+    type: Boolean,
+    default: false,
+  },
   favoritesCount: {
     type: Number,
     default: 0,
@@ -46,6 +50,10 @@ ConcertSchema.pre("validate", async function (next) {
 });
 
 ConcertSchema.methods.toConcertResponse = async function (user) {
+  let isFav = false;
+  if (user && typeof user.isFavorite === "function") {
+    isFav = user.isFavorite(this._id);
+  }
   return {
     slug: this.slug,
     concert_id: this._id,
@@ -54,7 +62,7 @@ ConcertSchema.methods.toConcertResponse = async function (user) {
     price: this.price,
     description: this.description,
     images: this.images,
-    favorited: user ? user.isFavorite(this._id) : false,
+    favorited: isFav,
     favoritesCount: this.favoritesCount || 0,
     venue: this.venue,
     category: this.category,

@@ -44,11 +44,13 @@ const getAllConcerts = async (req, res) => {
 const getOneConcert = async (req, res) => {
   try {
     const { slug } = req.params;
+    const userId = req.userId;
+    const user = await User.findOne({ _id: userId });
     const concert = await Concert.findOne({ slug }).exec();
     if (!concert) {
       return res.status(404).json({ message: "Concierto no encontrado" });
     }
-    return res.status(200).json(await concert.toConcertResponse());
+    return res.status(200).json(await concert.toConcertResponse(user));
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener el concierto", error: error.message });
   }
@@ -140,19 +142,19 @@ const favoriteConcert = async (req, res) => {
   if (!loginUser) {
     return res.status(401).json({
       message: "Usuario no encontrado",
+      isCompleted: false,
     });
   }
   const concert = await Concert.findOne({ slug }).exec();
   if (!concert) {
     return res.status(401).json({
       message: "Trabajo no encontrado",
+      isCompleted: false,
     });
   }
   await loginUser.favorite(concert._id);
   const updatedConcert = await concert.updateFavoriteCount();
-  return res.status(200).json({
-    concert: await updatedConcert.toConcertResponse(loginUser),
-  });
+  return res.status(200).json({ isCompleted: true });
 };
 
 const unfavoriteConcert = async (req, res) => {
@@ -162,19 +164,19 @@ const unfavoriteConcert = async (req, res) => {
   if (!loginUser) {
     return res.status(401).json({
       message: "Usuario no encontrado",
+      isCompleted: false,
     });
   }
   const concert = await Concert.findOne({ slug }).exec();
   if (!concert) {
     return res.status(401).json({
       message: "Trabajo no encontrado",
+      isCompleted: false,
     });
   }
   await loginUser.unfavorite(concert._id);
   await concert.updateFavoriteCount();
-  return res.status(200).json({
-    concert: await concert.toConcertResponse(loginUser),
-  });
+  return res.status(200).json({ isCompleted: true });
 };
 
 module.exports = {

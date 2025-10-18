@@ -1,6 +1,38 @@
-<div class="card-info-concert">
-  <h1 class="concert-name">{{ concert.name }}</h1>
-  <h3 class="concert-date">{{ concert.date }}</h3>
-  <h3 class="concert-venue">{{ concert.venue }}</h3>
-  <h4 class="concert-description">{{ concert.description }}</h4>
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+
+<div *ngIf="concert() as c" class="card-info-concert">
+  <h1 class="concert-name">{{ c.name }}</h1>
+  <h3 class="concert-date">{{ c.date }}</h3>
+  <h3 class="concert-price">{{ c.price }} €</h3>
+
+  <button (click)="toggleFavourite(c.slug, c.favorited)" [class.favorited]="c.favorited" class="heart-button">
+    <i class="ion-heart"></i>
+    <span class="counter">({{ c.favoritesCount }})</span>
+  </button>
+
+  <h3 class="concert-venue">{{ c.venue }}</h3>
+  <h4 class="concert-description">{{ c.description }}</h4>
 </div>
+
+<!-- 
+@if (concert.author.following) {
+<button class="btn btn-sm btn-outline-danger" (click)="followed.emit(false)">
+  <i class="ion-minus-round"></i>
+  Unfollow {{ concert.author.username }}
+</button>
+} @else {
+<button class="btn btn-sm btn-outline-secondary" (click)="followed.emit(true)">
+  <i class="ion-plus-round"></i>
+  Follow {{ concert.author.username }}
+</button>
+} @if (concert.favorited) {
+<button class="btn btn-sm btn-outline-primary" (click)="favorited.emit(false)">
+  <i class="ion-heart"></i>
+  Unfavorite concert <span class="counter">({{ concert.favoritesCount }})</span>
+</button>
+} @else {
+<button class="btn btn-sm btn-outline-primary" (click)="favorited.emit(true)">
+  <i class="ion-heart"></i>
+  Favorite concert <span class="counter">({{ concert.favoritesCount }})</span>
+</button>
+} -->

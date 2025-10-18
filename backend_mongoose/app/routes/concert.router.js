@@ -1,12 +1,13 @@
 module.exports = (app) => {
   const concerts = require("../controllers/concert.controller.js");
   const verifyJWT = require("../middleware/verifyJWT");
+  const verifyJWTOptional = require("../middleware/verifyJWTOptional.js");
 
   // GET all Concerts
-  app.get("/concerts", concerts.getAllConcerts);
+  app.get("/concerts", verifyJWTOptional, concerts.getAllConcerts);
 
   // GET one Concert
-  app.get("/concerts/:slug", concerts.getOneConcert);
+  app.get("/concerts/:slug", verifyJWTOptional, concerts.getOneConcert);
 
   // GET Concerts by One Category
   app.get("/concerts/category/:slug", concerts.getAllConcertsFromCategory);

@@ -8,4 +8,7 @@ export interface Concert {
   category: string;
   artist: string;
   images: string[];
+  price: number;
+  favorited: boolean;
+  favoritesCount: number;
 }
