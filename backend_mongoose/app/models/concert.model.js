@@ -84,7 +84,6 @@ ConcertSchema.methods.toConcertCarouselResponse = function () {
 };
 
 ConcertSchema.methods.addComment = function (commentId) {
-  console.log(`Unshift this: ${commentId}`);
   this.comments.unshift(commentId);
   return this.save();
 };

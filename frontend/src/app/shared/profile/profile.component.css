@@ -74,6 +74,36 @@
   box-shadow: 0 2px 6px rgba(25, 91, 152, 0.3);
 }
 
+/* === BOTONES FOLLOW / UNFOLLOW === */
+.followUser .nav-link {
+  background-color: #195b98;
+  color: #fff;
+  border: 1px solid #195b98;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.followUser .nav-link:hover {
+  background-color: #0e3c6e;
+  border-color: #0e3c6e;
+}
+
+/* Estado "ya sigue" */
+.unfollowUser .nav-link {
+  background-color: #e74c3c;
+  color: #fff;
+  border: 1px solid #e74c3c;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.unfollowUser .nav-link:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
 /* === CONTENIDO PRINCIPAL === */
 .profile-content {
   background: #fff;

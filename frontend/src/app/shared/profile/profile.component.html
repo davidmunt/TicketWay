@@ -1,37 +1,31 @@
-<!-- <div class="profile-page">
-  <div class="user-info">
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <img [src]="profile.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" alt="user image" class="user-img" />
-          <h4>{{ profile.username }}</h4>
-          <p>{{ profile.bio }}</p> -->
-<!-- <a [routerLink]="['/settings']" [hidden]="!isUser" class="btn btn-sm btn-outline-secondary action-btn"> <i class="ion-gear-a"></i> Edit Profile Settings </a> -->
-<!-- <a (click)="logout()" class="btn btn-sm btn-outline-secondary action-btn">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
 <div class="profile-page">
   <div class="row">
-    <!-- Sidebar -->
     <aside class="col-md-3 profile-sidebar">
       <div class="user-info text-center">
-        <img class="user-photo" [src]="user.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" alt="User Photo" />
-        <h3 class="user-name">{{ user.username }}</h3>
+        <img class="user-photo" [src]="profile().image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" alt="Profile Photo" />
+        <h3 class="user-name">{{ profile().username }}</h3>
       </div>
       <nav class="profile-nav">
         <ul class="nav flex-column">
           <li class="nav-item" [class.active]="isActive('profile')">
-            <a class="nav-link perfil" (click)="showProfile()">Mi perfil</a>
+            <a class="nav-link perfil" (click)="showProfile()">Profile</a>
           </li>
+          @if (this.isUser === true) {
           <li class="nav-item settings" [class.active]="isActive('settings')">
             <a class="nav-link" (click)="showSettings()">Settings</a>
           </li>
           <li class="nav-item logout">
             <a class="nav-link logout" (click)="logout()">Logout</a>
           </li>
+          }@else if (this.isUser === false) { @if (profile().following === false) {
+          <li class="nav-item followUser">
+            <a class="nav-link" (click)="followUser(profile().username)">Follow User</a>
+          </li>
+          } @else if (profile().following === true) {
+          <li class="nav-item unfollowUser">
+            <a class="nav-link" (click)="followUser(profile().username)">Unfollow User</a>
+          </li>
+          } }
         </ul>
       </nav>
     </aside>
@@ -40,9 +34,9 @@
       <div *ngIf="currentView === 'profile'" class="profile-details">
         <h2>Mi perfil</h2>
         <hr />
-        <p class="profile-details-item"><strong>Nombre de usuario:</strong> {{ profile.username }}</p>
-        <p class="profile-details-item"><strong>Email:</strong> {{ profile.email }}</p>
-        <p class="profile-details-item"><strong>Biografía:</strong> {{ profile.bio }}</p>
+        <p class="profile-details-item"><strong>Nombre de usuario:</strong> {{ profile().username }}</p>
+        <p class="profile-details-item"><strong>Email:</strong> {{ profile().email }}</p>
+        <p class="profile-details-item"><strong>Biografía:</strong> {{ profile().bio }}</p>
       </div>
       <div *ngIf="currentView === 'settings'">
         <h2>Ajustes de mi perfil</h2>

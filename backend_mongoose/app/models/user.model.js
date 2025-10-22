@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
-      default: "",
+      default: "(vacio)",
     },
     image: {
       type: String,
@@ -37,8 +37,8 @@ const userSchema = new mongoose.Schema(
     },
     following: [
       {
-        type: String,
-        default: "",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
     favoriteConcert: [
@@ -81,7 +81,7 @@ userSchema.methods.toProfileJSON = async function (isFollowing) {
     email: this.email,
     bio: this.bio,
     image: this.image || null,
-    following: !!isFollowing,
+    following: isFollowing || false,
   };
 };
 

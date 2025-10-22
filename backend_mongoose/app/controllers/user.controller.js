@@ -159,19 +159,23 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const followUser = async (req, res) => {
   try {
-    const { userFollowId } = req.params;
+    const { username } = req.params;
     const userId = req.userId;
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(404).json({ message: "User not found", result: false });
     }
-    const userToFollow = await User.findById(userFollowId).exec();
+    if (!Array.isArray(user.following)) {
+      user.following = [];
+    }
+    const userToFollow = await User.findOne({ username }).exec();
     if (!userToFollow) {
       return res.status(404).json({ message: "User to follow not found", result: false });
     }
-    const isFollowing = user.following.includes(userFollowId);
+    const userFollowId = userToFollow._id;
+    const isFollowing = user.following.some((id) => id && id.equals && id.equals(userFollowId));
     if (isFollowing) {
-      user.following = user.following.filter((id) => id !== userFollowId);
+      user.following = user.following.filter((id) => id && id.equals && !id.equals(userFollowId));
       await user.save();
       return res.status(200).json({ message: "Unfollowed user successfully", result: true });
     } else {
@@ -181,7 +185,7 @@ const followUser = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Error while following or unfollowing user",
+      message: "Error while following user",
       error: error.message,
       result: false,
     });

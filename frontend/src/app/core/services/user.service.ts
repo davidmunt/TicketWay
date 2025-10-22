@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, ReplaySubject } from "rxjs";
 
 import { ApiService } from "./api.service";
 import { JwtService } from "./jwt.service";
-import { User } from "../models";
+import { Profile, User } from "../models";
 import { map, distinctUntilChanged } from "rxjs/operators";
 import { __values } from "tslib";
 import { HttpHeaders } from "@angular/common/http";
@@ -72,8 +72,7 @@ export class UserService {
     return this.currentUserSubject.value;
   }
 
-  getUserProfile(username?: string): Observable<User> {
-    // const userToFetch = username ?? this.currentUserSubject.value.username;
+  getUserProfile(): Observable<User> {
     return this.apiService.get(user_port, "/user/profile/", undefined).pipe(
       map((data: any) => {
         return data.user;
