@@ -1,6 +1,6 @@
 module.exports = (app) => {
   const userController = require("../controllers/user.controller");
-  const { refreshToken } = require("../controllers/auth.controller");
+  const verifyJWT = require("../middleware/verifyJWT");
 
   // Login User
   app.post("/user/login", userController.userLogin);
@@ -9,5 +9,8 @@ module.exports = (app) => {
   app.post("/user", userController.registerUser);
 
   // Refresh Token
-  app.post("/refresh-token", refreshToken);
+  app.post("/auth/refresh", userController.refreshToken);
+
+  // Logout
+  app.post("/auth/logout", userController.logout);
 };

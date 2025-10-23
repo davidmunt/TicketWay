@@ -85,11 +85,12 @@ userSchema.methods.toProfileJSON = async function (isFollowing) {
   };
 };
 
-userSchema.methods.toMessageResponse = async function () {
+userSchema.methods.toMessageResponse = async function (following = false) {
   return {
     user_id: this._id,
     username: this.username,
     image: this.image,
+    following: following,
   };
 };
 

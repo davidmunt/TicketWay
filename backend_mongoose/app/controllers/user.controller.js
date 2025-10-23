@@ -3,6 +3,7 @@ const argon2 = require("argon2");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/authService");
 const RefreshToken = require("../models/refreshToken.model");
 const User = require("../models/user.model");
+const cookieParser = require("cookie-parser");
 
 const registerUser = asyncHandler(async (req, res) => {
   try {
@@ -63,20 +64,85 @@ const userLogin = asyncHandler(async (req, res) => {
     const match = await argon2.verify(loginUser.password, user.password);
     if (!match) return res.status(401).json({ message: "Unauthorized" });
     const accessToken = generateAccessToken(loginUser);
-    const refreshToken = await RefreshToken.findOne({ userId: loginUser._id }).exec();
-    if (!refreshToken) {
-      const refreshToken = generateRefreshToken(loginUser);
-      await new RefreshToken({
+    let refreshTokenDoc = await RefreshToken.findOne({ userId: loginUser._id }).exec();
+    let refreshToken;
+    if (!refreshTokenDoc) {
+      refreshToken = generateRefreshToken(loginUser);
+      refreshTokenDoc = new RefreshToken({
         token: refreshToken,
         userId: loginUser._id,
-        expiryDate: new Date(Date.now() + 10 * 60 * 60 * 1000),
-      }).save();
+        expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+      await refreshTokenDoc.save();
+    } else {
+      refreshToken = refreshTokenDoc.token;
     }
-    res.status(200).json({
-      user: await loginUser.toUserResponse(accessToken),
+    res.cookie("jid", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    res.status(200).json({ user: await loginUser.toUserResponse(accessToken) });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al iniciar sesión",
+      error: error.message,
+    });
+  }
+});
+
+const refreshToken = asyncHandler(async (req, res) => {
+  try {
+    const token = req.cookies.jid;
+    if (!token) {
+      return res.status(401).json({ message: "No refresh token provided" });
+    }
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, async (err, payload) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid or expired refresh token" });
+      }
+      const storedToken = await RefreshToken.findOne({ token }).exec();
+      if (!storedToken) {
+        return res.status(401).json({ message: "Refresh token revoked or not found" });
+      }
+      const user = await User.findById(payload.user.id).exec();
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+      await RefreshToken.deleteOne({ token });
+      const newRefreshToken = generateRefreshToken(user);
+      await new RefreshToken({
+        token: newRefreshToken,
+        userId: user._id,
+        expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      }).save();
+      const newAccessToken = generateAccessToken(user);
+      res.cookie("jid", newRefreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "none",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return res.json({ accessToken: newAccessToken });
     });
   } catch (error) {
-    return res.status(500).json({ message: "Error al iniciar sesion", error: error.message });
+    return res.status(500).json({ message: "Error al refrescar authToken", error: error.message });
+  }
+});
+
+const logout = asyncHandler(async (req, res) => {
+  try {
+    const token = req.cookies.jid;
+    if (token) {
+      await RefreshToken.deleteOne({ token });
+    }
+    res.clearCookie("jid", { path: "/" });
+    res.json({ message: "Logged out" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error al refrescar authToken", error: error.message });
   }
 });
 
@@ -99,18 +165,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: "Error al conseguir los datos del usuario", error: error.message });
   }
 });
-
-// const getUserProfile = asyncHandler(async (req, res) => {
-//   const username = req.username;
-//   const user = await User.findOne({ username }).exec();
-//   if (!user) {
-//     return res.status(404).json({ message: "Usuario no encontrado" });
-//   }
-//   const profileUser = await user.toProfileUser();
-//   res.status(200).json({
-//     user: profileUser,
-//   });
-// });
 
 const getUserProfile = asyncHandler(async (req, res) => {
   const email = req.userEmail;
@@ -199,4 +253,6 @@ module.exports = {
   getUserProfile,
   updateUser,
   followUser,
+  refreshToken,
+  logout,
 };

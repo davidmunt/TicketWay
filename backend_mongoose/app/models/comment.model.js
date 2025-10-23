@@ -27,15 +27,19 @@ const commentSchema = new mongoose.Schema(
 commentSchema.methods.toCommentResponse = async function (user) {
   const authorObj = await User.findById(this.author).exec();
   let userIsAuthor = false;
-  if (user && authorObj && String(authorObj._id) === String(user._id)) {
-    userIsAuthor = true;
+  let isFollowing = false;
+  if (user && authorObj) {
+    userIsAuthor = String(authorObj._id) === String(user._id);
+    const validFollowing = (user.following || []).filter((id) => id);
+    isFollowing = validFollowing.some((id) => id.toString() === authorObj._id.toString());
   }
+
   return {
     commentId: this._id,
     text: this.text,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
-    author: await authorObj.toMessageResponse(authorObj),
+    author: await authorObj.toMessageResponse(isFollowing),
     userIsAuthor: userIsAuthor,
   };
 };
