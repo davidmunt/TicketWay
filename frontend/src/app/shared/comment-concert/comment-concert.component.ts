@@ -5,7 +5,7 @@ import { Errors } from "src/app/core/models";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import Swal from "sweetalert2";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { constructLoginUrlTree } from "src/app/core";
+import { constructLoginUrlTree, ProfileService, UserService } from "src/app/core";
 
 @Component({
   selector: "app-comment-concert",
@@ -21,8 +21,10 @@ export class CommentConcertComponent implements OnInit {
   errors: Errors = { errors: {} };
   isSubmitting = false;
   commentForm: FormGroup;
+  currentUser = this.userService.currentUser;
+  isAuthenticated = this.userService.isAuthenticated;
 
-  constructor(private commentService: CommentService, private route: ActivatedRoute, private readonly router: Router, private fb: FormBuilder) {
+  constructor(private commentService: CommentService, private userService: UserService, private profileService: ProfileService, private route: ActivatedRoute, private readonly router: Router, private fb: FormBuilder) {
     this.commentForm = this.fb.group({
       text: ["", Validators.required],
     });
@@ -57,6 +59,28 @@ export class CommentConcertComponent implements OnInit {
         this.isSubmitting = false;
         this.router.navigateByUrl(constructLoginUrlTree(this.router));
       },
+    });
+  }
+
+  followUser(userName: string) {
+    this.userService.isAuthenticated.subscribe((auth) => {
+      if (!auth) {
+        this.router.navigateByUrl(constructLoginUrlTree(this.router));
+        return;
+      }
+      this.profileService.followUserFromProfile(userName).subscribe({
+        next: () => {
+          const updated =
+            this.comments()?.map((comment) => {
+              if (comment.authorUserName === userName) {
+                return { ...comment, following: !comment.following };
+              }
+              return comment;
+            }) ?? [];
+          this.commentService["_comments"].set(updated);
+        },
+        error: (err) => console.error("Error al seguir usuario", err),
+      });
     });
   }
 }

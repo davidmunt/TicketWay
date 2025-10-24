@@ -15,6 +15,9 @@
             <fieldset class="form-password">
               <input formControlName="password" placeholder="Password" class="form-control form-control-lg" type="password" />
             </fieldset>
+            <div class="error-messages" *ngIf="errors.errors.body">
+              <p>{{ errors.errors.body }}</p>
+            </div>
             <p class="auth-sugestion">
               <a class="auth-sugestion-text" [routerLink]="['/auth/login']" *ngIf="authType === 'register'">Have an account? Click here</a>
               <a class="auth-sugestion-text" [routerLink]="['/auth/register']" *ngIf="authType === 'login'">Need an account? Click here</a>

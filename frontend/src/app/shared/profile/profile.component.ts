@@ -44,7 +44,6 @@ export class ProfileComponentComponent implements OnInit {
           return this.userService.currentUser.pipe(
             tap((userData: User) => {
               this.currentUser = userData;
-              console.log(this.profile());
               if (this.currentUser.username === this.profile().username) this.isUser = true;
             })
           );
@@ -55,9 +54,21 @@ export class ProfileComponentComponent implements OnInit {
       });
   }
 
+  // logout() {
+  //   this.userService.purgeAuth();
+  //   //this.router.navigateByUrl("/");
+  // }
+
   logout() {
-    this.userService.purgeAuth();
-    this.router.navigateByUrl("/");
+    this.userService.purgeAuth().subscribe({
+      next: (res) => {
+        console.log("Logout correcto:", res);
+        this.router.navigateByUrl("/");
+      },
+      error: (err) => {
+        console.error("Error al hacer logout:", err);
+      },
+    });
   }
 
   showProfile() {

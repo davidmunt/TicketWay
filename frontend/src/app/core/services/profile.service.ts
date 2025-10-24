@@ -17,10 +17,8 @@ export class ProfileService {
 
   get(username: string): Observable<Profile> {
     return this.apiService.get(user_port, `/profile/${username}`).pipe(
-      tap((data: any) => console.log("Raw response:", data)),
       map((data: { profile: Profile }) => data.profile),
       tap((profile: Profile) => {
-        console.log("Mapped profile before set:", profile);
         this._profile.set(profile);
       })
     );

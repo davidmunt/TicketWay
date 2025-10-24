@@ -17,7 +17,6 @@ import { ShowAuthedDirective } from "src/app/shared";
 })
 export class AuthComponentComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private cd: ChangeDetectorRef) {
-    // use FormBuilder to create a form group
     this.authForm = this.fb.group({
       email: ["", Validators.required],
       password: ["", Validators.required],
@@ -30,11 +29,8 @@ export class AuthComponentComponent implements OnInit {
   authForm: FormGroup;
   ngOnInit() {
     this.route.url.subscribe((data) => {
-      // Get the last piece of the URL (it's either 'login' or 'register')
       this.authType = data[data.length - 1].path;
-      // Set a title for the page accordingly
       this.title = this.authType === "login" ? "Sign in" : "Sign up";
-      // add form control for username if this is the register page
       if (this.authType === "register") {
         this.authForm.addControl("username", new FormControl());
       }
@@ -42,20 +38,53 @@ export class AuthComponentComponent implements OnInit {
     });
   }
 
-  submitForm() {
-    this.isSubmitting = true;
-    this.errors = { errors: {} };
-
-    const credentials = this.authForm.value;
-    this.userService.attemptAuth(this.authType, credentials).subscribe(
-      (data) => {
-        this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/");
-      },
-      (err) => {
-        this.errors = err;
-        this.isSubmitting = false;
-        this.cd.markForCheck();
+  verifyForm(): boolean {
+    const email = this.authForm.get("email")?.value?.trim();
+    const password = this.authForm.get("password")?.value;
+    const username = this.authType === "register" ? this.authForm.get("username")?.value?.trim() : null;
+    const localErrors: string[] = [];
+    if (this.authType === "register" && !username) {
+      localErrors.push("El nombre de usuario es obligatorio");
+    }
+    if (!email) {
+      localErrors.push("El email es obligatorio");
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) localErrors.push("El formato del email no es válido");
+    }
+    if (!password) {
+      localErrors.push("La contraseña es obligatoria");
+    } else if (password.length < 6) {
+      localErrors.push("La contraseña debe tener al menos 6 caracteres");
+    } else {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+      if (!passwordRegex.test(password)) {
+        localErrors.push("La contraseña debe tener una mayúscula, una minúscula y un número");
       }
-    );
+    }
+    if (localErrors.length > 0) {
+      this.errors = { errors: { body: localErrors[0] } };
+      return false;
+    }
+    return true;
+  }
+
+  submitForm() {
+    const canContinue = this.verifyForm();
+    if (canContinue) {
+      this.isSubmitting = true;
+      this.errors = { errors: {} };
+      const credentials = this.authForm.value;
+      this.userService.attemptAuth(this.authType, credentials).subscribe(
+        () => {
+          this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/");
+        },
+        (err) => {
+          this.errors = err;
+          this.isSubmitting = false;
+          this.cd.markForCheck();
+        }
+      );
+    }
   }
 }

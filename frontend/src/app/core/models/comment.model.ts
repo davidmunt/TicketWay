@@ -5,4 +5,5 @@ export interface Comment {
   authorImage: string;
   authorUserName: string;
   userIsAuthor: boolean;
+  following: boolean;
 }

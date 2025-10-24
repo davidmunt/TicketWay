@@ -15,6 +15,11 @@
             <p>{{ comment.text }}</p>
           </div>
           <button *ngIf="comment.userIsAuthor" (click)="deleteComment(comment.commentId)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+          @if (!comment.userIsAuthor) {
+          <button class="follow-btn" (click)="followUser(comment.authorUserName)">
+            {{ comment.following ? "Unfollow" : "Follow" }}
+          </button>
+          }
         </div>
       </li>
     </ul>

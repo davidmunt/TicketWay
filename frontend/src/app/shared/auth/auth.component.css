@@ -97,6 +97,25 @@
   cursor: not-allowed;
 }
 
+.error-messages {
+  margin-top: 1rem;
+  background: #ffe6e6;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  color: #d9534f;
+  font-size: 0.9rem;
+}
+
+.error-messages ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.error-messages li {
+  list-style: disc;
+}
+
 /* ==== RESPONSIVE ==== */
 @media (max-width: 480px) {
   .auth-container {

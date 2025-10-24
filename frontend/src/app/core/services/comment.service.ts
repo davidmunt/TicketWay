@@ -24,6 +24,7 @@ export class CommentService {
           authorId: comentario.author?.user_id,
           authorUserName: comentario.author?.username,
           authorImage: comentario.author?.image,
+          following: comentario.author?.following,
           userIsAuthor: comentario.userIsAuthor,
         })) as Comment[];
         return mapped;
@@ -54,6 +55,7 @@ export class CommentService {
           authorId: response.comment.author.user_id,
           authorUserName: response.comment.author.username,
           authorImage: response.comment.author.image,
+          following: response.comment.author.following,
           userIsAuthor: true,
         };
         return newComment;

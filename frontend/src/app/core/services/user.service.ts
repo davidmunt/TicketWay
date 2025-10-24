@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, ReplaySubject } from "rxjs";
 import { ApiService } from "./api.service";
 import { JwtService } from "./jwt.service";
 import { Profile, User } from "../models";
-import { map, distinctUntilChanged } from "rxjs/operators";
+import { map, distinctUntilChanged, tap } from "rxjs/operators";
 import { __values } from "tslib";
 import { HttpHeaders } from "@angular/common/http";
 import { environment } from "src/environments/evironment";
@@ -20,6 +20,8 @@ export class UserService {
 
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
+
+  public auth$ = new BehaviorSubject<boolean>(!!this.jwtService.getToken());
 
   constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
@@ -52,15 +54,35 @@ export class UserService {
     this.isAuthenticatedSubject.next(true);
   }
 
-  purgeAuth() {
-    this.jwtService.destroyToken();
-    this.currentUserSubject.next({} as User);
-    this.isAuthenticatedSubject.next(false);
+  refreshToken(): Observable<any> {
+    return this.apiService.post(user_port, "/auth/refresh", undefined, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        this.jwtService.saveToken(res.accessToken);
+        this.auth$.next(true);
+      })
+    );
   }
 
+  purgeAuth(): Observable<any> {
+    console.log("func logout");
+
+    return this.apiService.post(user_port, "/auth/logout", undefined, { withCredentials: true }).pipe(
+      tap((res) => {
+        console.log("Respuesta del backend logout:", res);
+
+        // Limpiar el estado de autenticación
+        this.jwtService.destroyToken();
+        this.currentUserSubject.next({} as User);
+        this.isAuthenticatedSubject.next(false);
+        this.auth$.next(false);
+      })
+    );
+  }
+
+  //login y register
   attemptAuth(type: string, credentials: any): Observable<User> {
     const route = type === "login" ? "/login" : "";
-    return this.apiService.post(user_port, `/user${route}`, { user: credentials }).pipe(
+    return this.apiService.post(user_port, `/user${route}`, { user: credentials }, { withCredentials: true }).pipe(
       map((res: any) => {
         this.setAuth(res.user);
         return res.user;
@@ -80,23 +102,12 @@ export class UserService {
     );
   }
 
-  // getUserProfile(username?): Observable<User> {
-  //   username ?? username : this.currentUserSubject.value.username;
-  //   return this.apiService.get(user_port, `/profile/${this.currentUserSubject.value.username}`, undefined).pipe(
-  //     map((data: any) => {
-  //       // this.currentUserSubject.next(data.profile);
-  //       return data.profile;
-  //     })
-  //   );
-  // }
-
   update(user: User): Observable<User> {
     const token = this.jwtService.getToken();
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
       Authorization: `Token ${token}`,
     });
-
     return this.apiService.put(user_port, "/user", { user }, { headers }).pipe(
       map((data) => {
         this.currentUserSubject.next(data.user);
