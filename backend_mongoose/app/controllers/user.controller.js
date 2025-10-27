@@ -80,7 +80,7 @@ const userLogin = asyncHandler(async (req, res) => {
     res.cookie("jid", refreshToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "none",
+      sameSite: "lax",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -122,7 +122,7 @@ const refreshToken = asyncHandler(async (req, res) => {
       res.cookie("jid", newRefreshToken, {
         httpOnly: true,
         secure: false,
-        sameSite: "none",
+        sameSite: "lax",
         path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
@@ -215,6 +215,7 @@ const followUser = async (req, res) => {
   try {
     const { username } = req.params;
     const userId = req.userId;
+    //usuario que quiere seguir al otro usuario
     const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(404).json({ message: "User not found", result: false });
@@ -222,19 +223,25 @@ const followUser = async (req, res) => {
     if (!Array.isArray(user.following)) {
       user.following = [];
     }
+    //user que vamos a seguir
     const userToFollow = await User.findOne({ username }).exec();
     if (!userToFollow) {
       return res.status(404).json({ message: "User to follow not found", result: false });
     }
     const userFollowId = userToFollow._id;
+    const userFollowingId = user._id;
     const isFollowing = user.following.some((id) => id && id.equals && id.equals(userFollowId));
     if (isFollowing) {
       user.following = user.following.filter((id) => id && id.equals && !id.equals(userFollowId));
       await user.save();
+      userToFollow.followers = userToFollow.followers.filter((id) => id && id.equals && !id.equals(userFollowingId));
+      await userToFollow.save();
       return res.status(200).json({ message: "Unfollowed user successfully", result: true });
     } else {
       user.following.push(userFollowId);
       await user.save();
+      userToFollow.followers.push(userFollowingId);
+      await userToFollow.save();
       return res.status(200).json({ message: "Followed user successfully", result: true });
     }
   } catch (error) {

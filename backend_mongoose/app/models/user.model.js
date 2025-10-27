@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     favoriteConcert: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -82,6 +88,22 @@ userSchema.methods.toProfileJSON = async function (isFollowing) {
     bio: this.bio,
     image: this.image || null,
     following: isFollowing || false,
+  };
+};
+
+userSchema.methods.toProfilePageJSON = async function (isFollowing, usersFollowers, countFollowers, usersFollowing, countFollowing, favorited, favoritesCount) {
+  return {
+    username: this.username,
+    email: this.email,
+    bio: this.bio,
+    image: this.image || null,
+    following: isFollowing || false,
+    usersFollowers: usersFollowers,
+    countFollowers: countFollowers,
+    usersFollowing: usersFollowing,
+    countFollowing: countFollowing,
+    favorited: favorited,
+    favoritesCount: favoritesCount,
   };
 };
 

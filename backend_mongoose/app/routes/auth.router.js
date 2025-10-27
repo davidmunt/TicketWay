@@ -1,6 +1,5 @@
 module.exports = (app) => {
   const userController = require("../controllers/user.controller");
-  const verifyJWT = require("../middleware/verifyJWT");
 
   // Login User
   app.post("/user/login", userController.userLogin);
