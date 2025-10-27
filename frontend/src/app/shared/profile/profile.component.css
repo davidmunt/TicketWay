@@ -155,3 +155,132 @@
     max-width: 700px;
   }
 }
+
+/* === FOLLOWERS & FOLLOWING LIST === */
+.profile-followers,
+.profile-following,
+.profile-favorites {
+  margin-top: 20px;
+}
+
+.follower-item,
+.following-item,
+.favorite-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafc;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 12px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.follower-item:hover,
+.following-item:hover,
+.favorite-item:hover {
+  background: #f1f6fb;
+  box-shadow: 0 2px 6px rgba(25, 91, 152, 0.1);
+}
+
+/* === INFO (IMAGEN + TEXTO) === */
+.follower-info,
+.following-info,
+.favorite-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+/* Avatar circular para followers/following */
+.follower-avatar,
+.following-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #195b98;
+}
+
+/* Imagen cuadrada para favoritos */
+.favorite-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+/* Username / Name */
+.follower-username,
+.following-username,
+.favorite-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #195b98;
+}
+
+/* === BOTONES FOLLOW / UNFOLLOW === */
+.follow-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+/* Siguiendo */
+.follow-btn.following {
+  background-color: #e74c3c;
+  color: #fff;
+  border: 1px solid #e74c3c;
+}
+
+.follow-btn.following:hover {
+  background-color: #c0392b;
+}
+
+/* No sigue */
+.follow-btn.not-following {
+  background-color: #195b98;
+  color: #fff;
+  border: 1px solid #195b98;
+}
+
+.follow-btn.not-following:hover {
+  background-color: #0e3c6e;
+}
+
+/* === FAVORITOS === */
+.heart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #ccc;
+  margin-left: 10px;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.heart-button:hover {
+  transform: scale(1.1);
+}
+
+.heart-button.favorited {
+  color: #e74c3c;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+/* === TEXTO VACÍO === */
+.profile-followers li,
+.profile-following li,
+.profile-favorites li {
+  color: #777;
+  list-style: none;
+  padding-left: 5px;
+  font-style: italic;
+}

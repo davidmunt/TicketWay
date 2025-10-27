@@ -12,3 +12,13 @@ export interface Concert {
   favorited: boolean;
   favoritesCount: number;
 }
+
+export interface ProfileConcert {
+  slug: string;
+  name: string;
+  date: string;
+  images: string[];
+  price: number;
+  favorited: boolean;
+  favoritesCount: number;
+}

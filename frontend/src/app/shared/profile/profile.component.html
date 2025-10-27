@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+
 <div class="profile-page">
   <div class="row">
     <aside class="col-md-3 profile-sidebar">
@@ -9,6 +11,15 @@
         <ul class="nav flex-column">
           <li class="nav-item" [class.active]="isActive('profile')">
             <a class="nav-link perfil" (click)="showProfile()">Profile</a>
+          </li>
+          <li class="nav-item settings" [class.active]="isActive('followers')">
+            <a class="nav-link" (click)="showFollowers()">Followers</a>
+          </li>
+          <li class="nav-item settings" [class.active]="isActive('following')">
+            <a class="nav-link" (click)="showFollowing()">Following</a>
+          </li>
+          <li class="nav-item settings" [class.active]="isActive('favorites')">
+            <a class="nav-link" (click)="showFavorites()">Favourite concerts</a>
           </li>
           @if (this.isUser === true) {
           <li class="nav-item settings" [class.active]="isActive('settings')">
@@ -29,7 +40,6 @@
         </ul>
       </nav>
     </aside>
-    <!-- Main Content -->
     <main class="col-md-9 profile-content">
       <div *ngIf="currentView === 'profile'" class="profile-details">
         <h2>Mi perfil</h2>
@@ -42,6 +52,82 @@
         <h2>Ajustes de mi perfil</h2>
         <hr />
         <app-settings-user></app-settings-user>
+      </div>
+      <div *ngIf="currentView === 'followers'" class="profile-followers">
+        <h2>Followers: {{ countFollowers() }}</h2>
+        @for (follower of followers(); track follower.email) {
+        <div class="follower-item">
+          <div class="follower-info">
+            <img [src]="follower.image" alt="{{ follower.username }}" class="follower-avatar" />
+
+            <span class="follower-username">{{ follower.username }}</span>
+          </div>
+          @if (this.currentUser.username !== follower.username) {
+          <button
+            class="follow-btn"
+            [ngClass]="{
+              following: follower.following,
+              'not-following': !follower.following
+            }"
+            (click)="followUserFromComponent(follower.username)"
+          >
+            {{ follower.following ? "Unfollow" : "Follow" }}
+          </button>
+          }
+        </div>
+        } @empty {
+        <li>No followers...</li>
+        }
+        <hr />
+      </div>
+      <div *ngIf="currentView === 'following'" class="profile-following">
+        <h2>Following: {{ countFollowing() }}</h2>
+        @for (followinguser of following(); track followinguser.email) {
+        <div class="following-item">
+          <div class="following-info">
+            <img [src]="followinguser.image" alt="{{ followinguser.username }}" class="following-avatar" />
+            <span class="following-username">{{ followinguser.username }}</span>
+          </div>
+          @if (this.currentUser.username !== followinguser.username) {
+          <button
+            class="follow-btn"
+            [ngClass]="{
+              following: followinguser.following,
+              'not-following': !followinguser.following
+            }"
+            (click)="followUserFromComponent(followinguser.username)"
+          >
+            {{ followinguser.following ? "Unfollow" : "Follow" }}
+          </button>
+          }
+        </div>
+        } @empty {
+        <li>No following...</li>
+        }
+        <hr />
+      </div>
+      <div *ngIf="currentView === 'favorites'" class="profile-favorites">
+        <h2>Favorites: {{ countFavorites() }}</h2>
+        @for (favorite of favorites(); track favorite.slug) {
+        <div class="favorite-item">
+          <div class="favorite-info">
+            <img [src]="getConcertImageUrl(favorite.images[0])" alt="{{ favorite.name }}" class="favorite-avatar" />
+            <span class="favorite-name">{{ favorite.name }}</span>
+          </div>
+          @if (favorite.favorited) {
+          <button (click)="UnlikeConcertFromComponent(favorite.slug)" [class.favorited]="favorite.favorited" class="heart-button">
+            <i class="ion-heart"></i>
+          </button>
+          } @else if (!favorite.favorited) {
+          <button (click)="LikeConcertFromComponent(favorite.slug)" [class.favorited]="favorite.favorited" class="heart-button">
+            <i class="ion-heart"></i>
+          </button>
+          }
+        </div>
+        } @empty {
+        <li>No favorites...</li>
+        }
+        <hr />
       </div>
     </main>
   </div>

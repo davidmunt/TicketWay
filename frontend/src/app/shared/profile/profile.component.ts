@@ -28,6 +28,12 @@ export class ProfileComponentComponent implements OnInit {
     });
   }
   profile = this.profileService.profile;
+  followers = this.profileService.followers;
+  countFollowers = this.profileService.countFollowers;
+  following = this.profileService.following;
+  countFollowing = this.profileService.countFollowing;
+  favorites = this.profileService.favorites;
+  countFavorites = this.profileService.countFavourites;
   currentUser: User;
   isAuthenticated = this.userService.isAuthenticated;
   isUser: boolean;
@@ -54,11 +60,6 @@ export class ProfileComponentComponent implements OnInit {
       });
   }
 
-  // logout() {
-  //   this.userService.purgeAuth();
-  //   //this.router.navigateByUrl("/");
-  // }
-
   logout() {
     this.userService.purgeAuth().subscribe({
       next: (res) => {
@@ -75,6 +76,14 @@ export class ProfileComponentComponent implements OnInit {
     this.currentView = "profile";
   }
 
+  showFollowers() {
+    this.currentView = "followers";
+  }
+
+  showFollowing() {
+    this.currentView = "following";
+  }
+
   showFavorites() {
     this.currentView = "favorites";
   }
@@ -87,12 +96,45 @@ export class ProfileComponentComponent implements OnInit {
     return this.currentView === view;
   }
 
+  getConcertImageUrl(concert: any): string {
+    return `assets/imgs/concerts/${concert}`;
+  }
+
   followUser(userName: string) {
     this.userService.isAuthenticated.subscribe((auth) => {
       if (!auth) {
         this.router.navigateByUrl(constructLoginUrlTree(this.router));
       }
       this.profileService.followUserFromProfile(userName).subscribe();
+    });
+  }
+
+  followUserFromComponent(userName: string) {
+    this.userService.isAuthenticated.subscribe((auth) => {
+      if (!auth) {
+        this.router.navigateByUrl(constructLoginUrlTree(this.router));
+      }
+      this.profileService.followUserFromComponent(userName, this.isUser).subscribe();
+    });
+  }
+
+  LikeConcertFromComponent(slug: string) {
+    this.userService.isAuthenticated.subscribe((auth) => {
+      if (!auth) {
+        this.router.navigateByUrl(constructLoginUrlTree(this.router));
+        return;
+      }
+      this.profileService.likeConcertFromComponent(slug, this.isUser).subscribe();
+    });
+  }
+
+  UnlikeConcertFromComponent(slug: string) {
+    this.userService.isAuthenticated.subscribe((auth) => {
+      if (!auth) {
+        this.router.navigateByUrl(constructLoginUrlTree(this.router));
+        return;
+      }
+      this.profileService.unLikeConcertFromComponent(slug, this.isUser).subscribe();
     });
   }
 }
