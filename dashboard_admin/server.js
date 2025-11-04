@@ -1,25 +1,54 @@
-require("dotenv").config();
-const Fastify = require("fastify");
-const userRoutes = require("./src/routes/user");
+const path = require("path");
+const fp = require("fastify-plugin");
+const autoLoad = require("@fastify/autoload");
 const cors = require("@fastify/cors");
+const getConfig = require("./src/config/config.js");
 
-const fastify = Fastify({ logger: true });
+async function plugin(server, config) {
+  const appConfig = await getConfig();
 
-fastify.register(userRoutes);
+  server
+    .register(cors, {
+      origin: appConfig.cors.origin,
+    })
+    .register(autoLoad, {
+      dir: path.join(__dirname, "src", "plugins"),
+      options: config,
+    })
+    .register(autoLoad, {
+      dir: path.join(__dirname, "src", "services"),
+      options: config,
+    })
+    .register(autoLoad, {
+      dir: path.join(__dirname, "src", "routes"),
+      options: config,
+      dirNameRoutePrefix: false,
+    });
+  server.ready((err) => {
+    if (err) throw err;
+    console.log("📜 Rutas registradas:");
+    console.log(server.printRoutes());
+  });
 
-const PORT = process.env.PORT || 3003;
+  server.setErrorHandler((err, req, res) => {
+    req.log.error({ req, res, err }, err && err.message);
+    err.message = "An error has occurred";
+    res.send(err);
+  });
 
-fastify.register(cors, {
-  origin: process.env.CORSURL,
-});
+  // POST sin body
+  server.addHook("onRequest", async (req, res) => {
+    if (
+      req.headers["content-type"] === "application/json" &&
+      req.headers["content-length"] === "0"
+    ) {
+      req.headers["content-type"] = "empty";
+    }
+  });
 
-const start = async () => {
-  try {
-    await fastify.listen({ port: PORT });
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-start();
+  server.addContentTypeParser("empty", (request, body, done) => {
+    done(null, {});
+  });
+}
+
+module.exports = fp(plugin);
