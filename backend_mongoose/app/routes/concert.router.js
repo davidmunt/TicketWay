@@ -12,12 +12,6 @@ module.exports = (app) => {
   // GET Concerts by One Category
   app.get("/concerts/category/:slug", concerts.getAllConcertsFromCategory);
 
-  // Create a new Concert
-  app.post("/concerts", concerts.createConcert);
-
-  //Delete a Concert
-  app.delete("/concerts/:slug", concerts.deleteOneConcert);
-
   //Favorite Concert
   app.post("/concerts/favorite/:slug", verifyJWT, concerts.favoriteConcert);
 

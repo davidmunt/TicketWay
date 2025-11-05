@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
     favoriteConcert: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Job",
+        ref: "Concert",
       },
     ],
   },
