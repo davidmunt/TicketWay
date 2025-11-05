@@ -46,7 +46,7 @@ async function user(server, options) {
     try {
       const users = await server.prisma.user.find();
       if (users) delete users.password;
-      return { userAdmin: users };
+      return { users: users };
     } catch (error) {
       return reply.code(500).send({ message: "Ha ocurrido un error" });
     }
