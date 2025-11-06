@@ -3,7 +3,27 @@ const prisma = new PrismaClient();
 
 module.exports = function () {
   return {
-    getUserAdminByEmail: async function (userId) {
+    getUserAdminCompanyByEmail: async function (email) {
+      let existing = await prisma.userAdmin.findUnique({ where: { email } });
+      if (existing) return existing;
+      existing = await prisma.user.findUnique({ where: { email } });
+      if (existing) return existing;
+      existing = await prisma.userCompany.findUnique({ where: { email } });
+      if (existing) return existing;
+      return null;
+    },
+
+    getUserAdminCompanyByUsername: async function (username) {
+      let existing = await prisma.userAdmin.findUnique({ where: { username } });
+      if (existing) return existing;
+      existing = await prisma.user.findUnique({ where: { username } });
+      if (existing) return existing;
+      existing = await prisma.userCompany.findUnique({ where: { username } });
+      if (existing) return existing;
+      return null;
+    },
+
+    getUserAdminById: async function (userId) {
       return await prisma.userAdmin.findUnique({
         where: { id: userId },
       });

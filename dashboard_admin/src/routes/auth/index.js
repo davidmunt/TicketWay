@@ -27,13 +27,13 @@ async function userAdmin(server, options) {
   async function onAdminRegister(req, reply) {
     try {
       const { username, email, password } = req.body.user;
-      const existingEmail = await userAdminModel.getUserAdminByEmail(email);
-      const existingUsername = await userAdminModel.getUserAdminByUsername(username);
+      const existingUsername = await userAdminModel.getUserAdminCompanyByUsername(username);
       if (existingUsername) {
         return reply.code(409).send({ message: "El nombre de usuario ya esta en uso" });
       }
+      const existingEmail = await userAdminModel.getUserAdminCompanyByEmail(email);
       if (existingEmail) {
-        return reply.code(409).send({ message: "El email ya estan en uso" });
+        return reply.code(409).send({ message: "El correo electrónico ya esta en uso" });
       }
       req.body.user.password = await server.hash(password);
       const user = await userAdminModel.registerUserAdmin(req.body.user);

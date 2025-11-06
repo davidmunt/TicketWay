@@ -26,7 +26,7 @@ async function plugin(server, config) {
     });
   server.ready((err) => {
     if (err) throw err;
-    console.log("📜 Rutas registradas:");
+    console.log("Rutas registradas:");
     console.log(server.printRoutes());
   });
 
