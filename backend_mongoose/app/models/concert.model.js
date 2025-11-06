@@ -3,42 +3,32 @@ const slugify = require("slugify");
 const uniqueValidator = require("mongoose-unique-validator");
 const User = require("../models/user.model.js");
 
-const ConcertSchema = mongoose.Schema({
-  slug: {
-    type: String,
-    lowercase: true,
-    unique: true,
+const ConcertSchema = new mongoose.Schema(
+  {
+    slug: { type: String, lowercase: true, unique: true },
+    name: { type: String, required: true },
+    date: { type: Date, required: true },
+    price: { type: Number, required: true },
+    description: { type: String, required: true },
+    images: { type: [String], default: [] },
+    venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    artists: { type: [mongoose.Schema.Types.ObjectId], ref: "Artist", default: [] },
+    comments: { type: [mongoose.Schema.Types.ObjectId], ref: "Comment", default: [] },
+    favoritesCount: { type: Number, default: 0 },
+    availableSeats: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ["DRAFT", "PENDING", "ACCEPTED", "APPROVED", "CANCELLED", "COMPLETED"],
+      default: "PENDING",
+    },
+    isActive: { type: Boolean, default: true },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  images: [String],
-  venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
-  category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
-  artists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true }],
-  favorited: {
-    type: Boolean,
-    default: false,
-  },
-  favoritesCount: {
-    type: Number,
-    default: 0,
-  },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-});
+  {
+    timestamps: true,
+    collection: "Concert",
+  }
+);
 
 ConcertSchema.plugin(uniqueValidator, { msg: "already taken" });
 

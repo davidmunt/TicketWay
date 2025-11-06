@@ -82,7 +82,6 @@ model Artist {
   description  String
   images       String[]   @default([])
   categories   String[]   @db.ObjectId @default([])
-  status       Status     @default(PENDING)
   isActive     Boolean    @default(true)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -98,7 +97,6 @@ model Venue {
   description  String
   images       String[]  @default([])
   capacity     Int
-  status       Status    @default(PENDING) 
   isActive     Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -111,7 +109,6 @@ model Category {
   description String
   image       String
   concerts    String[]   @db.ObjectId @default([])
-  status      Status     @default(PENDING)
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -142,7 +139,6 @@ model Comment {
   text      String
   author    String   @db.ObjectId
   concert   String   @db.ObjectId
-  status    Status   @default(APPROVED)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -171,7 +167,6 @@ model ProductCategory {
   name        String
   description String
   image       String
-  status      Status     @default(PENDING)
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt

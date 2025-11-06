@@ -2,27 +2,49 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const ArtistSchema = mongoose.Schema({
-  slug: {
-    type: String,
-    lowercase: true,
-    unique: true,
+const ArtistSchema = mongoose.Schema(
+  {
+    slug: {
+      type: String,
+      lowercase: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    nationality: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        default: [],
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  nationality: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  images: [String],
-  categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
-});
+  {
+    timestamps: true,
+    collection: "Artist",
+  }
+);
 
 ArtistSchema.plugin(uniqueValidator, { msg: "already taken" });
 

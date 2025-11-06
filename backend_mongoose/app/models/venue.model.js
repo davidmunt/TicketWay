@@ -2,38 +2,23 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const VenueSchema = mongoose.Schema({
-  slug: {
-    type: String,
-    lowercase: true,
-    unique: true,
+const VenueSchema = new mongoose.Schema(
+  {
+    slug: { type: String, lowercase: true, unique: true },
+    name: { type: String, required: true },
+    country: { type: String, required: true },
+    city: { type: String, required: true },
+    direction: { type: String, required: true },
+    description: { type: String, required: true },
+    images: { type: [String], default: [] },
+    capacity: { type: Number, required: true },
+    isActive: { type: Boolean, default: true },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  country: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  direction: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  images: [String],
-  capacity: {
-    type: Number,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+    collection: "Venue",
+  }
+);
 
 VenueSchema.plugin(uniqueValidator, { msg: "already taken" });
 

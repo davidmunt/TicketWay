@@ -6,15 +6,8 @@ const { v4: uuidv4 } = require("uuid");
 
 const userSchema = new mongoose.Schema(
   {
-    uuid: {
-      type: String,
-      default: uuidv4,
-      unique: true,
-    },
-    username: {
-      type: String,
-      required: true,
-    },
+    uuid: { type: String, default: uuidv4, unique: true },
+    username: { type: String, required: true, unique: true },
     email: {
       type: String,
       required: true,
@@ -23,39 +16,20 @@ const userSchema = new mongoose.Schema(
       match: [/\S+@\S+\.\S+/, "is invalid"],
       index: true,
     },
-    password: {
-      type: String,
-      required: true,
-    },
-    bio: {
-      type: String,
-      default: "(vacio)",
-    },
+    password: { type: String, required: true },
+    bio: { type: String, default: "(vacio)" },
     image: {
       type: String,
       default: "https://static.productionready.io/images/smiley-cyrus.jpg",
     },
-    following: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    followers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    favoriteConcert: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Concert",
-      },
-    ],
+    isActive: { type: Boolean, default: true },
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
+    favoriteConcert: [{ type: mongoose.Schema.Types.ObjectId, ref: "Concert", default: [] }],
   },
   {
     timestamps: true,
+    collection: "User",
   }
 );
 
@@ -91,7 +65,15 @@ userSchema.methods.toProfileJSON = async function (isFollowing) {
   };
 };
 
-userSchema.methods.toProfilePageJSON = async function (isFollowing, usersFollowers, countFollowers, usersFollowing, countFollowing, favorited, favoritesCount) {
+userSchema.methods.toProfilePageJSON = async function (
+  isFollowing,
+  usersFollowers,
+  countFollowers,
+  usersFollowing,
+  countFollowing,
+  favorited,
+  favoritesCount
+) {
   return {
     username: this.username,
     email: this.email,

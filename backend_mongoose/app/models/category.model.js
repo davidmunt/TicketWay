@@ -2,27 +2,52 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const CategorySchema = mongoose.Schema({
-  slug: {
-    type: String,
-    lowercase: true,
-    unique: true,
+const CategorySchema = mongoose.Schema(
+  {
+    slug: {
+      type: String,
+      lowercase: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    image: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    concerts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Concert",
+        default: [],
+      },
+    ],
+    artists: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Concert",
+        default: [],
+      },
+    ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  // artists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artist" }],
-  concerts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Concert" }],
-});
+  {
+    timestamps: true,
+    collection: "Category",
+  }
+);
 
 CategorySchema.plugin(uniqueValidator, { msg: "already taken" });
 
