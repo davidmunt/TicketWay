@@ -49,4 +49,4 @@ commentSchema.methods.toCommentResponse = async function (user) {
   };
 };
 
-module.exports = mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model("Comment", commentSchema, "Comment");

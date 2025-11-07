@@ -67,4 +67,4 @@ ArtistSchema.methods.toArtistResponse = async function () {
   };
 };
 
-module.exports = mongoose.model("Artist", ArtistSchema);
+module.exports = mongoose.model("Artist", ArtistSchema, "Artist");

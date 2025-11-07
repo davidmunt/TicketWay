@@ -4,7 +4,6 @@ const { v4: uuidv4 } = require("uuid");
 
 const userAdminSchema = new mongoose.Schema(
   {
-    uuid: { type: String, default: uuidv4, unique: true },
     username: { type: String, required: true, unique: true },
     email: {
       type: String,
@@ -29,4 +28,4 @@ const userAdminSchema = new mongoose.Schema(
 
 userAdminSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("UserAdmin", userAdminSchema);
+module.exports = mongoose.model("UserAdmin", userAdminSchema, "UserAdmin");

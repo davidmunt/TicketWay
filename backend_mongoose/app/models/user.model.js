@@ -122,4 +122,4 @@ userSchema.methods.unfavorite = function (id) {
   return this.save();
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema, "User");

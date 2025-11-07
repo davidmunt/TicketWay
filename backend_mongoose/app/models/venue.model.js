@@ -43,4 +43,4 @@ VenueSchema.methods.toVenueResponse = async function () {
   };
 };
 
-module.exports = mongoose.model("Venue", VenueSchema);
+module.exports = mongoose.model("Venue", VenueSchema, "Venue");

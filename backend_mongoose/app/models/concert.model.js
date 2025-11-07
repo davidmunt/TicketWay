@@ -83,4 +83,4 @@ ConcertSchema.methods.deleteComment = function (commentId) {
   return this.save();
 };
 
-module.exports = mongoose.model("Concert", ConcertSchema);
+module.exports = mongoose.model("Concert", ConcertSchema, "Concert");

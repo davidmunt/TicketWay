@@ -95,4 +95,4 @@ CategorySchema.methods.removeConcert = function (concert_id) {
   return this.save();
 };
 
-module.exports = mongoose.model("Category", CategorySchema);
+module.exports = mongoose.model("Category", CategorySchema, "Category");

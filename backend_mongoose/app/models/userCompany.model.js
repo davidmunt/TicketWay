@@ -30,4 +30,4 @@ const userCompanySchema = new mongoose.Schema(
 
 userCompanySchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("UserCompany", userCompanySchema);
+module.exports = mongoose.model("UserCompany", userCompanySchema, "UserCompany");

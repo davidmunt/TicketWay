@@ -27,4 +27,4 @@ const refreshBlacklistSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("RefreshBlacklist", refreshBlacklistSchema);
+module.exports = mongoose.model("RefreshBlacklist", refreshBlacklistSchema, "RefreshBlacklist");
