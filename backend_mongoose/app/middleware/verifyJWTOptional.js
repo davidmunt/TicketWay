@@ -11,6 +11,8 @@ const verifyJWTOptional = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: "Forbidden" });
     }
+    if (decoded && decoded.role !== "user")
+      return res.status(403).json({ message: "Forbidden: Invalid role" });
     req.loggedin = true;
     req.userId = decoded.user.id;
     req.userEmail = decoded.user.email;
