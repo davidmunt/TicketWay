@@ -36,6 +36,7 @@ require("../routes/concert.router.js")(app);
 require("../routes/carousel.router.js")(app);
 require("../routes/auth.router.js")(app);
 require("../routes/user.router.js")(app);
+require("../routes/role.router.js")(app);
 require("../routes/profile.router.js")(app);
 require("../routes/comment.router.js")(app);
 

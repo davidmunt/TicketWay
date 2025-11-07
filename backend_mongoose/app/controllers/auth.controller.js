@@ -7,7 +7,6 @@ const asyncHandler = require("express-async-handler");
 const refreshToken = asyncHandler(async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    //cambiar de Token a Bearer
     const token = authHeader && authHeader.startsWith("Token ") ? authHeader.split(" ")[1] : null;
     if (!token) {
       return res.status(403).json({ message: "Refresh Token is required!" });
