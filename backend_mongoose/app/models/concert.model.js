@@ -13,7 +13,7 @@ const ConcertSchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
-    artists: { type: [mongoose.Schema.Types.ObjectId], ref: "Artist", default: [] },
+    artist: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
     comments: { type: [mongoose.Schema.Types.ObjectId], ref: "Comment", default: [] },
     favoritesCount: { type: Number, default: 0 },
     availableSeats: { type: Number, default: 0 },

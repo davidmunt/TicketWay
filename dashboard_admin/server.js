@@ -10,6 +10,8 @@ async function plugin(server, config) {
   server
     .register(cors, {
       origin: appConfig.cors.origin,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     })
     .register(autoLoad, {
       dir: path.join(__dirname, "src", "plugins"),
@@ -26,15 +28,31 @@ async function plugin(server, config) {
     });
   server.ready((err) => {
     if (err) throw err;
-    console.log("Rutas registradas:");
-    console.log(server.printRoutes());
   });
 
-  server.setErrorHandler((err, req, res) => {
-    req.log.error({ req, res, err }, err && err.message);
-    err.message = "An error has occurred";
-    res.send(err);
+  server.setErrorHandler((err, req, reply) => {
+    req.log.error(err);
+    const statusCode = err.statusCode || 500;
+    reply.code(statusCode).send({
+      message: err.message || "Internal server error",
+      error: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
   });
+
+  server.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    function (req, body, done) {
+      if (!body) return done(null, {});
+      try {
+        const json = JSON.parse(body);
+        done(null, json);
+      } catch (err) {
+        err.statusCode = 400;
+        done(err, undefined);
+      }
+    }
+  );
 
   // POST sin body
   server.addHook("onRequest", async (req, res) => {

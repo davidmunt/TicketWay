@@ -32,7 +32,10 @@ const getProfile = asyncHandler(async (req, res) => {
   const countFollowers = usersFollowers.length;
   const usersFollowing = await User.find({ _id: { $in: user.following } }, "username image").exec();
   const countFollowing = usersFollowing.length;
-  const favorited = await Concert.find({ _id: { $in: user.favoriteConcert } }, "slug name price date images -_id").exec();
+  const favorited = await Concert.find(
+    { _id: { $in: user.favoriteConcert } },
+    "slug name price date images -_id"
+  ).exec();
   const favoritesCount = favorited.length;
   if (!loggedin) {
     const enrichedFavorited = favorited.map((favorito) => ({
@@ -40,7 +43,15 @@ const getProfile = asyncHandler(async (req, res) => {
       favorited: false,
     }));
     return res.status(200).json({
-      profile: await user.toProfilePageJSON(false, usersFollowers, countFollowers, usersFollowing, countFollowing, enrichedFavorited, favoritesCount),
+      profile: await user.toProfilePageJSON(
+        false,
+        usersFollowers,
+        countFollowers,
+        usersFollowing,
+        countFollowing,
+        enrichedFavorited,
+        favoritesCount
+      ),
     });
   }
   const loginUser = await User.findOne({ email: req.userEmail }).exec();
@@ -55,13 +66,22 @@ const getProfile = asyncHandler(async (req, res) => {
     ...following.toObject(),
     following: loginUser.following.some((id) => id.toString() === following._id.toString()),
   }));
-  console.log(loginUser.favoriteConcert);
   const enrichedFavorited = (favorited || []).map((favorito) => ({
     ...favorito.toObject(),
-    favorited: (loginUser.favoriteConcert || []).some((id) => id?.toString() === favorito?._id?.toString()),
+    favorited: (loginUser.favoriteConcert || []).some(
+      (id) => id?.toString() === favorito?._id?.toString()
+    ),
   }));
   return res.status(200).json({
-    profile: await user.toProfilePageJSON(isFollowing, enrichedFollowers, countFollowers, enrichedFollowing, countFollowing, enrichedFavorited, favoritesCount),
+    profile: await user.toProfilePageJSON(
+      isFollowing,
+      enrichedFollowers,
+      countFollowers,
+      enrichedFollowing,
+      countFollowing,
+      enrichedFavorited,
+      favoritesCount
+    ),
   });
 });
 

@@ -23,6 +23,13 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum VenueStatus {
+  PENDING
+  OPEN
+  CLOSED
+  MAINTAINMENT
+}
+
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -96,6 +103,7 @@ model Venue {
   direction    String
   description  String
   images       String[]  @default([])
+  status       VenueStatus    @default(PENDING)
   capacity     Int
   isActive     Boolean   @default(true)
   createdAt    DateTime  @default(now())
@@ -124,7 +132,7 @@ model Concert {
   images          String[]  @default([])
   venue           String    @db.ObjectId
   category        String    @db.ObjectId
-  artists         String[]  @db.ObjectId  @default([])
+  artist          String    @db.ObjectId
   comments        String[]  @db.ObjectId  @default([])
   favoritesCount  Int       @default(0)
   availableSeats  Int       @default(0)
@@ -246,7 +254,7 @@ model Ticket {
 model RefreshToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   token      String   @unique
-  userId     String   @db.ObjectId
+  userId     String   @db.ObjectId @unique
   expiryDate DateTime
   createdAt  DateTime @default(now())
 }
