@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
   templateUrl: "./settings.component.html",
   styleUrls: ["./settings.component.css"],
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, LucideAngularModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent implements OnInit {
@@ -22,7 +22,12 @@ export class SettingsComponent implements OnInit {
   errors: Object = {};
   isSubmitting = false;
 
-  constructor(private router: Router, private userService: UserService, private fb: FormBuilder, private cd: ChangeDetectorRef) {
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private cd: ChangeDetectorRef
+  ) {
     this.settingsForm = this.fb.group({
       image: "",
       username: "",

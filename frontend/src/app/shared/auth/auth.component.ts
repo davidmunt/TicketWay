@@ -1,11 +1,24 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { User, Errors } from "../../core/models";
-import { JwtService, UserService } from "../../core/services";
+import { JwtService, UserService, UserAdminService, UserTypeService } from "../../core/services";
 import { NoAuthGuard } from "../../core/guards";
-import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  ReactiveFormsModule,
+} from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { ShowAuthedDirective } from "src/app/shared";
 
 @Component({
   selector: "app-auth-component",
@@ -16,7 +29,15 @@ import { ShowAuthedDirective } from "src/app/shared";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponentComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private cd: ChangeDetectorRef) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private userTypeService: UserTypeService,
+    private userAdminService: UserAdminService,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private cd: ChangeDetectorRef
+  ) {
     this.authForm = this.fb.group({
       email: ["", Validators.required],
       password: ["", Validators.required],
@@ -41,7 +62,8 @@ export class AuthComponentComponent implements OnInit {
   verifyForm(): boolean {
     const email = this.authForm.get("email")?.value?.trim();
     const password = this.authForm.get("password")?.value;
-    const username = this.authType === "register" ? this.authForm.get("username")?.value?.trim() : null;
+    const username =
+      this.authType === "register" ? this.authForm.get("username")?.value?.trim() : null;
     const localErrors: string[] = [];
     if (this.authType === "register" && !username) {
       localErrors.push("El nombre de usuario es obligatorio");
@@ -71,13 +93,45 @@ export class AuthComponentComponent implements OnInit {
 
   submitForm() {
     const canContinue = this.verifyForm();
-    if (canContinue) {
-      this.isSubmitting = true;
-      this.errors = { errors: {} };
-      const credentials = this.authForm.value;
-      this.userService.attemptAuth(this.authType, credentials).subscribe(
-        () => {
-          this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/");
+    if (!canContinue) return;
+
+    this.isSubmitting = true;
+    this.errors = { errors: {} };
+    const credentials = this.authForm.value;
+    if (this.authType === "login") {
+      this.userTypeService.getUserTypeRole(credentials).subscribe(
+        async () => {
+          const role = await this.userTypeService.getUserType();
+          if (role === "admin") {
+            this.userAdminService.attemptAuth("login", credentials).subscribe(
+              () => {
+                this.router.navigateByUrl(
+                  this.route.snapshot.queryParams["returnUrl"] || "/adminDashboard"
+                );
+              },
+              (err) => {
+                this.errors = err;
+                this.isSubmitting = false;
+                this.cd.markForCheck();
+              }
+            );
+          } else if (role === "user") {
+            this.userService.attemptAuth("login", credentials).subscribe(
+              () => {
+                this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/");
+              },
+              (err) => {
+                this.errors = err;
+                this.isSubmitting = false;
+                this.cd.markForCheck();
+              }
+            );
+          } else {
+            console.warn("Tipo de usuario no reconocido:", role);
+            this.errors = { errors: { body: "Tipo de usuario no válido" } };
+            this.isSubmitting = false;
+            this.cd.markForCheck();
+          }
         },
         (err) => {
           this.errors = err;
@@ -85,6 +139,45 @@ export class AuthComponentComponent implements OnInit {
           this.cd.markForCheck();
         }
       );
+    } else if (this.authType === "register") {
+      const selectedType = (
+        document.querySelector('input[name="user_type"]:checked') as HTMLInputElement
+      )?.value;
+      if (!selectedType) {
+        this.errors = { errors: { body: "Debes seleccionar un tipo de usuario" } };
+        this.isSubmitting = false;
+        this.cd.markForCheck();
+        return;
+      }
+      this.userTypeService.setUserType(selectedType);
+      if (selectedType === "admin") {
+        this.userAdminService.attemptAuth("register", credentials).subscribe(
+          () => {
+            this.router.navigateByUrl("/adminDashboard");
+          },
+          (err) => {
+            this.errors = err;
+            this.isSubmitting = false;
+            this.cd.markForCheck();
+          }
+        );
+      } else if (selectedType === "user") {
+        this.userService.attemptAuth("register", credentials).subscribe(
+          () => {
+            this.router.navigateByUrl("/");
+          },
+          (err) => {
+            this.errors = err;
+            this.isSubmitting = false;
+            this.cd.markForCheck();
+          }
+        );
+      } else {
+        console.warn("Tipo de usuario no reconocido al registrar:", selectedType);
+        this.errors = { errors: { body: "Tipo de usuario no válido" } };
+        this.isSubmitting = false;
+        this.cd.markForCheck();
+      }
     }
   }
 }

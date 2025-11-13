@@ -5,7 +5,6 @@
   </div>
   <nav>
     <ul *ngIf="!currentUser || !currentUser.username">
-      <!-- <ul *appShowAuthed="false"> -->
       <li>
         <a routerLink="/home">Home</a>
       </li>
@@ -17,7 +16,6 @@
       </li>
     </ul>
     <ul *ngIf="currentUser && currentUser.username">
-      <!-- <ul *appShowAuthed="true"> -->
       <li>
         <a routerLink="/home">Home</a>
       </li>

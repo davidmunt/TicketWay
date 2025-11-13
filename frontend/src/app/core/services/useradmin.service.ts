@@ -118,7 +118,7 @@ export class UserAdminService {
   }
 
   attemptAuth(type: string, credentials: any): Observable<UserAdmin> {
-    const route = type === "login" ? "/login" : "";
+    const route = type === "login" ? "/login" : "/register";
     return this.apiService.post(admin_port, `/api/auth${route}`, { user: credentials }).pipe(
       map((res: any) => {
         console.log("Respuesta de attemptAuth:", res);

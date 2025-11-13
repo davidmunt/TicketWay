@@ -14,11 +14,18 @@ import { SettingsComponent } from "../settings/settings.component";
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.css"],
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterLink, SettingsComponent],
+  imports: [CommonModule, LucideAngularModule, SettingsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponentComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private userService: UserService, private profileService: ProfileService, private cd: ChangeDetectorRef, private fb: FormBuilder, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private profileService: ProfileService,
+    private cd: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.profileForm = this.fb.group({
       image: "",
       username: "",
@@ -63,7 +70,6 @@ export class ProfileComponentComponent implements OnInit {
   logout() {
     this.userService.purgeAuth().subscribe({
       next: (res) => {
-        console.log("Logout correcto:", res);
         this.router.navigateByUrl("/");
       },
       error: (err) => {

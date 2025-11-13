@@ -33,13 +33,7 @@ export class AdminHeaderComponent implements OnInit {
   }
 
   logout() {
-    this.UserAdminService.purgeAuth().subscribe({
-      next: () => {
-        this.router.navigateByUrl("/");
-      },
-      error: (err) => {
-        console.error("Error durante el logout:", err);
-      },
-    });
+    this.UserAdminService.purgeAuth().subscribe();
+    this.router.navigateByUrl("/");
   }
 }

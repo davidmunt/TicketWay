@@ -7,20 +7,57 @@
         <form class="auth-form" [formGroup]="authForm" (ngSubmit)="submitForm()">
           <fieldset [disabled]="isSubmitting">
             <fieldset class="form-username">
-              <input formControlName="username" placeholder="Username" class="form-control form-control-lg" type="text" *ngIf="authType === 'register'" />
+              <input
+                formControlName="username"
+                placeholder="Username"
+                class="form-control form-control-lg"
+                type="text"
+                *ngIf="authType === 'register'"
+              />
             </fieldset>
             <fieldset class="form-email">
-              <input formControlName="email" placeholder="Email" class="form-control form-control-lg" type="text" />
+              <input
+                formControlName="email"
+                placeholder="Email"
+                class="form-control form-control-lg"
+                type="text"
+              />
             </fieldset>
             <fieldset class="form-password">
-              <input formControlName="password" placeholder="Password" class="form-control form-control-lg" type="password" />
+              <input
+                formControlName="password"
+                placeholder="Password"
+                class="form-control form-control-lg"
+                type="password"
+              />
             </fieldset>
             <div class="error-messages" *ngIf="errors.errors.body">
               <p>{{ errors.errors.body }}</p>
             </div>
+            @if (authType === 'register') {
+            <div class="user-Type">
+              <p>Please select your favorite Web language:</p>
+              <input type="radio" id="user" name="user_type" value="user" />
+              <label for="user">User</label><br />
+              <input type="radio" id="admin" name="user_type" value="admin" />
+              <label for="admin">Admin</label><br />
+              <input type="radio" id="company" name="user_type" value="company" />
+              <label for="company">Company</label><br />
+            </div>
+            }
             <p class="auth-sugestion">
-              <a class="auth-sugestion-text" [routerLink]="['/auth/login']" *ngIf="authType === 'register'">Have an account? Click here</a>
-              <a class="auth-sugestion-text" [routerLink]="['/auth/register']" *ngIf="authType === 'login'">Need an account? Click here</a>
+              <a
+                class="auth-sugestion-text"
+                [routerLink]="['/auth/login']"
+                *ngIf="authType === 'register'"
+                >Have an account? Click here</a
+              >
+              <a
+                class="auth-sugestion-text"
+                [routerLink]="['/auth/register']"
+                *ngIf="authType === 'login'"
+                >Need an account? Click here</a
+              >
             </p>
             <button class="auth-btn" [disabled]="!authForm.valid" type="submit">
               {{ title }}

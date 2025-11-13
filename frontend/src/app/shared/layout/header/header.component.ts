@@ -2,8 +2,6 @@ import { Router, RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { User, UserService } from "src/app/core";
-import { ShowAuthedDirective } from "../../show-authed.directive";
-// import { ShowAuthedDirective } from '../../show-authed.directive';
 
 @Component({
   selector: "app-header",
@@ -14,7 +12,6 @@ import { ShowAuthedDirective } from "../../show-authed.directive";
     // Router
     CommonModule,
     RouterLink,
-    // ShowAuthedDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
