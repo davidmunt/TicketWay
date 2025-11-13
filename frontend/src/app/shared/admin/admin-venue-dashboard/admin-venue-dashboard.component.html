@@ -1,0 +1,40 @@
+<div class="venue-dashboard-container">
+  <!-- Listado de venues -->
+  <div *ngIf="view === 'listVenues'">
+    <h2>Venue Management</h2>
+    <div class="create-bttn-div">
+      <button (click)="changeView('createUpdateVenue')">Add new Venue</button>
+    </div>
+
+    <div class="venue-table">
+      <div class="venue-table-header">
+        <div>Name</div>
+        <div>City</div>
+        <div>Country</div>
+        <div>Capacity</div>
+        <div>Is Active</div>
+        <div>Actions</div>
+      </div>
+
+      <div class="venue-row" *ngFor="let venue of venues()">
+        <div>{{ venue.name }}</div>
+        <div>{{ venue.city }}</div>
+        <div>{{ venue.country }}</div>
+        <div>{{ venue.capacity }}</div>
+        <div>{{ venue.isActive ? "Activo" : "Inactivo" }}</div>
+        <div>
+          <button (click)="changeView('createUpdateVenue', venue)">✏️</button>
+          <button (click)="onDeleteVenue(venue.slug)">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de crear/editar venue -->
+  <div *ngIf="view === 'createUpdateVenue'">
+    <app-admin-create-update-venue
+      [venue]="venue"
+      (changeView)="changeView('listVenues')"
+    ></app-admin-create-update-venue>
+  </div>
+</div>

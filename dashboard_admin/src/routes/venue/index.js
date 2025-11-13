@@ -13,18 +13,19 @@ async function venue(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
       const venue = await server.prisma.venue.findUnique({
         where: { slug },
       });
       if (!venue) {
-        return reply.code(404).send({ message: "No se ha encontrado un venue con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un venue con ese slug", success: false });
       }
-      return reply.send({ venue });
+      return reply.send({ venue: venue, success: true });
     } catch (error) {
-      console.error("Error al obtener venue:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 
@@ -37,38 +38,15 @@ async function venue(server, options) {
   });
   async function onGetVenues(req, reply) {
     try {
-      const limit = Number(req.query.limit) || 4;
-      const offset = Number(req.query.offset) || 0;
-      const name = req.query.name || "";
-      const city = req.query.city || "";
-      const country = req.query.country || "";
-      const isActive = req.query.isActive !== undefined ? req.query.isActive === "true" : undefined;
-      const where = {};
-      if (name) {
-        where.name = { contains: name, mode: "insensitive" };
-      }
-      if (city) {
-        where.city = { contains: city, mode: "insensitive" };
-      }
-      if (country) {
-        where.country = { contains: country, mode: "insensitive" };
-      }
-      if (isActive !== undefined) {
-        where.isActive = isActive;
-      }
       const venues = await server.prisma.venue.findMany({
-        where,
-        take: limit,
-        skip: offset,
         orderBy: { createdAt: "desc" },
       });
       if (!venues || venues.length === 0) {
-        return reply.code(404).send({ message: "No se han encontrado venues" });
+        return reply.code(404).send({ message: "No se han encontrado venues", success: false });
       }
-      return reply.send({ venues });
+      return reply.send({ venues: venues, success: true });
     } catch (error) {
-      console.error("Error al obtener venues:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 
@@ -99,28 +77,43 @@ async function venue(server, options) {
   });
   async function onCreateVenue(req, reply) {
     try {
-      const venue = req.body.venue;
-      if (!venue) {
-        return reply.code(400).send({ message: "Los datos del venue son obligatorios" });
+      const { name, country, city, direction, description, images, capacity, status } = req.body;
+      if (
+        !name ||
+        !country ||
+        !city ||
+        !direction ||
+        !description ||
+        !images ||
+        !capacity ||
+        !status
+      ) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos del venue son obligatorios", success: false });
       }
-      const { name, country, city, direction, description, images, capacity, status } = venue;
       if (!name?.trim() || !country?.trim() || !city?.trim() || !direction?.trim()) {
         return reply.code(400).send({
           message: "Los campos 'name', 'country', 'city' y 'direction' son obligatorios",
+          success: false,
         });
       }
       if (!description?.trim()) {
         return reply.code(400).send({
           message: "El campo 'description' es obligatorio",
+          success: false,
         });
       }
       if (typeof capacity !== "number" || capacity <= 0) {
         return reply.code(400).send({
           message: "El campo 'capacity' debe ser un número positivo",
+          success: false,
         });
       }
       if (images && !Array.isArray(images)) {
-        return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
+        return reply
+          .code(400)
+          .send({ message: "El campo 'images' debe ser un array", success: false });
       }
       let slug = generateSlug(name);
       let exists = await server.prisma.venue.findUnique({ where: { slug } });
@@ -142,10 +135,9 @@ async function venue(server, options) {
           isActive: true,
         },
       });
-      return reply.code(201).send({ venue: newVenue });
+      return reply.code(201).send({ venue: newVenue, success: true });
     } catch (error) {
-      console.error("Error al crear el venue:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 
@@ -160,42 +152,55 @@ async function venue(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
-      const venueData = req.body.venue;
-      if (!venueData) {
-        return reply.code(400).send({ message: "Los datos del venue son necesarios" });
+      const { name, country, city, direction, description, images, capacity, status, isActive } =
+        req.body;
+      if (
+        !name ||
+        !country ||
+        !city ||
+        !direction ||
+        !description ||
+        !images ||
+        !capacity ||
+        !status ||
+        !isActive
+      ) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos del venue son obligatorios", success: false });
       }
       const existingVenue = await server.prisma.venue.findUnique({ where: { slug } });
       if (!existingVenue) {
-        return reply.code(404).send({ message: "No se ha encontrado un venue con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un venue con ese slug", success: false });
       }
       const updateData = {};
-      if (venueData.name && venueData.name.trim().length > 0)
-        updateData.name = venueData.name.trim();
-      if (venueData.country && venueData.country.trim().length > 0)
-        updateData.country = venueData.country.trim();
-      if (venueData.city && venueData.city.trim().length > 0)
-        updateData.city = venueData.city.trim();
-      if (venueData.direction && venueData.direction.trim().length > 0)
-        updateData.direction = venueData.direction.trim();
-      if (venueData.description && venueData.description.trim().length > 0)
-        updateData.description = venueData.description.trim();
-      if (venueData.capacity !== undefined) {
-        if (typeof venueData.capacity !== "number" || venueData.capacity <= 0) {
+      if (name && name.trim().length > 0) updateData.name = name.trim();
+      if (country && country.trim().length > 0) updateData.country = country.trim();
+      if (city && city.trim().length > 0) updateData.city = city.trim();
+      if (direction && direction.trim().length > 0) updateData.direction = direction.trim();
+      if (description && description.trim().length > 0) updateData.description = description.trim();
+      if (capacity !== undefined) {
+        if (typeof capacity !== "number" || capacity <= 0) {
           return reply.code(400).send({
             message: "El campo 'capacity' debe ser un número positivo",
+            success: false,
           });
         }
-        updateData.capacity = venueData.capacity;
+        updateData.capacity = capacity;
       }
-      if (venueData.status) updateData.status = venueData.status;
-      if (venueData.isActive !== undefined) updateData.isActive = Boolean(venueData.isActive);
-      if (venueData.images) {
-        if (!Array.isArray(venueData.images)) {
-          return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
+      if (status) updateData.status = status;
+      if (isActive !== undefined) updateData.isActive = Boolean(isActive);
+      if (images) {
+        if (!Array.isArray(images)) {
+          return reply
+            .code(400)
+            .send({ message: "El campo 'images' debe ser un array", success: false });
         }
-        updateData.images = venueData.images;
+        updateData.images = images;
       }
       const updatedVenue = await server.prisma.venue.update({
         where: { slug },
@@ -204,11 +209,12 @@ async function venue(server, options) {
       return reply.code(200).send({
         message: "Venue actualizado correctamente",
         venue: updatedVenue,
+        success: true,
       });
     } catch (error) {
-      console.error("Error al actualizar venue:", error);
       return reply.code(500).send({
-        message: "Ha ocurrido un error interno",
+        message: `Ha ocurrido un error interno ${error}`,
+        success: false,
       });
     }
   }
@@ -224,17 +230,18 @@ async function venue(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
       const existingVenue = await server.prisma.venue.findUnique({ where: { slug } });
       if (!existingVenue) {
-        return reply.code(404).send({ message: "No se ha encontrado un venue con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un venue con ese slug", success: false });
       }
       await server.prisma.venue.delete({ where: { slug } });
-      return reply.code(200).send({ updated: true });
+      return reply.code(200).send({ success: true });
     } catch (error) {
-      console.error("Error al eliminar venue:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno", updated: false });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 }

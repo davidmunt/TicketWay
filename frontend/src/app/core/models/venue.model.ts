@@ -7,5 +7,7 @@ export interface Venue {
   city: string;
   country: string;
   capacity: number;
+  isActive: boolean;
+  status: string;
   images: string[];
 }
