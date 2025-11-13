@@ -1,0 +1,94 @@
+<div class="artist-form-container">
+  <h2>{{ artist && artist.slug ? "Editar Artista" : "Crear Artista" }}</h2>
+  @if (artistForm) {
+  <form [formGroup]="artistForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name">Nombre del artista</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Introduce el nombre del artista"
+      />
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea
+        id="description"
+        rows="4"
+        formControlName="description"
+        placeholder="Descripción del artista"
+      ></textarea>
+    </div>
+
+    <!-- Nacionalidad -->
+    <div class="form-group">
+      <label for="nationality">Nacionalidad</label>
+      <textarea
+        id="nationality"
+        rows="4"
+        formControlName="nationality"
+        placeholder="Nacionalidad del artista"
+      ></textarea>
+    </div>
+
+    <!-- URLs de Imágenes -->
+    <div class="form-group">
+      <label>Imágenes (URLs)</label>
+      <div *ngFor="let imgCtrl of imageControls; let i = index" class="image-url-input">
+        <input type="text" [formControl]="imgCtrl" placeholder="https://example.com/imagen.jpg" />
+
+        <button type="button" class="remove-btn" (click)="removeImage(i)">✕</button>
+      </div>
+
+      <button type="button" class="add-btn" (click)="addImage()">+ Añadir imagen</button>
+
+      <!-- Previsualización -->
+      <div class="image-preview" *ngIf="artistForm.get('images')?.value?.length">
+        <div class="preview-img" *ngFor="let url of artistForm.get('images')?.value">
+          <img [src]="url" alt="Imagen del artista" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Categorías -->
+    <div class="form-group">
+      <label>Categorías</label>
+
+      <div class="checkbox-group" *ngIf="categories() && categories().length > 0; else noCats">
+        <div *ngFor="let cat of categories()" class="checkbox-item">
+          <input
+            type="checkbox"
+            [value]="cat.category_id"
+            (change)="onCategoryChange($event)"
+            [checked]="artistForm.value.categories.includes(cat.category_id)"
+            id="cat-{{ cat.category_id }}"
+          />
+          <label [for]="'cat-' + cat.category_id">{{ cat.name }}</label>
+        </div>
+      </div>
+
+      <ng-template #noCats>
+        <p>No hay categorías disponibles.</p>
+      </ng-template>
+    </div>
+
+    <!-- Estado activo -->
+    <div class="form-group">
+      <label for="isActive">Activo</label>
+      <select id="isActive" formControlName="isActive">
+        <option [ngValue]="true">Activo</option>
+        <option [ngValue]="false">Inactivo</option>
+      </select>
+    </div>
+
+    <!-- Botón enviar -->
+    <button type="submit" [disabled]="artistForm.invalid">
+      {{ artist && artist.slug ? "Actualizar Artista" : "Crear Artista" }}
+    </button>
+  </form>
+  }
+</div>

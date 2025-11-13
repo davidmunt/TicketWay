@@ -1,0 +1,47 @@
+<div class="artist-dashboard-container">
+  @if (view === 'listArtists') {
+  <h2 class="dashboard-title">Artist Management</h2>
+
+  <div class="artist-table">
+    <div class="create-bttn-div">
+      <button class="create-bttn" (click)="changeView('createUpdateArtist', null)">
+        Add new Artist
+      </button>
+    </div>
+    <div class="artist-table-header">
+      <div class="header-cell">Name</div>
+      <div class="header-cell">Images</div>
+      <div class="header-cell">Categories</div>
+      <div class="header-cell">Is Active</div>
+    </div>
+    <div class="artist-row" *ngFor="let artist of artists()">
+      <div class="cell name-cell">{{ artist.name }}</div>
+      <div class="cell image-cell">
+        <img
+          [src]="artist.images[0] || 'assets/imgs/default-avatar.png'"
+          [alt]="artist.name"
+          class="artist-avatar"
+        />
+      </div>
+      <div class="cell categories-cell">
+        @for (category of artist.categories; track category) {
+        <span class="badge">{{ getCategoryName(category) }}</span>
+        } @empty {
+        <p>There are no categories.</p>
+        }
+      </div>
+      <div class="cell active-cell">{{ artist.isActive }}</div>
+      <button class="cell modify-cell" (click)="changeView('createUpdateArtist', artist)">
+        ✏️
+      </button>
+      <button class="cell delete-cell" (click)="onDeleteArtist(artist.slug)">🗑️</button>
+    </div>
+  </div>
+  } @else if (view === "createUpdateArtist") {
+  <app-admin-create-update-artist
+    [artist]="artist"
+    (changeView)="changeView($event, null)"
+  ></app-admin-create-update-artist>
+
+  }
+</div>

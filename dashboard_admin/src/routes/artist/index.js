@@ -50,18 +50,20 @@ async function artist(server, options) {
       if (isActive !== undefined) {
         where.isActive = isActive;
       }
+      // const artists = await server.prisma.artist.findMany({
+      //   where,
+      //   take: limit,
+      //   skip: offset,
+      //   orderBy: { createdAt: "desc" },
+      // });
       const artists = await server.prisma.artist.findMany({
-        where,
-        take: limit,
-        skip: offset,
         orderBy: { createdAt: "desc" },
       });
-      if (!artists || artists.length === 0) {
-        return reply.code(404).send({ message: "No se han encontrado artistas" });
-      }
-      return reply.send({ artists });
+      // if (!artists || artists.length === 0) {
+      //   return reply.code(404).send({ message: "No se han encontrado artistas" });
+      // }
+      return reply.send({ artists: artists });
     } catch (error) {
-      console.error("Error al obtener artistas:", error);
       return reply.code(500).send({ message: "Ha ocurrido un error" });
     }
   }
@@ -93,18 +95,18 @@ async function artist(server, options) {
   });
   async function onCreateArtist(req, reply) {
     try {
-      const artist = req.body.artist;
-      if (!artist) {
-        return reply.code(400).send({ message: "Los datos del artista son obligatorios" });
-      }
-      const { name, nationality, description, categories, images } = artist;
+      const { name, nationality, description, categories, images } = req.body;
       if (!name || !nationality || !description) {
         return reply.code(400).send({
           message: "Los campos 'name', 'nationality' y 'description' son obligatorios",
+          success: false,
         });
       }
       if (images && !Array.isArray(images)) {
-        return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
+        return reply.code(400).send({
+          message: "El campo 'images' debe ser un array",
+          success: false,
+        });
       }
       let slug = generateSlug(name);
       let exists = await server.prisma.artist.findUnique({ where: { slug } });
@@ -113,13 +115,23 @@ async function artist(server, options) {
         exists = await server.prisma.artist.findUnique({ where: { slug } });
       }
       let validCategories = [];
-      if (categories && categories.length > 0) {
-        validCategories = await server.prisma.categories.findMany({
-          where: { id: { in: categories } },
+      if (categories && Array.isArray(categories) && categories.length > 0) {
+        const cleanCategories = categories.filter((c) => typeof c === "string" && c.trim() !== "");
+        if (cleanCategories.length === 0) {
+          return reply.code(400).send({
+            message: "Las categorías proporcionadas no son válidas",
+            success: false,
+          });
+        }
+        validCategories = await server.prisma.category.findMany({
+          where: { id: { in: cleanCategories } },
           select: { id: true },
         });
-        if (validCategories.length < categories.length) {
-          return reply.code(404).send({ message: "Una o mas categorias seleccionadas no existen" });
+        if (validCategories.length < cleanCategories.length) {
+          return reply.code(404).send({
+            message: "Una o más categorías seleccionadas no existen",
+            success: false,
+          });
         }
       }
       const newArtist = await server.prisma.artist.create({
@@ -133,10 +145,16 @@ async function artist(server, options) {
           isActive: true,
         },
       });
-      return reply.code(201).send({ artist: newArtist });
+      return reply.code(201).send({
+        message: "Artista creado correctamente",
+        artist: newArtist,
+        success: true,
+      });
     } catch (error) {
-      console.error("Error al crear artista:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({
+        message: `Ha ocurrido un error interno: ${error.message}`,
+        success: false,
+      });
     }
   }
 
@@ -147,44 +165,46 @@ async function artist(server, options) {
     schema: schema.updateArtist,
     handler: onUpdateArtist,
   });
-
   async function onUpdateArtist(req, reply) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
-      const artistData = req.body.artist;
-      if (!artistData) {
-        return reply.code(400).send({ message: "Los datos del artista son necesarios" });
-      }
+      const { name, nationality, description, categories, images, isActive } = req.body;
       const existingArtist = await server.prisma.artist.findUnique({ where: { slug } });
       if (!existingArtist) {
-        return reply.code(404).send({ message: "No se ha encontrado un artista con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un artista con ese slug", success: false });
       }
       const updateData = {};
-      if (artistData.name) updateData.name = artistData.name.trim();
-      if (artistData.nationality) updateData.nationality = artistData.nationality.trim();
-      if (artistData.description) updateData.description = artistData.description.trim();
-      if (artistData.isActive !== undefined) updateData.isActive = artistData.isActive;
-      if (artistData.images) {
-        if (!Array.isArray(artistData.images)) {
-          return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
+      if (name) updateData.name = name.trim();
+      if (nationality) updateData.nationality = nationality.trim();
+      if (description) updateData.description = description.trim();
+      if (isActive !== undefined) updateData.isActive = isActive;
+      if (images) {
+        if (!Array.isArray(images)) {
+          return reply
+            .code(400)
+            .send({ message: "El campo 'images' debe ser un array", success: false });
         }
-        updateData.images = artistData.images;
+        updateData.images = images;
       }
-      if (artistData.categories) {
-        if (!Array.isArray(artistData.categories)) {
-          return reply.code(400).send({ message: "El campo 'categories' debe ser un array" });
+      if (categories) {
+        if (!Array.isArray(categories)) {
+          return reply
+            .code(400)
+            .send({ message: "El campo 'categories' debe ser un array", success: false });
         }
-        const validCategories = await server.prisma.categories.findMany({
-          where: { id: { in: artistData.categories } },
+        const validCategories = await server.prisma.category.findMany({
+          where: { id: { in: categories } },
           select: { id: true },
         });
-        if (validCategories.length < artistData.categories.length) {
+        if (validCategories.length < categories.length) {
           return reply
             .code(404)
-            .send({ message: "Una o mas categorias proporcionadas no existen" });
+            .send({ message: "Una o mas categorias proporcionadas no existen", success: false });
         }
         updateData.categories = validCategories.map((c) => c.id);
       }
@@ -195,11 +215,12 @@ async function artist(server, options) {
       return reply.code(200).send({
         message: "Artista actualizado correctamente",
         artist: updatedArtist,
+        success: true,
       });
     } catch (error) {
-      console.error("Error al actualizar artista:", error);
       return reply.code(500).send({
-        message: "Ha ocurrido un error interno",
+        message: `Ha ocurrido un error interno${error}`,
+        success: false,
       });
     }
   }
@@ -215,17 +236,20 @@ async function artist(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(404).send({ message: "El slug es necesario para la funcion" });
+        return reply
+          .code(404)
+          .send({ message: "El slug es necesario para la funcion", success: false });
       }
-      const existingArtist = await server.prisma.category.findUnique({ where: { slug } });
+      const existingArtist = await server.prisma.artist.findUnique({ where: { slug } });
       if (!existingArtist) {
-        return reply.code(404).send({ message: "No se ha encontrado un artista con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un artista con ese slug", success: false });
       }
       await server.prisma.artist.delete({ where: { slug } });
-      return reply.send({ updated: true });
+      return reply.send({ success: true, message: "Artista eliminado correctamente" });
     } catch (error) {
-      console.error("Error al eliminar artista:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error", updated: false });
+      return reply.code(500).send({ message: "Ha ocurrido un error", success: false });
     }
   }
 }
