@@ -1,0 +1,25 @@
+<div class="admin-dashboard-container">
+  <!-- Sidebar izquierdo -->
+  <div class="admin-sidebar">
+    <button class="first-bttn" (click)="changeView('users')">Users</button>
+    <button (click)="changeView('artists')">Artists</button>
+    <button (click)="changeView('categories')">Categories</button>
+    <button (click)="changeView('venues')">Venues</button>
+    <button (click)="changeView('concerts')">Concerts</button>
+  </div>
+
+  <!-- Contenido dinámico -->
+  <div class="admin-content">
+    @if (view === 'users') {
+    <app-admin-user-dashboard></app-admin-user-dashboard>
+    } @else if (view === 'artists') {
+    <app-admin-artist-dashboard></app-admin-artist-dashboard>
+    }@else if (view === 'categories') {
+    <app-admin-category-dashboard></app-admin-category-dashboard>
+    }@else if (view === 'venues') {
+    <app-admin-venue-dashboard></app-admin-venue-dashboard>
+    }@else if (view === 'concerts') {
+    <app-admin-concert-dashboard></app-admin-concert-dashboard>
+    }
+  </div>
+</div>

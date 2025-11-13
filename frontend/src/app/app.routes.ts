@@ -1,4 +1,5 @@
 import { Routes } from "@angular/router";
+import { UserTypeGuard } from "./core/guards/user-type-guard.service";
 
 export const appRoutes: Routes = [
   {
@@ -15,7 +16,8 @@ export const appRoutes: Routes = [
   },
   {
     path: "details/:slug",
-    loadComponent: () => import("./pages/details/details.component").then((c) => c.DetailsComponent),
+    loadComponent: () =>
+      import("./pages/details/details.component").then((c) => c.DetailsComponent),
   },
   {
     path: "auth",
@@ -24,5 +26,14 @@ export const appRoutes: Routes = [
   {
     path: "profile",
     loadChildren: () => import("./pages/profile/profile.routing"),
+  },
+  {
+    path: "adminDashboard",
+    loadComponent: () =>
+      import("./pages/adminDashboard/adminDashboard.component").then(
+        (c) => c.AdminDashboardComponent
+      ),
+    canActivate: [UserTypeGuard],
+    data: { expectedUserType: "admin" },
   },
 ];

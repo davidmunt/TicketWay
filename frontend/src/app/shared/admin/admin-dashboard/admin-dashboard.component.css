@@ -1,0 +1,56 @@
+.admin-sidebar {
+  width: 220px;
+  height: 100vh;
+  background-color: #252525;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 15px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.first-bttn {
+  margin-top: 70px;
+}
+
+.admin-sidebar button {
+  background-color: transparent;
+  color: #e4e4e7;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: -1;
+}
+
+.admin-sidebar button:hover,
+.admin-sidebar button:focus {
+  background-color: #252525;
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.admin-sidebar button.active {
+  background-color: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 180px;
+    padding: 15px 10px;
+  }
+
+  .admin-sidebar button {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
