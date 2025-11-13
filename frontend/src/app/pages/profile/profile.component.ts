@@ -7,7 +7,7 @@ import { ProfileComponentComponent } from "../../shared/profile/profile.componen
   templateUrl: "./profile.component.html",
   styleUrls: ["./profile.component.css"],
   standalone: true,
-  imports: [RouterModule, RouterLink, ProfileComponentComponent],
+  imports: [RouterModule, ProfileComponentComponent],
 })
 export class ProfileComponent implements OnInit {
   constructor() {}
