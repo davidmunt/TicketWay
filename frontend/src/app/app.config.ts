@@ -7,5 +7,11 @@ import { HttpTokenInterceptor } from "src/app/core/interceptors/http.token.inter
 import { appRoutes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(appRoutes), provideHttpClient(withInterceptors([HttpTokenInterceptor])), provideAnimations(), provideToastr()],
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(appRoutes),
+    provideHttpClient(withInterceptors([HttpTokenInterceptor])),
+    provideAnimations(),
+    provideToastr(),
+  ],
 };
