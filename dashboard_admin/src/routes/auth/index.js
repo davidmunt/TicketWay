@@ -39,11 +39,11 @@ async function userAdmin(server, options) {
       const user = await userAdminModel.registerUserAdmin(req.body.user);
       if (user) delete user.password;
       const accessToken = server.jwt.sign(
-        { userId: user.id, email: user.email },
+        { userId: user.id, email: user.email, typeUser: "admin" },
         { expiresIn: config.security.jwt.expiresIn }
       );
       const refreshToken = server.jwt.sign(
-        { userId: user.id },
+        { userId: user.id, email: user.email, typeuser: "admin" },
         { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: config.security.refresh.expiresIn }
       );
       await server.prisma.refreshToken.create({
@@ -68,40 +68,50 @@ async function userAdmin(server, options) {
     schema: schema.login,
     handler: onAdminLogin,
   });
+
   async function onAdminLogin(req, reply) {
     try {
       const { email, password } = req.body.user;
       const userLogin = await userAdminModel.getUserAdminByEmail(email);
-      if (!isUndefined(userLogin)) {
-        if (await server.hashCompare(password, userLogin.password)) {
-          if (userLogin) delete userLogin.password;
-          const accessToken = server.jwt.sign(
-            { userId: userLogin.id, email: userLogin.email },
-            { expiresIn: config.security.jwt.expiresIn }
-          );
-          const refreshToken = server.jwt.sign(
-            { userId: userLogin.id },
-            {
-              secret: process.env.REFRESH_TOKEN_SECRET,
-              expiresIn: config.security.refresh.expiresIn,
-            }
-          );
-          await server.prisma.refreshToken.create({
-            data: {
-              token: refreshToken,
-              userId: userLogin.id,
-              expiryDate: new Date(Date.now() + parseDuration(config.security.refresh.expiresIn)),
-            },
-          });
-          return reply.send({
-            user: userLogin,
-            accessToken,
-          });
-        }
-        return createError.Unauthorized("Datos incorrectos");
+      if (!userLogin) {
+        return reply.code(404).send({ message: "Usuario no encontrado" });
       }
+      const isPasswordValid = await server.hashCompare(password, userLogin.password);
+      if (!isPasswordValid) {
+        return reply.code(401).send({ message: "Credenciales incorrectas" });
+      }
+      delete userLogin.password;
+      const accessToken = server.jwt.sign(
+        { userId: userLogin.id, email: userLogin.email, typeUser: "admin" },
+        { expiresIn: config.security.jwt.expiresIn }
+      );
+      const refreshToken = server.jwt.sign(
+        { userId: userLogin.id, email: userLogin.email, typeUser: "admin" },
+        {
+          secret: process.env.REFRESH_TOKEN_SECRET,
+          expiresIn: config.security.refresh.expiresIn,
+        }
+      );
+      await server.prisma.refreshToken.deleteMany({
+        where: { userId: userLogin.id },
+      });
+      await server.prisma.refreshToken.create({
+        data: {
+          token: refreshToken,
+          userId: userLogin.id,
+          expiryDate: new Date(Date.now() + parseDuration(config.security.refresh.expiresIn)),
+        },
+      });
+      return reply.code(200).send({
+        user: userLogin,
+        accessToken,
+      });
     } catch (error) {
-      return reply.code(409).send({ message: "Ha habido un error" });
+      return reply.code(500).send({
+        message: "Ha habido un error en el login",
+        error: error.message,
+        success: false,
+      });
     }
   }
 
@@ -109,35 +119,83 @@ async function userAdmin(server, options) {
     method: "POST",
     url: options.prefix + "auth/refreshToken",
     schema: schema.refreshToken,
+    handler: onRefreshToken,
+  });
+
+  async function onRefreshToken(req, reply) {
+    try {
+      const token = req.headers?.authorization?.replace(/^Token\s+/, "");
+      if (!token) {
+        return reply.code(400).send({ message: "El token es necesario" });
+      }
+      let decoded;
+      try {
+        decoded = server.jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+      } catch (err) {
+        return reply.code(498).send({ message: "Refresh token inválido o expirado" });
+      }
+      const userId = decoded.userId;
+      if (!userId) {
+        return reply.code(400).send({ message: "El token no contiene un userId válido" });
+      }
+      const storedToken = await server.prisma.refreshToken.findUnique({
+        where: { userId },
+      });
+      if (!storedToken) {
+        return reply.code(403).send({ message: "Refresh token no encontrado" });
+      }
+      if (storedToken.token !== token) {
+        return reply.code(403).send({ message: "El refresh token no coincide" });
+      }
+      const user = await server.prisma.userAdmin.findUnique({ where: { id: userId } });
+      if (!user) {
+        return reply.code(404).send({ message: "Usuario no encontrado" });
+      }
+      const newAccessToken = server.jwt.sign(
+        { userId: user.id, email: user.email, typeUser: "admin" },
+        { expiresIn: process.env.JWT_EXPIRES_IN || "15m" }
+      );
+      return reply.code(200).send({
+        success: true,
+        accessToken: newAccessToken,
+      });
+    } catch (error) {
+      return reply.code(500).send({
+        message: "Error al refrescar token",
+        error: error.message,
+      });
+    }
+  }
+
+  server.route({
+    method: "POST",
+    url: options.prefix + "auth/logout",
+    schema: schema.refreshToken,
     onRequest: [server.authenticate],
     handler: onRefreshToken,
   });
   async function onRefreshToken(req, reply) {
     try {
-      const { refreshToken } = req.body;
-      if (!refreshToken) return reply.code(400).send({ message: "Refresh token requerido" });
-      const blacklisted = await server.prisma.refreshBlacklist.findUnique({
-        where: { token: refreshToken },
-      });
-      if (blacklisted) return reply.code(403).send({ message: "Refresh token revocado" });
+      const userId = req.userId;
       const storedToken = await server.prisma.refreshToken.findUnique({
-        where: { token: refreshToken },
+        where: { userId: userId },
       });
       if (!storedToken) return reply.code(403).send({ message: "Refresh token no encontrado" });
-      if (storedToken.expiryDate < new Date()) {
-        await server.prisma.refreshToken.delete({ where: { id: storedToken.id } });
-        return reply.code(403).send({ message: "Refresh token expirado" });
-      }
-      const decoded = server.jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-      const user = await server.prisma.userAdmin.findUnique({ where: { id: decoded.userId } });
+      const user = await server.prisma.userAdmin.findUnique({ where: { id: userId } });
       if (!user) return reply.code(404).send({ message: "Usuario no encontrado" });
-      const newAccessToken = server.jwt.sign(
-        { userId: user.id, email: user.email },
-        { expiresIn: config.security.jwt.expiresIn }
-      );
-      return reply.send({ accessToken: newAccessToken });
+      await server.prisma.refreshBlacklist.create({
+        data: {
+          token: storedToken.token,
+          userId: user.id,
+          expiryDate: storedToken.expiryDate,
+        },
+      });
+      await server.prisma.refreshToken.delete({
+        where: { id: storedToken.id },
+      });
+      return reply.send({ message: "Logout hecho correctamente" });
     } catch (error) {
-      return reply.code(500).send({ message: "Error al refrescar token" });
+      return reply.code(500).send({ message: "Error al refrescar token", error: error.message });
     }
   }
 
@@ -156,7 +214,7 @@ async function userAdmin(server, options) {
         return reply.code(404).send({ message: "Usuario no encontrado" });
       }
       if (user) delete user.password;
-      return { userAdmin: user };
+      return { user: user };
     } catch (error) {
       return reply.code(500).send({ message: "Ha ocurrido un error" });
     }

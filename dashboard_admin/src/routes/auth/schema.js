@@ -23,7 +23,7 @@ const register = {
     )
     .required(),
   response: {
-    200: Schema.object().prop("user", UserAdmin),
+    200: Schema.object().prop("user", UserAdmin).prop("accessToken", Schema.string()),
     409: Schema.object().prop("message", Schema.string()),
   },
 };
@@ -41,7 +41,7 @@ const login = {
     )
     .required(),
   response: {
-    200: Schema.object().prop("user", UserAdmin),
+    200: Schema.object().prop("user", UserAdmin).prop("accessToken", Schema.string()),
     401: Schema.object().prop("message", Schema.string()),
   },
 };
@@ -54,7 +54,7 @@ const userAdminData = {
   },
 };
 
-const onRefreshToken = {
+const refreshToken = {
   description: "Refres access token",
   response: {
     200: Schema.object().prop("token", Schema.string()),
@@ -66,5 +66,5 @@ module.exports = {
   register,
   login,
   userAdminData,
-  onRefreshToken,
+  refreshToken,
 };

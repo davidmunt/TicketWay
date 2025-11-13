@@ -9,7 +9,12 @@ async function getConfig() {
       .prop("API_HOST", Schema.string().default("http://localhost"))
       .prop("API_PORT", Schema.number().default(3003))
       .prop("API_PREFIX", Schema.string().default("/api"))
-      .prop("LOG_LEVEL", Schema.string().enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"))
+      .prop(
+        "LOG_LEVEL",
+        Schema.string()
+          .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
+          .default("info")
+      )
       .prop("DATABASE_URL", Schema.string().required())
       .prop("JWT_SECRET", Schema.string().required())
       .prop("JWT_EXPIRES_IN", Schema.string().default("15m"))

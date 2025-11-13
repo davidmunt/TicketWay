@@ -2,7 +2,6 @@ const fp = require("fastify-plugin");
 const { Unauthorized } = require("http-errors");
 
 module.exports = fp(async function (fastify, opts) {
-  const prisma = fastify.prisma;
   fastify.register(require("@fastify/jwt"), {
     secret: opts.security.jwt.secret,
     sign: {
@@ -19,39 +18,44 @@ module.exports = fp(async function (fastify, opts) {
 
   fastify.decorate("authenticate", async function (req, reply) {
     try {
-      const token = req.headers.authorization?.replace(/^Token /, "");
-      if (!token) throw new Unauthorized("Token necesario");
-      const blacklisted = await prisma.refreshBlacklist.findUnique({
-        where: { token },
-      });
-      if (blacklisted) throw new Unauthorized("Token revocado");
-      const decoded = await req.jwtVerify();
-      const user = await prisma.userAdmin.findUnique({
-        where: { id: decoded?.userAdmin?.id },
+      const token = req.headers?.authorization?.replace(/^Token /, "");
+      if (!token) throw new Unauthorized("El Token es necesario");
+      let decoded;
+      try {
+        decoded = fastify.jwt.verify(token);
+      } catch (err) {
+        throw new Unauthorized("Token invalido o expirado");
+      }
+      if (decoded.typeUser !== "admin") {
+        throw new Unauthorized("Tipo de usuario no autorizado");
+      }
+      const user = await fastify.prisma.userAdmin.findUnique({
+        where: { id: decoded.userId },
       });
       if (!user) throw new Unauthorized("Usuario no encontrado");
-      const refreshToken = await prisma.refreshToken.findUnique({
+      const refreshToken = await fastify.prisma.refreshToken.findFirst({
         where: { userId: user.id },
       });
-      if (!refreshToken) throw new Unauthorized("RefreshToken no encontrado");
+      if (!refreshToken) {
+        throw new Unauthorized("RefreshToken no encontrado, por favor vuelve a iniciar sesión");
+      }
       if (refreshToken.expiryDate < new Date()) {
-        await prisma.refreshBlacklist.create({
+        await fastify.prisma.refreshBlacklist.create({
           data: {
             token: refreshToken.token,
             userId: user.id,
             expiryDate: refreshToken.expiryDate,
           },
         });
-        await prisma.refreshToken.delete({
+        await fastify.prisma.refreshToken.delete({
           where: { id: refreshToken.id },
         });
-        throw new Unauthorized("RefreshToken expirado");
+        throw new Unauthorized("Sesión expirada, por favor inicia sesión de nuevo");
       }
       req.userId = user.id;
       req.userEmail = user.email;
-      req.token = token;
     } catch (err) {
-      throw new Unauthorized("Token invalido o expirado");
+      throw new Unauthorized(err.message || "Token invalido o expirado");
     }
   });
 });
