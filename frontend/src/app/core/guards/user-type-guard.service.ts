@@ -1,27 +1,38 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
-import { UserTypeService } from "../../core";
-import { map, take } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { JwtService } from "../../core";
+import { map, catchError } from "rxjs/operators";
+import { jwtDecode } from "jwt-decode";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserTypeGuard implements CanActivate {
-  constructor(private router: Router, private userTypeService: UserTypeService) {}
+  constructor(private router: Router, private jwtService: JwtService) {}
 
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
+    const token = this.jwtService.getToken();
     const expectedUserType = route.data["expectedUserType"];
 
-    return this.userTypeService.userType$.pipe(
-      take(1),
-      map((userType) => {
-        if (!userType || userType !== expectedUserType) {
-          console.warn(`El usuario tipo: ${userType} no puede entrar a esta ruta`);
-          return this.router.createUrlTree(["/"]);
-        }
-        return true;
-      })
-    );
+    if (!token) {
+      console.warn("No hay token");
+      return of(this.router.createUrlTree(["/login"]));
+    }
+
+    try {
+      const decoded: any = jwtDecode(token);
+      const userType = decoded.typeUser;
+
+      if (userType === expectedUserType) {
+        return of(true);
+      } else {
+        console.warn(`El usuario tipo: ${userType} no puede entrar a esta ruta`);
+        return of(this.router.createUrlTree(["/"]));
+      }
+    } catch (error) {
+      console.error("Error al decodificar token:", error);
+      return of(this.router.createUrlTree(["/login"]));
+    }
   }
 }
