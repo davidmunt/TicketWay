@@ -23,7 +23,6 @@ async function concert(server, options) {
       }
       return reply.send({ concert });
     } catch (error) {
-      console.error("Error al obtener concierto:", error);
       return reply.code(500).send({ message: "Ha ocurrido un error interno" });
     }
   }
@@ -61,7 +60,6 @@ async function concert(server, options) {
       }
       return reply.send({ concerts });
     } catch (error) {
-      console.error("Error al obtener conciertos:", error);
       return reply.code(500).send({ message: "Ha ocurrido un error interno" });
     }
   }
@@ -75,10 +73,6 @@ async function concert(server, options) {
   });
   async function onCreateConcert(req, reply) {
     try {
-      const concert = req.body.concert;
-      if (!concert) {
-        return reply.code(400).send({ message: "Los datos del concierto son obligatorios" });
-      }
       const {
         name,
         date,
@@ -87,10 +81,26 @@ async function concert(server, options) {
         images,
         venue,
         category,
-        artists,
+        artist,
         availableSeats,
         status,
-      } = concert;
+      } = req.body;
+      if (
+        !name ||
+        !date ||
+        !price ||
+        !description ||
+        !images ||
+        !venue ||
+        !category ||
+        !artist ||
+        !availableSeats ||
+        !status
+      ) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos del concierto son obligatorios", success: false });
+      }
       if (
         !name?.trim() ||
         !date ||
@@ -102,24 +112,30 @@ async function concert(server, options) {
         return reply.code(400).send({
           message:
             "Los campos 'name', 'date', 'price', 'description', 'venue' y 'category' son obligatorios",
+          success: false,
         });
       }
       if (images && !Array.isArray(images)) {
-        return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
+        return reply
+          .code(400)
+          .send({ message: "El campo 'images' debe ser un array", success: false });
       }
-      if (artists && !Array.isArray(artists)) {
-        return reply.code(400).send({ message: "El campo 'artists' debe ser un array" });
+      if (!artist) {
+        return reply.code(400).send({ message: "El campo 'artist' es necesario", success: false });
       }
       if (typeof price !== "number" || price < 0) {
-        return reply.code(400).send({ message: "El campo 'price' debe ser un número positivo" });
+        return reply
+          .code(400)
+          .send({ message: "El campo 'price' debe ser un número positivo", success: false });
       }
       if (
         availableSeats !== undefined &&
         (typeof availableSeats !== "number" || availableSeats < 0)
       ) {
-        return reply
-          .code(400)
-          .send({ message: "El campo 'availableSeats' debe ser un número positivo" });
+        return reply.code(400).send({
+          message: "El campo 'availableSeats' debe ser un número positivo",
+          success: false,
+        });
       }
       const slugify = (text) =>
         text
@@ -153,16 +169,17 @@ async function concert(server, options) {
           images: images || [],
           venue,
           category,
-          artists: artists || [],
+          artist: artist,
           availableSeats: availableSeats || 0,
           status: status || "PENDING",
           isActive: true,
         },
       });
-      return reply.code(201).send({ concert: newConcert });
+      return reply.code(201).send({ concert: newConcert, success: true });
     } catch (error) {
-      console.error("Error al crear el concierto:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply
+        .code(500)
+        .send({ message: `Ha ocurrido un error interno: ${error}`, success: false });
     }
   }
 
@@ -177,52 +194,78 @@ async function concert(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
-      const concertData = req.body.concert;
-      if (!concertData) {
-        return reply.code(400).send({ message: "Los datos del concierto son necesarios" });
+      const {
+        name,
+        date,
+        price,
+        description,
+        images,
+        venue,
+        category,
+        artist,
+        availableSeats,
+        status,
+        isActive,
+      } = req.body;
+      if (
+        !name ||
+        !date ||
+        !price ||
+        !description ||
+        !images ||
+        !venue ||
+        !category ||
+        !artist ||
+        !availableSeats ||
+        !status ||
+        !isActive
+      ) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos del concierto son obligatorios", success: false });
       }
       const existingConcert = await server.prisma.concert.findUnique({ where: { slug } });
       if (!existingConcert) {
-        return reply.code(404).send({ message: "No se ha encontrado un concierto con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un concierto con ese slug", success: false });
       }
       const updateData = {};
-      if (concertData.name && concertData.name.trim().length > 0)
-        updateData.name = concertData.name.trim();
-      if (concertData.date) updateData.date = new Date(concertData.date);
-      if (concertData.price !== undefined) {
-        if (typeof concertData.price !== "number" || concertData.price < 0) {
-          return reply.code(400).send({ message: "El campo 'price' debe ser un número positivo" });
-        }
-        updateData.price = concertData.price;
-      }
-      if (concertData.description && concertData.description.trim().length > 0)
-        updateData.description = concertData.description.trim();
-      if (concertData.venue) updateData.venue = concertData.venue;
-      if (concertData.category) updateData.category = concertData.category;
-      if (concertData.artists) {
-        if (!Array.isArray(concertData.artists)) {
-          return reply.code(400).send({ message: "El campo 'artists' debe ser un array" });
-        }
-        updateData.artists = concertData.artists;
-      }
-      if (concertData.images) {
-        if (!Array.isArray(concertData.images)) {
-          return reply.code(400).send({ message: "El campo 'images' debe ser un array" });
-        }
-        updateData.images = concertData.images;
-      }
-      if (concertData.availableSeats !== undefined) {
-        if (typeof concertData.availableSeats !== "number" || concertData.availableSeats < 0) {
+      if (name && name.trim().length > 0) updateData.name = name.trim();
+      if (date) updateData.date = new Date(date);
+      if (price !== undefined) {
+        if (typeof price !== "number" || price < 0) {
           return reply
             .code(400)
-            .send({ message: "El campo 'availableSeats' debe ser un número positivo" });
+            .send({ message: "El campo 'price' debe ser un número positivo", success: false });
         }
-        updateData.availableSeats = concertData.availableSeats;
+        updateData.price = price;
       }
-      if (concertData.status) updateData.status = concertData.status;
-      if (concertData.isActive !== undefined) updateData.isActive = Boolean(concertData.isActive);
+      if (description && description.trim().length > 0) updateData.description = description.trim();
+      if (venue) updateData.venue = venue;
+      if (category) updateData.category = category;
+      if (artist) updateData.artist = artist;
+      if (images) {
+        if (!Array.isArray(images)) {
+          return reply
+            .code(400)
+            .send({ message: "El campo 'images' debe ser un array", success: false });
+        }
+        updateData.images = images;
+      }
+      if (availableSeats !== undefined) {
+        if (typeof availableSeats !== "number" || availableSeats < 0) {
+          return reply.code(400).send({
+            message: "El campo 'availableSeats' debe ser un número positivo",
+            success: false,
+          });
+        }
+        updateData.availableSeats = availableSeats;
+      }
+      if (status) updateData.status = status;
+      if (isActive !== undefined) updateData.isActive = Boolean(isActive);
       const updatedConcert = await server.prisma.concert.update({
         where: { slug },
         data: updateData,
@@ -230,10 +273,12 @@ async function concert(server, options) {
       return reply.code(200).send({
         message: "Concierto actualizado correctamente",
         concert: updatedConcert,
+        success: true,
       });
     } catch (error) {
-      console.error("Error al actualizar el concierto:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply
+        .code(500)
+        .send({ message: `Ha ocurrido un error interno${error}`, success: false });
     }
   }
 
@@ -248,17 +293,18 @@ async function concert(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
       const existingConcert = await server.prisma.concert.findUnique({ where: { slug } });
       if (!existingConcert) {
-        return reply.code(404).send({ message: "No se ha encontrado un concierto con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado un concierto con ese slug", success: false });
       }
       await server.prisma.concert.delete({ where: { slug } });
-      return reply.code(200).send({ updated: true });
+      return reply.code(200).send({ success: true });
     } catch (error) {
-      console.error("Error al eliminar el concierto:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno", updated: false });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 }

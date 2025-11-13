@@ -1,0 +1,47 @@
+<div class="concert-dashboard-container">
+  <h2>Concert Management</h2>
+
+  <div *ngIf="view === 'listConcerts'">
+    <div class="create-button">
+      <button (click)="changeView('createUpdateConcert', null)">Add New Concert</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Venue</th>
+          <th>Category</th>
+          <th>Artist</th>
+          <th>Status</th>
+          <th>Active</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let concert of concerts()">
+          <td>{{ concert.name }}</td>
+          <td>{{ concert.date | date : "short" }}</td>
+          <td>{{ getVenueName(concert.venue) }}</td>
+          <td>{{ getCategoryName(concert.category) }}</td>
+          <td>{{ getArtistName(concert.artist) }}</td>
+          <td>{{ concert.status }}</td>
+          <td>{{ concert.isActive }}</td>
+          <td>
+            <button (click)="changeView('createUpdateConcert', concert)">✏️</button>
+            <button (click)="onDeleteConcert(concert.slug)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="view === 'createUpdateConcert'">
+    <app-admin-create-update-concert
+      *ngIf="view === 'createUpdateConcert'"
+      [concert]="concert"
+      (changeView)="changeView($event, null)"
+    ></app-admin-create-update-concert>
+  </div>
+</div>

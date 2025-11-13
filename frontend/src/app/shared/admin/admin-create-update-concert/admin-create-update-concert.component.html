@@ -1,0 +1,109 @@
+<div class="concert-form-container">
+  <h2>{{ concert && concert.slug ? "Edit Concert" : "Create Concert" }}</h2>
+
+  <form [formGroup]="concertForm" (ngSubmit)="onSubmit()">
+    <!-- Name -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="Concert Name" />
+    </div>
+
+    <!-- Date -->
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input id="date" type="datetime-local" formControlName="date" />
+    </div>
+
+    <!-- Venue -->
+    <div class="form-group">
+      <label for="venue">Venue</label>
+      <select id="venue" formControlName="venue" required>
+        <option *ngFor="let v of venues" [value]="v.venue_id">{{ v.name }}</option>
+      </select>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" rows="3"></textarea>
+    </div>
+
+    <!-- Category -->
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category" required>
+        <option *ngFor="let c of categories" [value]="c.category_id">{{ c.name }}</option>
+      </select>
+    </div>
+
+    <!-- Artist -->
+    <div class="form-group">
+      <label>Artist</label>
+      <div *ngFor="let artist of artists">
+        <label>
+          <input
+            type="radio"
+            name="artist"
+            [value]="artist.artist_id"
+            [checked]="concertForm.get('artist')?.value === artist.artist_id"
+            (change)="onArtistSelect($event)"
+          />
+          {{ artist.name }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Images -->
+    <div class="form-group">
+      <label>Images (URLs)</label>
+      <div *ngFor="let imgCtrl of imageControls; let i = index">
+        <input type="text" [formControl]="imgCtrl" placeholder="https://example.com/img.jpg" />
+        <button type="button" (click)="removeImage(i)">✕</button>
+      </div>
+      <button type="button" (click)="addImage()">+ Add Image</button>
+      <!-- Previsualización -->
+      <div class="image-preview" *ngIf="concertForm.get('images')?.value?.length">
+        <div class="preview-img" *ngFor="let url of concertForm.get('images')?.value">
+          <img [src]="url" alt="Imagen del concierto" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input id="price" type="number" formControlName="price" min="0" />
+    </div>
+
+    <!-- Available Seats -->
+    <div class="form-group">
+      <label for="availableSeats">Available Seats</label>
+      <input id="availableSeats" type="number" formControlName="availableSeats" min="0" />
+    </div>
+
+    <!-- Status -->
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select id="status" formControlName="status">
+        <option value="PENDING">PENDING</option>
+        <option value="APPROVED">APPROVED</option>
+        <option value="CANCELLED">CANCELLED</option>
+        <option value="COMPLETED">COMPLETED</option>
+      </select>
+    </div>
+
+    <!-- Active -->
+    <div class="form-group">
+      <label for="isActive">Active</label>
+      <select id="isActive" formControlName="isActive">
+        <option [value]="true">Active</option>
+        <option [value]="false">Inactive</option>
+      </select>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" [disabled]="concertForm.invalid">
+      {{ concert && concert.slug ? "Update Concert" : "Create Concert" }}
+    </button>
+  </form>
+</div>

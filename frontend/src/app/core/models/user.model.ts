@@ -4,5 +4,6 @@ export interface User {
   bio: string;
   image: string;
   token: string;
+  isActive: boolean;
   refreshToken: string;
 }

@@ -10,48 +10,46 @@ const concertBody = S.object().prop(
     .prop("images", S.array().items(S.string()).default([]))
     .prop("venue", S.string().required())
     .prop("category", S.string().required())
-    .prop("artists", S.array().items(S.string()).default([]))
+    .prop("artist", S.string())
     .prop("availableSeats", S.number().default(0))
-    .prop("status", S.string().default("PENDING"))
+    .prop("status", S.string().enum(["PENDING", "OPEN", "CLOSED", "CANCELLED"]).default("PENDING"))
     .prop("isActive", S.boolean().default(true))
 );
 
-const concertResponse = S.object().prop(
-  "concert",
-  S.object()
-    .prop("id", S.string())
-    .prop("slug", S.string())
-    .prop("name", S.string())
-    .prop("date", S.string())
-    .prop("price", S.number())
-    .prop("description", S.string())
-    .prop("images", S.array().items(S.string()))
-    .prop("venue", S.string())
-    .prop("category", S.string())
-    .prop("artists", S.array().items(S.string()))
-    .prop("availableSeats", S.number())
-    .prop("status", S.string())
-    .prop("isActive", S.boolean())
-    .prop("favoritesCount", S.number())
-    .prop("createdAt", S.string())
-    .prop("updatedAt", S.string())
-);
+const concertResponse = S.object()
+  .prop("id", S.string())
+  .prop("slug", S.string())
+  .prop("name", S.string())
+  .prop("date", S.string())
+  .prop("price", S.number())
+  .prop("description", S.string())
+  .prop("images", S.array().items(S.string()))
+  .prop("venue", S.string())
+  .prop("category", S.string())
+  .prop("artist", S.string())
+  .prop("availableSeats", S.number())
+  .prop("status", S.string())
+  .prop("isActive", S.boolean())
+  .prop("favoritesCount", S.number())
+  .prop("createdAt", S.string())
+  .prop("updatedAt", S.string());
 
-const concertsResponse = S.object().prop(
-  "concerts",
-  S.array().items(concertResponse.prop("concert"))
-);
-
+const concertsResponse = S.object()
+  .prop("concerts", S.array().items(concertResponse))
+  .prop("success", S.boolean().default(true));
 module.exports = {
   createConcert: {
     description: "Crear un nuevo concierto",
     tags: ["Concert"],
     body: concertBody,
     response: {
-      201: concertResponse,
-      400: S.object().prop("message", S.string()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      201: S.object()
+        .prop("message", S.string().default("Concierto creado correctamente"))
+        .prop("concert", concertResponse)
+        .prop("success", S.boolean().default(true)),
+      400: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -61,13 +59,13 @@ module.exports = {
     params: S.object().prop("slug", S.string().required()),
     body: concertBody,
     response: {
-      200: concertResponse.prop(
-        "message",
-        S.string().default("Concierto actualizado correctamente")
-      ),
-      400: S.object().prop("message", S.string()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      200: S.object()
+        .prop("message", S.string().default("Concierto actualizado correctamente"))
+        .prop("concert", concertResponse)
+        .prop("success", S.boolean().default(true)),
+      400: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -76,9 +74,9 @@ module.exports = {
     tags: ["Concert"],
     params: S.object().prop("slug", S.string().required()),
     response: {
-      200: concertResponse,
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      200: S.object().prop("concert", concertResponse).prop("success", S.boolean().default(true)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -86,7 +84,7 @@ module.exports = {
     description: "Listar conciertos con filtros y paginación",
     tags: ["Concert"],
     querystring: S.object()
-      .prop("limit", S.number().default(4))
+      .prop("limit", S.number().default(10))
       .prop("offset", S.number().default(0))
       .prop("name", S.string())
       .prop("venue", S.string())
@@ -95,8 +93,8 @@ module.exports = {
       .prop("isActive", S.boolean()),
     response: {
       200: concertsResponse,
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -105,9 +103,11 @@ module.exports = {
     tags: ["Concert"],
     params: S.object().prop("slug", S.string().required()),
     response: {
-      200: S.object().prop("updated", S.boolean()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      200: S.object()
+        .prop("message", S.string().default("Concierto eliminado correctamente"))
+        .prop("success", S.boolean().default(true)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 };
