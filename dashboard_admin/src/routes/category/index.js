@@ -39,29 +39,25 @@ async function category(server, options) {
   });
   async function onGetCategories(req, reply) {
     try {
-      const limit = Number(req.query.limit) || 4;
-      const offset = Number(req.query.offset) || 0;
-      const name = req.query.name || "";
-      const isActive = req.query.isActive !== undefined ? req.query.isActive === "true" : undefined;
-      const where = {};
-      if (name) {
-        where.name = { contains: name, mode: "insensitive" };
-      }
-      if (isActive !== undefined) {
-        where.isActive = isActive;
-      }
+      // const limit = Number(req.query.limit) || 4;
+      // const offset = Number(req.query.offset) || 0;
+      // const name = req.query.name || "";
+      // const isActive = req.query.isActive !== undefined ? req.query.isActive === "true" : undefined;
+      // const where = {};
+      // if (name) {
+      //   where.name = { contains: name, mode: "insensitive" };
+      // }
+      // if (isActive !== undefined) {
+      //   where.isActive = isActive;
+      // }
       const categories = await server.prisma.category.findMany({
-        where,
-        take: limit,
-        skip: offset,
         orderBy: { createdAt: "desc" },
       });
-      if (!categories || categories.length === 0) {
-        return reply.code(404).send({ message: "No se han encontrado categorias" });
-      }
-      return reply.send({ categories });
+      // if (!categories || categories.length === 0) {
+      //   return reply.code(404).send({ message: "No se han encontrado categorias" });
+      // }
+      return reply.send({ categories: categories });
     } catch (error) {
-      console.error("Error al obtener categorias:", error);
       return reply.code(500).send({ message: "Ha ocurrido un error" });
     }
   }
@@ -93,14 +89,16 @@ async function category(server, options) {
   });
   async function onCreateCategory(req, reply) {
     try {
-      const category = req.body.category;
-      if (!category) {
-        return reply.code(400).send({ message: "Los datos de la categoria son obligatorios" });
+      const { name, description, image } = req.body;
+      if (!name || !description || !image) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos de la categoria son obligatorios", success: false });
       }
-      const { name, description, image } = category;
       if (!name?.trim() || !description?.trim()) {
         return reply.code(400).send({
           message: "Los campos 'name' y 'description' son obligatorios",
+          success: false,
         });
       }
       let slug = generateSlug(name);
@@ -118,10 +116,11 @@ async function category(server, options) {
           isActive: true,
         },
       });
-      return reply.code(201).send({ category: newCategory });
+      return reply
+        .code(201)
+        .send({ category: newCategory, success: true, message: "Categoria creada correctamente" });
     } catch (error) {
-      console.error("Error al crear la categoria:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", success: false });
     }
   }
 
@@ -132,39 +131,46 @@ async function category(server, options) {
     schema: schema.updateCategory,
     handler: onUpdateCategory,
   });
-
   async function onUpdateCategory(req, reply) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(400).send({ message: "El slug es obligatorio" });
+        return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
-      const categoryData = req.body.category;
-      if (!categoryData) {
-        return reply.code(400).send({ message: "Los datos de la categoria son necesarios" });
+      const { name, description, image, isActive } = req.body;
+      if (!name || !description || !image) {
+        return reply
+          .code(400)
+          .send({ message: "Los datos de la categoría son obligatorios", success: false });
       }
+
       const existingCategory = await server.prisma.category.findUnique({ where: { slug } });
       if (!existingCategory) {
-        return reply.code(404).send({ message: "No se ha encontrado una categoria con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado una categoría con ese slug", success: false });
       }
+
       const updateData = {};
-      if (categoryData.name && categoryData.name.trim().length > 0)
-        updateData.name = categoryData.name.trim();
-      if (categoryData.description) updateData.description = categoryData.description.trim();
-      if (categoryData.isActive !== undefined) updateData.isActive = categoryData.isActive;
-      if (categoryData.image) updateData.image = categoryData.image;
+      if (name && name.trim().length > 0) updateData.name = name.trim();
+      if (description) updateData.description = description.trim();
+      if (isActive !== undefined) updateData.isActive = isActive;
+      if (image) updateData.image = image;
+
       const updatedCategory = await server.prisma.category.update({
         where: { slug },
         data: updateData,
       });
+
       return reply.code(200).send({
-        message: "Categoria actualizado correctamente",
+        message: "Categoría actualizada correctamente",
         category: updatedCategory,
+        success: true,
       });
     } catch (error) {
-      console.error("Error al actualizar categoria:", error);
       return reply.code(500).send({
-        message: "Ha ocurrido un error interno",
+        message: `Ha ocurrido un error interno: ${error}`,
+        success: false,
       });
     }
   }
@@ -180,17 +186,20 @@ async function category(server, options) {
     try {
       const slug = req.params.slug;
       if (!slug) {
-        return reply.code(404).send({ message: "El slug es necesario para la funcion" });
+        return reply
+          .code(404)
+          .send({ message: "El slug es necesario para la funcion", success: false });
       }
       const existingCategory = await server.prisma.category.findUnique({ where: { slug } });
       if (!existingCategory) {
-        return reply.code(404).send({ message: "No se ha encontrado una categoria con ese slug" });
+        return reply
+          .code(404)
+          .send({ message: "No se ha encontrado una categoria con ese slug", success: false });
       }
       await server.prisma.category.delete({ where: { slug } });
-      return reply.send({ updated: true });
+      return reply.send({ success: true });
     } catch (error) {
-      console.error("Error al eliminar la categoria:", error);
-      return reply.code(500).send({ message: "Ha ocurrido un error", updated: false });
+      return reply.code(500).send({ message: "Ha ocurrido un error", success: false });
     }
   }
 }

@@ -25,7 +25,18 @@ const categoryResponse = S.object().prop(
 
 const categoriesResponse = S.object().prop(
   "categories",
-  S.array().items(categoryResponse.prop("category"))
+  S.array().items(
+    S.object()
+      .prop("id", S.string())
+      .prop("slug", S.string())
+      .prop("name", S.string())
+      .prop("description", S.string())
+      .prop("image", S.string())
+      .prop("concerts", S.array().items(S.string()).default([]))
+      .prop("isActive", S.boolean())
+      .prop("createdAt", S.string())
+      .prop("updatedAt", S.string())
+  )
 );
 
 module.exports = {
@@ -34,10 +45,12 @@ module.exports = {
     tags: ["Category"],
     body: categoryBody,
     response: {
-      201: categoryResponse,
-      400: S.object().prop("message", S.string()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      201: categoryResponse
+        .prop("success", S.boolean().default(true))
+        .prop("message", S.string().default("Categoría creada correctamente")),
+      400: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -47,13 +60,12 @@ module.exports = {
     params: S.object().prop("slug", S.string().required()),
     body: categoryBody,
     response: {
-      200: categoryResponse.prop(
-        "message",
-        S.string().default("Categoría actualizada correctamente")
-      ),
-      400: S.object().prop("message", S.string()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      200: categoryResponse
+        .prop("message", S.string().default("Categoría actualizada correctamente"))
+        .prop("success", S.boolean().default(true)),
+      400: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 
@@ -88,9 +100,9 @@ module.exports = {
     tags: ["Category"],
     params: S.object().prop("slug", S.string().required()),
     response: {
-      200: S.object().prop("updated", S.boolean()),
-      404: S.object().prop("message", S.string()),
-      500: S.object().prop("message", S.string()),
+      200: S.object().prop("success", S.boolean().default(true)),
+      404: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
+      500: S.object().prop("message", S.string()).prop("success", S.boolean().default(false)),
     },
   },
 };

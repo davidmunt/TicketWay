@@ -1,0 +1,43 @@
+<div class="category-dashboard-container">
+  @if (view === 'listCategories') {
+  <h2 class="dashboard-title">Category Management</h2>
+
+  <div class="category-table">
+    <div class="create-bttn-div">
+      <button class="create-bttn" (click)="changeView('createUpdateCategory', null)">
+        + Add new Category
+      </button>
+    </div>
+
+    <div class="category-table-header">
+      <div class="header-cell">Name</div>
+      <div class="header-cell">Description</div>
+      <div class="header-cell">Is active</div>
+      <div class="header-cell">Image</div>
+    </div>
+
+    <div class="category-row" *ngFor="let category of categories()">
+      <div class="cell name-cell">{{ category.name }}</div>
+      <div class="cell desc-cell">{{ category.description || "No description" }}</div>
+      <div class="cell desc-cell">{{ category.isActive }}</div>
+      <div class="cell image-cell">
+        <img
+          [src]="category.image || 'assets/imgs/default-image.png'"
+          [alt]="category.name"
+          class="category-image"
+        />
+      </div>
+      <button class="cell modify-cell" (click)="changeView('createUpdateCategory', category)">
+        ✏️
+      </button>
+      <button class="cell delete-cell" (click)="onDeleteCategory(category.slug)">🗑️</button>
+    </div>
+  </div>
+  } @else if (view === 'createUpdateCategory') {
+  <app-admin-create-update-category
+    *ngIf="view === 'createUpdateCategory'"
+    [category]="category"
+    (changeView)="changeView($event, null)"
+  ></app-admin-create-update-category>
+  }
+</div>
