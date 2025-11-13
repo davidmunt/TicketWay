@@ -5,6 +5,7 @@ export * from "./filters.model";
 export * from "./artist.model";
 export * from "./venue.model";
 export * from "./user.model";
+export * from "./useradmin.model";
 export * from "./errors.model";
 export * from "./profile.model";
 export * from "./comment.model";

@@ -19,17 +19,17 @@ export class ConcertService {
 
   get_concerts(offset?: number, limit?: number): Observable<Concert[]> {
     if (offset !== undefined && limit !== undefined) {
-      options.params = new HttpParams().set("offset", offset.toString()).set("limit", limit.toString());
+      options.params = new HttpParams()
+        .set("offset", offset.toString())
+        .set("limit", limit.toString());
     }
     return this.apiService.get(user_port, `/concerts/`, options);
   }
 
-  // get_concert(slug: String): Observable<Concert> {
-  //   return this.apiService.get(user_port, `/concerts/${slug}`);
-  // }
-
   get_concert(slug: string): Observable<Concert> {
-    return this.apiService.get(user_port, `/concerts/${slug}`).pipe(tap((data: any) => this._concert.set(data)));
+    return this.apiService
+      .get(user_port, `/concerts/${slug}`)
+      .pipe(tap((data: any) => this._concert.set(data)));
   }
 
   get_concerts_by_category(slug: String): Observable<Concert[]> {

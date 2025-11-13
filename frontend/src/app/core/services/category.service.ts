@@ -16,7 +16,9 @@ export class CategoryService {
   get_categories(offset?: number, limit?: number): Observable<Category[]> {
     let options: { params?: HttpParams } = {};
     if (offset !== undefined && limit !== undefined) {
-      options.params = new HttpParams().set("offset", offset.toString()).set("limit", limit.toString());
+      options.params = new HttpParams()
+        .set("offset", offset.toString())
+        .set("limit", limit.toString());
     }
     return this.apiService.get(user_port, `/categories/`, options);
   }

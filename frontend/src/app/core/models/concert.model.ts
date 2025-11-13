@@ -1,6 +1,6 @@
 export interface Concert {
   slug?: string;
-  concert_id: number;
+  concert_id: string;
   name: string;
   date: string;
   venue: string;
@@ -10,6 +10,9 @@ export interface Concert {
   images: string[];
   price: number;
   favorited: boolean;
+  availableSeats: number;
+  status: string;
+  isActive: boolean;
   favoritesCount: number;
 }
 

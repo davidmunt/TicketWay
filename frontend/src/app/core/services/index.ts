@@ -9,3 +9,5 @@ export * from "./jwt.service";
 export * from "./profile.service";
 export * from "./profile.resolver.service";
 export * from "./comment.service";
+export * from "./role.service";
+export * from "./useradmin.service";
