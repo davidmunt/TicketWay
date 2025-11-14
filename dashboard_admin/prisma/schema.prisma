@@ -63,7 +63,6 @@ model UserCompany {
   username  String       @unique
   email     String       @unique
   password  String
-  bio       String       @default("(vacio)")
   image     String       @default("https://static.productionready.io/images/smiley-cyrus.jpg")
   isActive  Boolean      @default(true)
   createdAt DateTime     @default(now())
