@@ -6,6 +6,11 @@
 /dashboard_admin/package-lock.json
 /dashboard_admin/.env
 
+/dashboard_company/node_modules/
+/dashboard_company/package-lock.json
+/dashboard_company/.env
+/dashboard_company/dist/
+
 /frontend/node_modules/
 /frontend/.angular/
 /frontend/package-lock.json
