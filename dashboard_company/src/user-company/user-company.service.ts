@@ -4,11 +4,14 @@ import { RegisterUserCompanyDto, LoginUserCompanyDto } from './dto/index';
 import { ResponseUserCompanyDto } from './dto/index';
 import * as argon2 from 'argon2';
 import { plainToInstance } from 'class-transformer';
-import { emitWarning } from 'process';
+import { JwtCustomService } from '../jwt/jwt.service';
 
 @Injectable()
 export class UserCompanyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly jwtService: JwtCustomService,
+  ) {}
 
   async registerUserCompany(registerData: RegisterUserCompanyDto) {
     try {
@@ -60,12 +63,31 @@ export class UserCompanyService {
       if (!passwIsCorrect) {
         throw new BadRequestException('Credenciales incorrectas');
       }
-      const token = 'token de momento';
+      await this.prisma.refreshToken.deleteMany({
+        where: { userId: user.id },
+      });
+      const accessToken = await this.jwtService.generateAccessToken({
+        userId: user.id,
+        email: user.email,
+        role: 'company',
+      });
+      const refreshToken = await this.jwtService.generateRefreshToken({
+        userId: user.id,
+      });
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 15);
+      await this.prisma.refreshToken.create({
+        data: {
+          userId: user.id,
+          token: refreshToken,
+          expiryDate,
+        },
+      });
       return plainToInstance(ResponseUserCompanyDto, {
         username: user.username,
         email: user.email,
         image: user.image,
-        token,
+        token: accessToken,
       });
     } catch (error) {
       console.error(error);
