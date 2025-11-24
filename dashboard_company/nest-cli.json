@@ -4,5 +4,19 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
+  },
+  "projects": {
+    "app": {
+      "type": "application",
+      "root": "src",
+      "entryFile": "main",
+      "sourceRoot": "src"
+    },
+    "user-company-ms": {
+      "type": "application",
+      "root": "src/user-company-ms",
+      "entryFile": "main",
+      "sourceRoot": "src/user-company-ms"
+    }
   }
 }

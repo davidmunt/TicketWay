@@ -86,8 +86,22 @@ model Concert {
   updatedAt       DateTime  @updatedAt
 }
 
+model Artist {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String     @unique
+  name         String
+  nationality  String
+  description  String
+  images       String[]   @default([])
+  categories   String[]   @db.ObjectId @default([])
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
 model Product {
   id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  slug            String     @unique
   artist          String     @db.ObjectId
   concert         String     @db.ObjectId
   name            String
