@@ -21,6 +21,6 @@ import { JwtCustomService } from './jwt.service';
     }),
   ],
   providers: [JwtCustomService],
-  exports: [JwtCustomService],
+  exports: [JwtCustomService, JwtModule],
 })
 export class JwtCustomModule {}
