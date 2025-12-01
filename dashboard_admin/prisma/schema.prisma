@@ -132,6 +132,7 @@ model Concert {
   venue           String    @db.ObjectId
   category        String    @db.ObjectId
   artist          String    @db.ObjectId
+  product         String    @db.ObjectId
   comments        String[]  @db.ObjectId  @default([])
   favoritesCount  Int       @default(0)
   availableSeats  Int       @default(0)

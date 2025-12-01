@@ -73,65 +73,26 @@ async function concert(server, options) {
   });
   async function onCreateConcert(req, reply) {
     try {
-      const {
-        name,
-        date,
-        price,
-        description,
-        images,
-        venue,
-        category,
-        artist,
-        availableSeats,
-        status,
-      } = req.body;
-      if (
-        !name ||
-        !date ||
-        !price ||
-        !description ||
-        !images ||
-        !venue ||
-        !category ||
-        !artist ||
-        !availableSeats ||
-        !status
-      ) {
-        return reply
-          .code(400)
-          .send({ message: "Los datos del concierto son obligatorios", success: false });
+      const { name, date, price, description, images, venue, category, artist, availableSeats, status } = req.body;
+      if (!name || !date || !price || !description || !images || !venue || !category || !artist || !availableSeats || !status) {
+        return reply.code(400).send({ message: "Los datos del concierto son obligatorios", success: false });
       }
-      if (
-        !name?.trim() ||
-        !date ||
-        price === undefined ||
-        !description?.trim() ||
-        !venue ||
-        !category
-      ) {
+      if (!name?.trim() || !date || price === undefined || !description?.trim() || !venue || !category) {
         return reply.code(400).send({
-          message:
-            "Los campos 'name', 'date', 'price', 'description', 'venue' y 'category' son obligatorios",
+          message: "Los campos 'name', 'date', 'price', 'description', 'venue' y 'category' son obligatorios",
           success: false,
         });
       }
       if (images && !Array.isArray(images)) {
-        return reply
-          .code(400)
-          .send({ message: "El campo 'images' debe ser un array", success: false });
+        return reply.code(400).send({ message: "El campo 'images' debe ser un array", success: false });
       }
       if (!artist) {
         return reply.code(400).send({ message: "El campo 'artist' es necesario", success: false });
       }
       if (typeof price !== "number" || price < 0) {
-        return reply
-          .code(400)
-          .send({ message: "El campo 'price' debe ser un número positivo", success: false });
+        return reply.code(400).send({ message: "El campo 'price' debe ser un número positivo", success: false });
       }
-      if (
-        availableSeats !== undefined &&
-        (typeof availableSeats !== "number" || availableSeats < 0)
-      ) {
+      if (availableSeats !== undefined && (typeof availableSeats !== "number" || availableSeats < 0)) {
         return reply.code(400).send({
           message: "El campo 'availableSeats' debe ser un número positivo",
           success: false,
@@ -159,6 +120,19 @@ async function concert(server, options) {
         slug = generateSlug(name);
         exists = await server.prisma.concert.findUnique({ where: { slug } });
       }
+      const total = await server.prisma.product.count();
+      if (total === 0) return reply.code(400).send({ message: "No hay productos", success: false });
+      const randomIndex = Math.floor(Math.random() * total);
+      const [randomProduct] = await server.prisma.product.findMany({
+        skip: randomIndex,
+        take: 1,
+      });
+      if (!randomProduct) {
+        return reply.code(400).send({
+          message: "No se pudo obtener un producto aleatorio",
+          success: false,
+        });
+      }
       const newConcert = await server.prisma.concert.create({
         data: {
           name: name.trim(),
@@ -170,6 +144,7 @@ async function concert(server, options) {
           venue,
           category,
           artist: artist,
+          productId: randomProduct.id,
           availableSeats: availableSeats || 0,
           status: status || "PENDING",
           isActive: true,
@@ -177,9 +152,7 @@ async function concert(server, options) {
       });
       return reply.code(201).send({ concert: newConcert, success: true });
     } catch (error) {
-      return reply
-        .code(500)
-        .send({ message: `Ha ocurrido un error interno: ${error}`, success: false });
+      return reply.code(500).send({ message: `Ha ocurrido un error interno: ${error}`, success: false });
     }
   }
 
@@ -196,19 +169,7 @@ async function concert(server, options) {
       if (!slug) {
         return reply.code(400).send({ message: "El slug es obligatorio", success: false });
       }
-      const {
-        name,
-        date,
-        price,
-        description,
-        images,
-        venue,
-        category,
-        artist,
-        availableSeats,
-        status,
-        isActive,
-      } = req.body;
+      const { name, date, price, description, images, venue, category, artist, availableSeats, status, isActive } = req.body;
       if (
         !name ||
         !date ||
@@ -222,24 +183,18 @@ async function concert(server, options) {
         !status ||
         !isActive
       ) {
-        return reply
-          .code(400)
-          .send({ message: "Los datos del concierto son obligatorios", success: false });
+        return reply.code(400).send({ message: "Los datos del concierto son obligatorios", success: false });
       }
       const existingConcert = await server.prisma.concert.findUnique({ where: { slug } });
       if (!existingConcert) {
-        return reply
-          .code(404)
-          .send({ message: "No se ha encontrado un concierto con ese slug", success: false });
+        return reply.code(404).send({ message: "No se ha encontrado un concierto con ese slug", success: false });
       }
       const updateData = {};
       if (name && name.trim().length > 0) updateData.name = name.trim();
       if (date) updateData.date = new Date(date);
       if (price !== undefined) {
         if (typeof price !== "number" || price < 0) {
-          return reply
-            .code(400)
-            .send({ message: "El campo 'price' debe ser un número positivo", success: false });
+          return reply.code(400).send({ message: "El campo 'price' debe ser un número positivo", success: false });
         }
         updateData.price = price;
       }
@@ -249,9 +204,7 @@ async function concert(server, options) {
       if (artist) updateData.artist = artist;
       if (images) {
         if (!Array.isArray(images)) {
-          return reply
-            .code(400)
-            .send({ message: "El campo 'images' debe ser un array", success: false });
+          return reply.code(400).send({ message: "El campo 'images' debe ser un array", success: false });
         }
         updateData.images = images;
       }
@@ -276,9 +229,7 @@ async function concert(server, options) {
         success: true,
       });
     } catch (error) {
-      return reply
-        .code(500)
-        .send({ message: `Ha ocurrido un error interno${error}`, success: false });
+      return reply.code(500).send({ message: `Ha ocurrido un error interno${error}`, success: false });
     }
   }
 
@@ -297,9 +248,7 @@ async function concert(server, options) {
       }
       const existingConcert = await server.prisma.concert.findUnique({ where: { slug } });
       if (!existingConcert) {
-        return reply
-          .code(404)
-          .send({ message: "No se ha encontrado un concierto con ese slug", success: false });
+        return reply.code(404).send({ message: "No se ha encontrado un concierto con ese slug", success: false });
       }
       await server.prisma.concert.delete({ where: { slug } });
       return reply.code(200).send({ success: true });
