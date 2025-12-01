@@ -3,6 +3,7 @@ const argon2 = require("argon2");
 const { generateAccessToken, generateRefreshToken } = require("../middleware/authService");
 const RefreshToken = require("../models/refreshToken.model");
 const User = require("../models/user.model");
+const Cart = require("../models/cart.model");
 const cookieParser = require("cookie-parser");
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -40,6 +41,9 @@ const registerUser = asyncHandler(async (req, res) => {
     };
     const createdUser = await User.create(newUser);
     if (createdUser) {
+      await Cart.create({
+        owner: createdUser._id,
+      });
       res.status(201).json({
         user: await createdUser.toUserResponse(),
       });
