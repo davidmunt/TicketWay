@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "https://static.productionready.io/images/smiley-cyrus.jpg",
     },
+    cartSlug: { type: String, unique: true },
     isActive: { type: Boolean, default: true },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
