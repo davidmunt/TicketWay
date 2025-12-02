@@ -6,4 +6,5 @@ export interface User {
   token: string;
   isActive: boolean;
   refreshToken: string;
+  cartSlug: string;
 }

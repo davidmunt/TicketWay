@@ -30,6 +30,12 @@ enum VenueStatus {
   MAINTAINMENT
 }
 
+enum CartStatus {
+  ACTIVE
+  INACTIVE
+  FINISHED
+}
+
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -50,6 +56,7 @@ model User {
   password        String
   bio             String         @default("(vacio)")
   image           String         @default("https://static.productionready.io/images/smiley-cyrus.jpg")
+  cartSlug        String         @unique
   isActive        Boolean        @default(true)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -182,6 +189,14 @@ model ProductCategory {
   products    String[]   @db.ObjectId @default([])
 }
 
+model Cart {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  slug     String     @unique
+  owner    String     @db.ObjectId
+  concerts Json
+  isActive Boolean    @default(true)
+  status   CartStatus @default(ACTIVE)
+}
 
 model TicketType {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId

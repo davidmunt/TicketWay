@@ -11,3 +11,4 @@ export * from "./profile.resolver.service";
 export * from "./comment.service";
 export * from "./role.service";
 export * from "./useradmin.service";
+export * from "./cart.service";

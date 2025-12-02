@@ -73,7 +73,6 @@ CartSchema.methods.toCartResponse = function () {
     isActive: this.isActive,
     status: this.status,
     concerts: this.concerts.map((item) => ({
-      id: item._id,
       concert: item.concert,
       ticketsQty: item.ticketsQty,
       product: item.product,

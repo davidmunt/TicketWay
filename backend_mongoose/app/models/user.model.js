@@ -42,6 +42,7 @@ userSchema.methods.toUserResponse = async function (jwt_access) {
     username: this.username,
     email: this.email,
     bio: this.bio,
+    cartSlug: this.cartSlug,
     image: this.image,
     token: jwt_access,
   };

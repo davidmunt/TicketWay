@@ -21,7 +21,12 @@ export class ApiService {
     return this.http.get(`${URL}${port}${path}`, options).pipe(catchError(this.formatErrors));
   }
 
-  post(port: string, path: string, body?: Object, options: { headers?: HttpHeaders; params?: HttpParams; withCredentials?: boolean } = {}): Observable<any> {
+  post(
+    port: string,
+    path: string,
+    body?: Object,
+    options: { headers?: HttpHeaders; params?: HttpParams; withCredentials?: boolean } = {}
+  ): Observable<any> {
     const url = port.startsWith("http") ? `${port}${path}` : `http://localhost:${port}${path}`;
 
     console.log("POST URL:", url);
@@ -39,5 +44,10 @@ export class ApiService {
   delete(port: string, path: string, options?: { headers?: HttpHeaders; params?: HttpParams }): Observable<any> {
     console.log(`${URL}${port}${path}`);
     return this.http.delete(`${URL}${port}${path}`, options).pipe(catchError(this.formatErrors));
+  }
+
+  patch(port: string, path: string, body?: Object): Observable<any> {
+    const url = port.startsWith("http") ? `${port}${path}` : `http://localhost:${port}${path}`;
+    return this.http.patch(url, body);
   }
 }
