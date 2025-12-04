@@ -1,0 +1,16 @@
+<div class="company-dashboard-container">
+  <!-- Sidebar izquierdo -->
+  <div class="company-sidebar">
+    <button class="first-bttn" (click)="changeView('products')">Products</button>
+    <button (click)="changeView('productCategories')">Product Categories</button>
+  </div>
+
+  <!-- Contenido dinámico -->
+  <div class="company-content">
+    @if (view === 'products') {
+    <app-company-product-dashboard></app-company-product-dashboard>
+    } @else if (view === 'productCategories') {
+    <app-company-product-category-dashboard></app-company-product-category-dashboard>
+    }
+  </div>
+</div>
