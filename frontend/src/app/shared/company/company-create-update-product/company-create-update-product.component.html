@@ -1,0 +1,66 @@
+<div class="product-form-container">
+  <h2>{{ product && product.slug ? "Editar Producto" : "Crear Producto" }}</h2>
+
+  @if (productForm) {
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name">Nombre del producto</label>
+      <input id="name" type="text" formControlName="name" placeholder="Introduce el nombre del producto" />
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" rows="4" formControlName="description" placeholder="Descripción del producto"></textarea>
+    </div>
+
+    <!-- Categoría -->
+    <div class="form-group">
+      <label for="productCategory">Categoría</label>
+
+      <select id="productCategory" formControlName="productCategory">
+        <option value="">Selecciona una categoría</option>
+
+        @for (cat of categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Precio -->
+    <div class="form-group">
+      <label for="price">Precio (€)</label>
+      <input id="price" type="number" formControlName="price" placeholder="0" min="0" />
+    </div>
+
+    <!-- Stock total -->
+    <div class="form-group">
+      <label for="stockTotal">Stock total</label>
+      <input id="stockTotal" type="number" formControlName="stockTotal" placeholder="Cantidad total" min="0" />
+    </div>
+
+    <!-- Stock disponible -->
+    <div class="form-group">
+      <label for="stockAvailable">Stock disponible</label>
+      <input id="stockAvailable" type="number" formControlName="stockAvailable" placeholder="Cantidad disponible" min="0" />
+    </div>
+
+    <!-- Imagen -->
+    <div class="form-group">
+      <label for="imageUrl">URL de la imagen</label>
+      <input id="imageUrl" type="text" formControlName="imageUrl" placeholder="https://example.com/product.jpg" />
+
+      <!-- Previsualización -->
+      <div class="image-preview" *ngIf="productForm.get('imageUrl')?.value">
+        <img [src]="productForm.get('imageUrl')?.value" alt="Imagen del producto" />
+      </div>
+    </div>
+
+    <!-- Botón enviar -->
+    <button type="submit" [disabled]="productForm.invalid">
+      {{ product && product.slug ? "Actualizar Producto" : "Crear Producto" }}
+    </button>
+  </form>
+  }
+</div>
