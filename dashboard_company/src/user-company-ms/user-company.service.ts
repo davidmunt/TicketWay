@@ -36,12 +36,12 @@ export class UserCompanyService {
         },
       });
       const token = 'aqui ira el token';
-      return plainToInstance(ResponseUserCompanyDto, {
+      const responseDto = plainToInstance(ResponseUserCompanyDto, {
         username: newUser.username,
         email: newUser.email,
         image: newUser.image,
-        token,
       });
+      return { success: true, user: responseDto, token: token };
     } catch (error) {
       console.error(error);
       throw error;
@@ -83,12 +83,32 @@ export class UserCompanyService {
           expiryDate,
         },
       });
-      return plainToInstance(ResponseUserCompanyDto, {
+      const responseDto = plainToInstance(ResponseUserCompanyDto, {
         username: user.username,
         email: user.email,
         image: user.image,
-        token: accessToken,
       });
+      return { success: true, user: responseDto, token: accessToken };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getUserCompany(userId: string) {
+    try {
+      const user = await this.prisma.userCompany.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException('Usuario no encontrado');
+      }
+      const responseDto = plainToInstance(ResponseUserCompanyDto, {
+        username: user.username,
+        email: user.email,
+        image: user.image,
+      });
+      return { success: true, user: responseDto };
     } catch (error) {
       console.error(error);
       throw error;

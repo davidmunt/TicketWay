@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Inject, OnModuleInit } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Inject,
+  OnModuleInit,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   LoginUserCompanyDto,
@@ -21,5 +29,14 @@ export class UserCompanyController implements OnModuleInit {
   @Post('login')
   async login(@Body() dto: LoginUserCompanyDto) {
     return this.client.send({ cmd: 'login_user_company' }, dto).toPromise();
+  }
+
+  @Get('data')
+  async getUserData(@Req() req: any) {
+    const userId = req.userId;
+
+    return this.client
+      .send({ cmd: 'get_user_company' }, { userId })
+      .toPromise();
   }
 }

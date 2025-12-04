@@ -16,4 +16,9 @@ export class UserCompanyMicroserviceController {
   loginUser(data: LoginUserCompanyDto) {
     return this.userCompanyService.loginUserCompany(data);
   }
+
+  @MessagePattern({ cmd: 'get_user_company' })
+  getUser(data: { userId: string }) {
+    return this.userCompanyService.getUserCompany(data.userId);
+  }
 }
