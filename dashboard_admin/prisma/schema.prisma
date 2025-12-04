@@ -162,8 +162,6 @@ model Comment {
 model Product {
   id              String     @id @default(auto()) @map("_id") @db.ObjectId
   slug            String     @unique
-  artist          String     @db.ObjectId
-  concert         String     @db.ObjectId
   name            String
   description     String
   productCategory String     @db.ObjectId
