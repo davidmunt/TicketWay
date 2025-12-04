@@ -11,6 +11,7 @@ export * from "./profile.resolver.service";
 export * from "./comment.service";
 export * from "./role.service";
 export * from "./useradmin.service";
+export * from "./usercompany.service";
 export * from "./cart.service";
 export * from "./product.service";
 export * from "./productcategory.service";
