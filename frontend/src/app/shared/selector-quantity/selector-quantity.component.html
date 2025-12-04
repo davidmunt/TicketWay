@@ -1,0 +1,7 @@
+<div class="quantity-selector">
+  <button (click)="decrease()" [disabled]="quantity() <= 1">-</button>
+
+  <input type="number" [value]="quantity()" (input)="onInput($any($event.target).value)" min="1" [max]="maxTickets" />
+
+  <button (click)="increase()" [disabled]="quantity() >= maxTickets">+</button>
+</div>

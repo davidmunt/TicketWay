@@ -1,5 +1,33 @@
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 
+<div *ngIf="concert() as c" class="bttns">
+  <div class="qty-row">
+    <app-ticket-quantity [maxTickets]="concert().availableSeats" (quantityChange)="onTicketQtyChange($event)"></app-ticket-quantity>
+  </div>
+  <div class="btns-row">
+    <app-bttn-buy-add-cart
+      [type]="'add'"
+      [concertId]="c.concert_id"
+      [ticketsQty]="this.ticketQtySelected"
+      [concertPricePerTicket]="c.price"
+      [concertSubtotal]="c.price * this.ticketQtySelected"
+      [productId]="c.product"
+      [concertName]="c.name"
+      [concertImage]="c.images[0]"
+    ></app-bttn-buy-add-cart>
+    <app-bttn-buy-add-cart
+      [type]="'buy'"
+      [concertId]="c.concert_id"
+      [ticketsQty]="this.ticketQtySelected"
+      [concertPricePerTicket]="c.price"
+      [concertSubtotal]="c.price * this.ticketQtySelected"
+      [productId]="c.product"
+      [concertName]="c.name"
+      [concertImage]="c.images[0]"
+    ></app-bttn-buy-add-cart>
+  </div>
+</div>
+
 <div *ngIf="concert() as c" class="card-info-concert">
   <h1 class="concert-name">{{ c.name }}</h1>
   <h3 class="concert-date">{{ c.date }}</h3>

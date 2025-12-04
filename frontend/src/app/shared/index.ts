@@ -24,3 +24,5 @@ export * from "./admin/admin-create-update-venue/admin-create-update-venue.compo
 export * from "./admin/admin-concert-dashboard/admin-concert-dashboard.component";
 export * from "./admin/admin-create-update-concert/admin-create-update-concert.component";
 export * from "./admin/admin-header/admin-header.component";
+export * from "./list-cart/list-cart.component";
+export * from "./bttn-buy-add-cart/bttn-buy-add-cart.component";

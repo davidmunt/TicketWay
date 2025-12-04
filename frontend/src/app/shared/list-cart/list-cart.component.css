@@ -1,0 +1,165 @@
+/* --- CONTENEDORES GENERALES --- */
+
+.cart-item {
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+}
+
+.cart-item h4 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+}
+
+.concert,
+.product {
+  display: flex;
+  margin-left: 20px;
+  align-items: flex-start;
+  gap: 150px;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.concert > div,
+.product > div {
+  flex: 1;
+}
+
+.concert img,
+.product img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.concert-title,
+.product-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
+}
+
+.quantity-concert,
+.quantity-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+/* --- BOTONES DE SUMAR / RESTAR / BORRAR --- */
+.quantity-concert button,
+.quantity-product button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #eaeaea;
+  color: #333;
+  font-size: 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.quantity-concert button:hover,
+.quantity-product button:hover {
+  background: #d5d5d5;
+}
+
+.quantity-concert button:last-child,
+.quantity-product button:last-child {
+  color: white;
+}
+
+/* --- SUBTOTALES --- */
+.concert p,
+.product p {
+  margin: 6px 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* --- TOTAL --- */
+.cart-total {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+.cart-total .total {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #222;
+  margin-right: 30px;
+}
+
+/* --- HR --- */
+hr {
+  border: none;
+  height: 1px;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+.empty-cart {
+  margin-top: 40px;
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+}
+
+.empty-cart .icon {
+  font-size: 70px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.empty-cart h2 {
+  font-size: 24px;
+  margin: 10px 0 5px;
+}
+
+.empty-cart p {
+  font-size: 16px;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+.btn-return {
+  padding: 10px 20px;
+  background-color: #0078ff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn-return:hover {
+  background-color: #005fcc;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+  .concert,
+  .product {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .concert img,
+  .product img {
+    width: 90px;
+    height: 90px;
+  }
+}

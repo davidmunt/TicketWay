@@ -81,6 +81,49 @@
   line-height: 1.7;
 }
 
+/* btns */
+.bttns {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra horizontalmente */
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Selector de cantidad */
+.qty-row {
+  display: flex;
+  justify-content: center; /* centrado */
+  width: 100%;
+}
+
+/* Fila de botones */
+.btns-row {
+  display: flex;
+  justify-content: center; /* centra los botones */
+  gap: 12px;
+  width: 100%;
+}
+
+.btns-row app-bttn-buy-add-cart {
+  display: inline-flex;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .btns-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btns-row app-bttn-buy-add-cart {
+    width: 100%;
+    max-width: 250px;
+  }
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
   .card-info-concert {

@@ -23,6 +23,9 @@
         <a routerLink="/shop">Shop</a>
       </li>
       <li>
+        <a [routerLink]="['/cart', currentUser.cartSlug]">Cart</a>
+      </li>
+      <li>
         <a [routerLink]="['/profile', currentUser.username]">
           <img [src]="currentUser.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" class="user-pic" alt="user image" />
           {{ currentUser.username }}</a

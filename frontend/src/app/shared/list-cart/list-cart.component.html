@@ -1,0 +1,56 @@
+<div *ngIf="cart() as c">
+  <div *ngIf="c.concerts.length > 0; else emptyCart" class="general">
+    <div *ngFor="let item of c.concerts" class="cart-item">
+      <!-- Concierto -->
+      <h4 class="concert-title">Concierto:</h4>
+      <div class="concert">
+        <img [src]="getImageUrl(item.concertImage)" alt="{{ item.concertName }}" />
+        <div>
+          <h3>{{ item.concertName }}</h3>
+          <p>Precio por entrada: {{ formatPrice(item.concertPricePerTicket) }} €</p>
+          <div class="quantity-concert">
+            <button (click)="decreaseTicket(item.concert)">-</button>
+            <span>Cantidad: {{ item.ticketsQty }}</span>
+            <button (click)="increaseTicket(item.concert)">+</button>
+            <button (click)="deleteTicket(item.concert)">🗑️</button>
+          </div>
+          <p>Subtotal concierto: {{ formatPrice(item.concertSubtotal) }} €</p>
+        </div>
+      </div>
+
+      @if (item.productQty > 0) {
+      <!-- Producto -->
+      <h4 class="product-title">Producto:</h4>
+      <div class="product" *ngIf="item.product">
+        <img [src]="item.productImage" alt="{{ item.productName }}" />
+        <div>
+          <h4>{{ item.productName }}</h4>
+          <p>Precio unitario: {{ formatPrice(item.productPricePerUnit) }} €</p>
+          <div class="quantity-product">
+            <button (click)="decreaseProduct(item.product)">-</button>
+            <span>Cantidad: {{ item.productQty }}</span>
+            <button (click)="increaseProduct(item.product)">+</button>
+            <button (click)="deleteProduct(item.product, item.concert)">🗑️</button>
+          </div>
+          <p>Subtotal producto: {{ formatPrice(item.productSubtotal) }} €</p>
+        </div>
+      </div>
+      }
+      <hr />
+    </div>
+
+    <!-- Total -->
+    <div class="cart-total">
+      <h3 class="total">Total: {{ formatPrice(c.totalPrice) }} €</h3>
+    </div>
+  </div>
+
+  <ng-template #emptyCart>
+    <div class="empty-cart">
+      <div class="icon">🛒</div>
+      <h2>Tu carrito está vacío</h2>
+      <p>Cuando añadas productos o conciertos aparecerán aquí.</p>
+      <a routerLink="/shop" class="btn-return">Explorar tienda</a>
+    </div>
+  </ng-template>
+</div>

@@ -16,8 +16,7 @@ export const appRoutes: Routes = [
   },
   {
     path: "details/:slug",
-    loadComponent: () =>
-      import("./pages/details/details.component").then((c) => c.DetailsComponent),
+    loadComponent: () => import("./pages/details/details.component").then((c) => c.DetailsComponent),
   },
   {
     path: "auth",
@@ -29,11 +28,18 @@ export const appRoutes: Routes = [
   },
   {
     path: "adminDashboard",
-    loadComponent: () =>
-      import("./pages/adminDashboard/adminDashboard.component").then(
-        (c) => c.AdminDashboardComponent
-      ),
+    loadComponent: () => import("./pages/adminDashboard/adminDashboard.component").then((c) => c.AdminDashboardComponent),
     canActivate: [UserTypeGuard],
     data: { expectedUserType: "admin" },
+  },
+  // {
+  //   path: "companyDashboard",
+  //   loadComponent: () => import("./pages/companyDashboard/companyDashboard.component").then((c) => c.CompanyDashboardComponent),
+  //   canActivate: [UserTypeGuard],
+  //   data: { expectedUserType: "company" },
+  // },
+  {
+    path: "cart/:slug",
+    loadComponent: () => import("./pages/cart/cart.component").then((c) => c.CartComponent),
   },
 ];
