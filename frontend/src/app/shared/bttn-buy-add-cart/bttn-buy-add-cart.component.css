@@ -1,0 +1,67 @@
+.btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.btn.buy {
+  min-width: 200px;
+  background: #0d6efd;
+  color: white;
+}
+
+.btn.add {
+  min-width: 200px;
+  background: #198754;
+  color: white;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 420px;
+}
+
+.product-info {
+  display: flex;
+  gap: 14px;
+}
+
+.product-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancel {
+  background: #ccc;
+}
+
+.confirm {
+  background: #198754;
+  color: white;
+}
+
+.confirm.buy {
+  background: #0d6efd;
+}

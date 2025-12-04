@@ -1,0 +1,39 @@
+<!-- BOTÓN PRINCIPAL -->
+<button class="btn" (click)="onMainButtonClick()" [ngClass]="{ buy: type === 'buy', add: type === 'add' }">
+  {{ type === "buy" ? "Comprar" : "Añadir al carrito" }}
+</button>
+<!-- SUGERENCIA DE MERCH -->
+<div class="modal" *ngIf="showSuggestion()">
+  <div class="modal-content">
+    <h2>¿Quieres llevarte también la merch del concierto?</h2>
+    <!-- Producto -->
+    <div class="product-info" *ngIf="product">
+      <img [src]="product().imageUrl" alt="" class="product-img" />
+      <div>
+        <h3>{{ product().name }}</h3>
+        <p>{{ product().description }}</p>
+        <p class="price">Precio: {{ product().price }} €</p>
+        <p class="cat">Categoría: {{ category?.name }}</p>
+        <!-- Selección de cantidad -->
+        <label>
+          Cantidad:
+          <input
+            type="number"
+            [min]="0"
+            [max]="product().stockAvailable"
+            [value]="productQty()"
+            (input)="productQty.set($any($event.target).value)"
+          />
+          (Stock: {{ product().stockAvailable }})
+        </label>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="actions">
+      <button class="cancel" (click)="closeSuggestion()">Cancelar</button>
+      <button class="confirm" *ngIf="type === 'add'" (click)="onConfirmAdd()" [disabled]="isLoading">Add to cart</button>
+      <button class="confirm buy" *ngIf="type === 'buy'" (click)="onConfirmBuy()">Buy now</button>
+    </div>
+  </div>
+</div>
