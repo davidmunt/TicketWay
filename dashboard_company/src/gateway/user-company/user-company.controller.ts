@@ -31,10 +31,17 @@ export class UserCompanyController implements OnModuleInit {
     return this.client.send({ cmd: 'login_user_company' }, dto).toPromise();
   }
 
+  @Post('logout')
+  async logout(@Req() req: any) {
+    const userId = req.userId;
+    return this.client
+      .send({ cmd: 'logout_user_company' }, { userId })
+      .toPromise();
+  }
+
   @Get('data')
   async getUserData(@Req() req: any) {
     const userId = req.userId;
-
     return this.client
       .send({ cmd: 'get_user_company' }, { userId })
       .toPromise();

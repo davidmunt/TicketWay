@@ -95,6 +95,39 @@ export class UserCompanyService {
     }
   }
 
+  async logoutUserCompany(userId: string) {
+    try {
+      const user = await this.prisma.userCompany.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException('Usuario no encontrado');
+      }
+      const refreshToken = await this.prisma.refreshToken.findUnique({
+        where: { userId: userId },
+      });
+      if (!refreshToken) {
+        throw new BadRequestException('RefreshToken no encontrado');
+      }
+      await this.prisma.refreshBlacklist.create({
+        data: {
+          token: refreshToken.token,
+          userId: userId,
+          expiryDate: refreshToken.expiryDate,
+        },
+      });
+      await this.prisma.refreshToken.delete({
+        where: {
+          userId: userId,
+        },
+      });
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getUserCompany(userId: string) {
     try {
       const user = await this.prisma.userCompany.findUnique({

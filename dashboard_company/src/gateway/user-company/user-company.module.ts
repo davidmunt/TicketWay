@@ -21,6 +21,8 @@ import { JwtCustomModule } from '../../jwt/jwt.module';
 })
 export class UserCompanyModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('user-company/data');
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('user-company/data', 'user-company/logout');
   }
 }

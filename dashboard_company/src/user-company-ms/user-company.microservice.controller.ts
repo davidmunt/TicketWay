@@ -17,6 +17,11 @@ export class UserCompanyMicroserviceController {
     return this.userCompanyService.loginUserCompany(data);
   }
 
+  @MessagePattern({ cmd: 'logout_user_company' })
+  logoutUser(data: { userId: string }) {
+    return this.userCompanyService.logoutUserCompany(data.userId);
+  }
+
   @MessagePattern({ cmd: 'get_user_company' })
   getUser(data: { userId: string }) {
     return this.userCompanyService.getUserCompany(data.userId);
