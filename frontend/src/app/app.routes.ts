@@ -32,12 +32,12 @@ export const appRoutes: Routes = [
     canActivate: [UserTypeGuard],
     data: { expectedUserType: "admin" },
   },
-  // {
-  //   path: "companyDashboard",
-  //   loadComponent: () => import("./pages/companyDashboard/companyDashboard.component").then((c) => c.CompanyDashboardComponent),
-  //   canActivate: [UserTypeGuard],
-  //   data: { expectedUserType: "company" },
-  // },
+  {
+    path: "companyDashboard",
+    loadComponent: () => import("./pages/companyDashboard/companyDashboard.component").then((c) => c.CompanyDashboardComponent),
+    canActivate: [UserTypeGuard],
+    data: { expectedUserType: "company" },
+  },
   {
     path: "cart/:slug",
     loadComponent: () => import("./pages/cart/cart.component").then((c) => c.CartComponent),
