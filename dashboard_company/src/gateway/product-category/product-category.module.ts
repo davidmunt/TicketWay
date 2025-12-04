@@ -22,7 +22,7 @@ import { JwtCustomModule } from '../../jwt/jwt.module';
   ],
   controllers: [ProductCategoryController],
 })
-export class ProductModule {
+export class ProductCategoryModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(ProductCategoryController);
   }
