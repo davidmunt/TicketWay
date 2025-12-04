@@ -4,7 +4,7 @@ const addConcertToCart = async (req, res) => {
   try {
     const slug = req.params.slug;
     const concert = req.body.concert;
-    if (!concert || !concert.concertId || !concert.ticketsQty || !concert.productId || !concert.productQty) {
+    if (!concert || !concert.concertId || concert.ticketsQty == null || !concert.productId || concert.productQty == null) {
       return res.status(400).json({ message: "Datos del concierto incompletos", created: false });
     }
     const cart = await Cart.findOne({ slug }).exec();
@@ -112,10 +112,10 @@ const modifyProductCartQty = async (req, res) => {
       });
     }
     if (symbol === "+") {
-      producto.ticketsQty += 1;
+      producto.productQty += 1;
     } else if (symbol === "-") {
-      if (producto.ticketsQty > 1) {
-        producto.ticketsQty -= 1;
+      if (producto.productQty > 1) {
+        producto.productQty -= 1;
       } else {
         return res.status(400).json({
           message: "No se puede redocir a 0 la cantidad de producto",
@@ -190,7 +190,7 @@ const deleteProductFromCart = async (req, res) => {
         error: true,
       });
     }
-    producto.ticketsQty = 0;
+    producto.productQty = 0;
     await cart.save();
     return res.status(200).json({
       updated: true,

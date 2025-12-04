@@ -1,3 +1,4 @@
+const { error } = require("console");
 const jwt = require("jsonwebtoken");
 
 const verifyJWTOptional = (req, res, next) => {
@@ -9,10 +10,10 @@ const verifyJWTOptional = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "Forbidden", error: err, decoded: decoded });
     }
-    if (decoded && decoded.role !== "user")
-      return res.status(403).json({ message: "Forbidden: Invalid role" });
+    console.log("Decoded : ", decoded);
+    if (decoded && decoded.user.role !== "user") return res.status(403).json({ message: "Forbidden: Invalid role" });
     req.loggedin = true;
     req.userId = decoded.user.id;
     req.userEmail = decoded.user.email;

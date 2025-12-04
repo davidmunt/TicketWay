@@ -14,6 +14,7 @@ const ConcertSchema = new mongoose.Schema(
     venue: { type: mongoose.Schema.Types.ObjectId, ref: "Venue", required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     artist: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
     comments: { type: [mongoose.Schema.Types.ObjectId], ref: "Comment", default: [] },
     favoritesCount: { type: Number, default: 0 },
     availableSeats: { type: Number, default: 0 },
@@ -55,6 +56,8 @@ ConcertSchema.methods.toConcertResponse = async function (user) {
     favorited: isFav,
     favoritesCount: this.favoritesCount || 0,
     venue: this.venue,
+    product: this.product,
+    availableSeats: this.availableSeats,
     category: this.category,
     artists: this.artists,
   };

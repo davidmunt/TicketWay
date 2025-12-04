@@ -12,7 +12,7 @@ const verifyJWT = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    if (decoded && decoded.role !== "user") return res.status(403).json({ message: "Forbidden: Invalid role" });
+    if (decoded && decoded.user.role !== "user") return res.status(403).json({ message: "Forbidden: Invalid role" });
     const loginUser = await User.findOne({ email: decoded.user.email }).exec();
     if (!loginUser) {
       return res.status(403).json({ message: "User not found" });

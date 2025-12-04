@@ -41,9 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
     };
     const createdUser = await User.create(newUser);
     if (createdUser) {
-      const cart = await Cart.create({
-        owner: createdUser._id,
-      });
+      const cart = await Cart.create({ owner: createdUser._id });
       createdUser.cartSlug = cart.slug;
       await createdUser.save();
       res.status(201).json({
@@ -90,14 +88,14 @@ const userLogin = asyncHandler(async (req, res) => {
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    const cart = await Cart.findOne({ owner: loginUser._id }).exec();
-    let newCart;
-    if (!cart) {
-      newCart = await Cart.create({
+    let cart = await Cart.findOne({ owner: loginUser._id }).exec();
+    if (!cart || loginUser.cartSlug === null) {
+      cart = await Cart.create({
         owner: loginUser._id,
       });
     }
-    loginUser.cartSlug = cart ? cart.slug : newCart.slug;
+    loginUser.cartSlug = cart.slug;
+    console.log("login con cartSlug ", loginUser);
     await loginUser.save();
     res.status(200).json({ user: await loginUser.toUserResponse(accessToken) });
   } catch (error) {
