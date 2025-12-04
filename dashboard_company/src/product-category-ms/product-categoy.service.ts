@@ -40,7 +40,11 @@ export class ProductCategoryService {
           image: createData.image,
         },
       });
-      return plainToInstance(ResponseProductCategoryDto, newProductCategory);
+      const responseDto = plainToInstance(
+        ResponseProductCategoryDto,
+        newProductCategory,
+      );
+      return { success: true, category: responseDto };
     } catch (error) {
       console.error(error);
       throw error;
@@ -50,7 +54,7 @@ export class ProductCategoryService {
   async updateProductCategory(
     slug: string,
     updateData: UpdateProductCategoryDto,
-  ): Promise<ResponseProductCategoryDto> {
+  ) {
     try {
       const existingCategory = await this.prisma.productCategory.findUnique({
         where: { slug },
@@ -64,7 +68,31 @@ export class ProductCategoryService {
         where: { slug },
         data: updateData,
       });
-      return plainToInstance(ResponseProductCategoryDto, updatedCategory);
+      const responseDto = plainToInstance(
+        ResponseProductCategoryDto,
+        updatedCategory,
+      );
+      return { success: true, category: responseDto };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteProductCategory(slug: string) {
+    try {
+      const category = await this.prisma.productCategory.findUnique({
+        where: { slug },
+      });
+      if (!category) {
+        throw new BadRequestException(
+          `Categoria con slug "${slug}" no encontrada`,
+        );
+      }
+      await this.prisma.productCategory.delete({
+        where: { slug },
+      });
+      return { success: true };
     } catch (error) {
       console.error(error);
       throw error;

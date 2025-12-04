@@ -14,12 +14,6 @@ export class CreateProductDto {
   description: string;
 
   @IsString()
-  artist: string;
-
-  @IsString()
-  concert: string;
-
-  @IsString()
   productCategory: string;
 
   @IsNumber({ allowNaN: false, allowInfinity: false })
@@ -41,12 +35,6 @@ export class UpdateProductDto {
 
   @IsString()
   description: string;
-
-  @IsString()
-  artist: string;
-
-  @IsString()
-  concert: string;
 
   @IsString()
   productCategory: string;

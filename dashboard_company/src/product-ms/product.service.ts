@@ -28,22 +28,6 @@ export class ProductService {
 
   async createProduct(createData: CreateProductDto) {
     try {
-      const artist = await this.prisma.artist.findUnique({
-        where: {
-          id: createData.artist,
-        },
-      });
-      if (!artist) {
-        throw new BadRequestException(`Artista no encontrado`);
-      }
-      const concert = await this.prisma.concert.findUnique({
-        where: {
-          id: createData.concert,
-        },
-      });
-      if (!concert) {
-        throw new BadRequestException(`Concierto no encontrado`);
-      }
       const productCategory = await this.prisma.productCategory.findUnique({
         where: {
           id: createData.productCategory,
@@ -58,8 +42,6 @@ export class ProductService {
           slug,
           name: createData.name,
           description: createData.description,
-          artist: createData.artist,
-          concert: createData.concert,
           productCategory: createData.productCategory,
           price: createData.price,
           stockTotal: createData.stockTotal,
@@ -67,7 +49,8 @@ export class ProductService {
           imageUrl: createData.imageUrl,
         },
       });
-      return plainToInstance(ResponseProductDto, newProduct);
+      const responseDto = plainToInstance(ResponseProductDto, newProduct);
+      return { success: true, product: responseDto };
     } catch (error) {
       console.error(error);
       throw error;
@@ -84,22 +67,6 @@ export class ProductService {
       if (!product) {
         throw new BadRequestException(`Producto no encontrado`);
       }
-      const artist = await this.prisma.artist.findUnique({
-        where: {
-          id: updateData.artist,
-        },
-      });
-      if (!artist) {
-        throw new BadRequestException(`Artista no encontrado`);
-      }
-      const concert = await this.prisma.concert.findUnique({
-        where: {
-          id: updateData.concert,
-        },
-      });
-      if (!concert) {
-        throw new BadRequestException(`Concierto no encontrado`);
-      }
       const productCategory = await this.prisma.productCategory.findUnique({
         where: {
           id: updateData.productCategory,
@@ -113,8 +80,6 @@ export class ProductService {
         data: {
           name: updateData.name,
           description: updateData.description,
-          artist: updateData.artist,
-          concert: updateData.concert,
           productCategory: updateData.productCategory,
           price: updateData.price,
           stockTotal: updateData.stockTotal,
@@ -122,7 +87,28 @@ export class ProductService {
           imageUrl: updateData.imageUrl,
         },
       });
-      return plainToInstance(ResponseProductDto, updatedProduct);
+      const responseDto = plainToInstance(ResponseProductDto, updatedProduct);
+      return { success: true, product: responseDto };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteProduct(slug: string) {
+    try {
+      const product = await this.prisma.product.findUnique({
+        where: { slug },
+      });
+      if (!product) {
+        throw new BadRequestException(
+          `Product con slug "${slug}" no encontrado`,
+        );
+      }
+      await this.prisma.product.delete({
+        where: { slug },
+      });
+      return { success: true };
     } catch (error) {
       console.error(error);
       throw error;

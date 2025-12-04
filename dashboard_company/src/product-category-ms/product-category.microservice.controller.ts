@@ -24,6 +24,11 @@ export class ProductCategoryMicroserviceController {
     return this.productCategoryService.updateProductCategory(slug, data);
   }
 
+  @MessagePattern({ cmd: 'delete_product_category' })
+  deleteProductCategory(slug: any) {
+    return this.productCategoryService.deleteProductCategory(slug);
+  }
+
   @MessagePattern({ cmd: 'get_products_categories' })
   getProductsCategories(data: GetProductCategoriesDto) {
     return this.productCategoryService.getProductCategories(data.isActive);

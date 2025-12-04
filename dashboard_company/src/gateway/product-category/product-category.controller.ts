@@ -7,6 +7,7 @@ import {
   Param,
   Get,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
@@ -37,6 +38,13 @@ export class ProductCategoryController implements OnModuleInit {
   ) {
     return this.client
       .send({ cmd: 'update_product_category' }, { slug, ...dto })
+      .toPromise();
+  }
+
+  @Delete(':slug')
+  async deleteProductCategory(@Param('slug') slug: string) {
+    return this.client
+      .send({ cmd: 'delete_product_category' }, { slug })
       .toPromise();
   }
 

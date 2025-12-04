@@ -22,6 +22,11 @@ export class ProductMicroserviceController {
     return this.productService.updateProduct(data, slug);
   }
 
+  @MessagePattern({ cmd: 'delete_product' })
+  deleteProduct(slug: any) {
+    return this.productService.deleteProduct(slug);
+  }
+
   @MessagePattern({ cmd: 'get_products' })
   getProducts(data: GetProductsDto) {
     return this.productService.getProducts(data.isActive);
