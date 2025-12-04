@@ -1,0 +1,35 @@
+<div class="category-form-container">
+  <h2>{{ category && category.slug ? "Editar Categoría" : "Crear Categoría" }}</h2>
+
+  @if (categoryForm) {
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name">Nombre de la categoría</label>
+      <input id="name" type="text" formControlName="name" placeholder="Introduce el nombre de la categoría" />
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" rows="4" formControlName="description" placeholder="Descripción de la categoría"></textarea>
+    </div>
+
+    <!-- Imagen -->
+    <div class="form-group">
+      <label for="image">URL de la imagen</label>
+      <input id="image" type="text" formControlName="image" placeholder="https://example.com/categoria.jpg" />
+
+      <!-- Previsualización -->
+      <div class="image-preview" *ngIf="categoryForm.get('image')?.value">
+        <img [src]="categoryForm.get('image')?.value" alt="Imagen de la categoría" />
+      </div>
+    </div>
+
+    <!-- Botón enviar -->
+    <button type="submit" [disabled]="categoryForm.invalid">
+      {{ category && category.slug ? "Actualizar Categoría" : "Crear Categoría" }}
+    </button>
+  </form>
+  }
+</div>
