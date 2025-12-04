@@ -1,47 +1,52 @@
-<!-- <div class="artist-dashboard-container">
-  @if (view === 'listArtists') {
-  <h2 class="dashboard-title">Artist Management</h2>
-
-  <div class="artist-table">
+<div class="product-category-dashboard-container">
+  @if (view === 'listProductCategories') {
+  <h2 class="dashboard-title">Product Categories</h2>
+  <div class="product-category-table">
+    <!-- Botón crear -->
     <div class="create-bttn-div">
-      <button class="create-bttn" (click)="changeView('createUpdateArtist', null)">
-        Add new Artist
-      </button>
+      <button class="create-bttn" (click)="changeView('createUpdateProductCategory', null)">Add new Category</button>
     </div>
-    <div class="artist-table-header">
+
+    <!-- Header tabla -->
+    <div class="product-category-table-header">
       <div class="header-cell">Name</div>
-      <div class="header-cell">Images</div>
-      <div class="header-cell">Categories</div>
-      <div class="header-cell">Is Active</div>
+      <div class="header-cell">Image</div>
+      <div class="header-cell">Description</div>
+      <div class="header-cell">Active</div>
+      <div class="header-cell">Actions</div>
     </div>
-    <div class="artist-row" *ngFor="let artist of artists()">
-      <div class="cell name-cell">{{ artist.name }}</div>
+
+    <!-- Filas -->
+    <div class="product-category-row" *ngFor="let cat of categories()">
+      <!-- Nombre -->
+      <div class="cell name-cell">{{ cat.name }}</div>
+
+      <!-- Imagen -->
       <div class="cell image-cell">
-        <img
-          [src]="artist.images[0] || 'assets/imgs/default-avatar.png'"
-          [alt]="artist.name"
-          class="artist-avatar"
-        />
+        <img [src]="cat.image || 'assets/imgs/default-product.png'" [alt]="cat.name" class="product-category-avatar" />
       </div>
-      <div class="cell categories-cell">
-        @for (category of artist.categories; track category) {
-        <span class="badge">{{ getCategoryName(category) }}</span>
-        } @empty {
-        <p>There are no categories.</p>
-        }
+
+      <!-- Descripción -->
+      <div class="cell desc-cell">
+        {{ cat.description || "No description" }}
       </div>
-      <div class="cell active-cell">{{ artist.isActive }}</div>
-      <button class="cell modify-cell" (click)="changeView('createUpdateArtist', artist)">
-        ✏️
-      </button>
-      <button class="cell delete-cell" (click)="onDeleteArtist(artist.slug)">🗑️</button>
+
+      <!-- Activo -->
+      <div class="cell active-cell">
+        {{ cat.isActive ? "Yes" : "No" }}
+      </div>
+
+      <!-- Botones -->
+      <div class="cell actions-cell">
+        <button class="modify-cell" (click)="changeView('createUpdateProductCategory', cat)">✏️</button>
+        <button class="delete-cell" (click)="onDeleteProductCategory(cat.slug)">🗑️</button>
+      </div>
     </div>
   </div>
-  } @else if (view === "createUpdateArtist") {
-  <app-admin-create-update-artist
-    [artist]="artist"
+  } @else if (view === 'createUpdateProductCategory') {
+  <app-company-create-update-product-category
+    [category]="category"
     (changeView)="changeView($event, null)"
-  ></app-admin-create-update-artist>
-
+  ></app-company-create-update-product-category>
   }
-</div> -->
+</div>
