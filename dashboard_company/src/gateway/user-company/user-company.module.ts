@@ -23,6 +23,10 @@ export class UserCompanyModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes('user-company/data', 'user-company/logout');
+      .forRoutes(
+        'user-company/data',
+        'user-company/logout',
+        'user-company/refresh',
+      );
   }
 }

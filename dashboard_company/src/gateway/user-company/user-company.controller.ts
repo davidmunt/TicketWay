@@ -39,6 +39,14 @@ export class UserCompanyController implements OnModuleInit {
       .toPromise();
   }
 
+  @Post('refresh')
+  async refresh(@Req() req: any) {
+    const userId = req.userId;
+    return this.client
+      .send({ cmd: 'refresh_user_company' }, { userId })
+      .toPromise();
+  }
+
   @Get('data')
   async getUserData(@Req() req: any) {
     const userId = req.userId;

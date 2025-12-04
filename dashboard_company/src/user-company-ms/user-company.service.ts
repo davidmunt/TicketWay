@@ -128,6 +128,32 @@ export class UserCompanyService {
     }
   }
 
+  async refreshUserCompany(userId: string) {
+    try {
+      const user = await this.prisma.userCompany.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException('Usuario no encontrado');
+      }
+      const refreshToken = await this.prisma.refreshToken.findUnique({
+        where: { userId: userId },
+      });
+      if (!refreshToken) {
+        throw new BadRequestException('RefreshToken no encontrado');
+      }
+      const accessToken = await this.jwtService.generateAccessToken({
+        userId: user.id,
+        email: user.email,
+        role: 'company',
+      });
+      return { success: true, token: accessToken };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   async getUserCompany(userId: string) {
     try {
       const user = await this.prisma.userCompany.findUnique({
