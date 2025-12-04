@@ -6,4 +6,5 @@ export interface Cart {
   concerts: ConcertCart[];
   isActive: boolean;
   status: string;
+  totalPrice: number;
 }

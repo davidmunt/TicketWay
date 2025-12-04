@@ -11,3 +11,5 @@ export * from "./profile.model";
 export * from "./comment.model";
 export * from "./cart.model";
 export * from "./concertCart.model";
+export * from "./product.model";
+export * from "./productcategory.model";

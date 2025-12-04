@@ -11,6 +11,7 @@ export interface Concert {
   price: number;
   favorited: boolean;
   availableSeats: number;
+  product: string;
   status: string;
   isActive: boolean;
   favoritesCount: number;
