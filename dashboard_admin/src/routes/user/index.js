@@ -18,9 +18,7 @@ async function user(server, options) {
         where: { username },
       });
       if (!user) {
-        return reply
-          .code(404)
-          .send({ message: "El usuario con ese nombre no ha sido encontrado", success: false });
+        return reply.code(404).send({ message: "El usuario con ese nombre no ha sido encontrado", success: false });
       }
       await server.prisma.user.update({
         where: { username },

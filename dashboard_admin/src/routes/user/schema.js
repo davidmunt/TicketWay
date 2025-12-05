@@ -1,17 +1,17 @@
 const Schema = require("fluent-json-schema");
 
 const User = Schema.object()
-  .prop("id", Schema.string().required())
-  .prop("email", Schema.string().required())
-  .prop("username", Schema.string().required())
-  .prop("bio", Schema.string().required())
-  .prop("image", Schema.string().required())
-  .prop("isActive", Schema.boolean().required())
-  .prop("createdAt", Schema.string().format("date-time").required())
-  .prop("updatedAt", Schema.string().format("date-time").required())
-  .prop("following", Schema.array().items(Schema.string()))
-  .prop("followers", Schema.array().items(Schema.string()))
-  .prop("favoriteConcert", Schema.array().items(Schema.string()));
+  .prop("id", Schema.string())
+  .prop("email", Schema.string())
+  .prop("username", Schema.string())
+  .prop("bio", Schema.string().raw({ type: ["string", "null"] })) // permite null
+  .prop("image", Schema.string().raw({ type: ["string", "null"] })) // permite null
+  .prop("isActive", Schema.boolean())
+  .prop("createdAt", Schema.string().format("date-time"))
+  .prop("updatedAt", Schema.string().format("date-time"))
+  .prop("following", Schema.array().items(Schema.string()).default([]))
+  .prop("followers", Schema.array().items(Schema.string()).default([]))
+  .prop("favoriteConcert", Schema.array().items(Schema.string()).default([]));
 
 const getUsers = {
   description: "Get users data",
@@ -23,12 +23,8 @@ const getUsers = {
 
 const changeIsActive = {
   description: "Cambia el estado isActive de un usuario",
-  params: Schema.object()
-    .prop("username", Schema.string().required())
-    .description("Nombre del usuario cuyo estado cambiar"),
-  body: Schema.object()
-    .prop("isActive", Schema.boolean().required())
-    .description("Nuevo valor para el campo isActive"),
+  params: Schema.object().prop("username", Schema.string().required()).description("Nombre del usuario cuyo estado cambiar"),
+  body: Schema.object().prop("isActive", Schema.boolean().required()).description("Nuevo valor para el campo isActive"),
   response: {
     200: Schema.object().prop("success", Schema.boolean()).prop("message", Schema.string()),
     404: Schema.object().prop("message", Schema.string()),

@@ -60,7 +60,7 @@ async function concert(server, options) {
       }
       return reply.send({ concerts });
     } catch (error) {
-      return reply.code(500).send({ message: "Ha ocurrido un error interno" });
+      return reply.code(500).send({ message: "Ha ocurrido un error interno", error: error.message });
     }
   }
 
@@ -144,7 +144,7 @@ async function concert(server, options) {
           venue,
           category,
           artist: artist,
-          productId: randomProduct.id,
+          product: randomProduct.id,
           availableSeats: availableSeats || 0,
           status: status || "PENDING",
           isActive: true,
