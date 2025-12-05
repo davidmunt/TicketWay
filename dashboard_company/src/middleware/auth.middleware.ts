@@ -27,7 +27,7 @@ export class AuthMiddleware implements NestMiddleware {
     } catch (err) {
       throw new UnauthorizedException('Token inválido o expirado');
     }
-    if (decoded.role !== 'company') {
+    if (decoded.typeUser !== 'company') {
       throw new ForbiddenException('No tienes permisos para esta operación');
     }
     const user = await this.prisma.userCompany.findUnique({
