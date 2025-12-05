@@ -57,7 +57,7 @@ export class UserCompanyService {
   }
 
   refreshToken(): Observable<any> {
-    return this.apiService.post(company_port, "/user-company/refreshToken", undefined).pipe(
+    return this.apiService.post(company_port, "/user-company/refresh", undefined).pipe(
       tap((res: any) => {
         this.jwtService.saveToken(res.accessToken);
         this.auth$.next(true);
@@ -79,7 +79,12 @@ export class UserCompanyService {
 
   attemptAuth(type: string, credentials: any): Observable<UserCompany> {
     const route = type === "login" ? "/login" : "/register";
-    return this.apiService.post(company_port, `/user-company${route}`, { user: credentials }).pipe(
+    const credentialsFinal = {
+      email: credentials.email,
+      password: credentials.password,
+      username: credentials.username ? credentials.username : undefined,
+    };
+    return this.apiService.post(company_port, `/user-company${route}`, credentialsFinal).pipe(
       map((res: any) => {
         console.log("Respuesta de attemptAuth:", res);
         this.setAuth(res.user, res.accessToken);
