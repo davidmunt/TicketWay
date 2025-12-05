@@ -26,9 +26,6 @@ export class UpdateProductCategoryDto {
 
   @IsString()
   image: string;
-
-  @IsBoolean()
-  isActive: boolean;
 }
 
 export class GetProductCategoriesDto {

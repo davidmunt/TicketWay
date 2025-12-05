@@ -35,13 +35,29 @@ export class UserCompanyService {
           password: hashedPassword,
         },
       });
-      const token = 'aqui ira el token';
+      const accessToken = await this.jwtService.generateAccessToken({
+        userId: newUser.id,
+        email: newUser.email,
+        typeUser: 'company',
+      });
+      const refreshToken = await this.jwtService.generateRefreshToken({
+        userId: newUser.id,
+      });
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 15);
+      await this.prisma.refreshToken.create({
+        data: {
+          userId: newUser.id,
+          token: refreshToken,
+          expiryDate,
+        },
+      });
       const responseDto = plainToInstance(ResponseUserCompanyDto, {
         username: newUser.username,
         email: newUser.email,
         image: newUser.image,
       });
-      return { success: true, user: responseDto, token: token };
+      return { success: true, user: responseDto, accessToken: accessToken };
     } catch (error) {
       console.error(error);
       throw error;
@@ -69,7 +85,7 @@ export class UserCompanyService {
       const accessToken = await this.jwtService.generateAccessToken({
         userId: user.id,
         email: user.email,
-        role: 'company',
+        typeUser: 'company',
       });
       const refreshToken = await this.jwtService.generateRefreshToken({
         userId: user.id,
@@ -88,7 +104,7 @@ export class UserCompanyService {
         email: user.email,
         image: user.image,
       });
-      return { success: true, user: responseDto, token: accessToken };
+      return { success: true, user: responseDto, accessToken: accessToken };
     } catch (error) {
       console.error(error);
       throw error;
@@ -147,7 +163,7 @@ export class UserCompanyService {
         email: user.email,
         role: 'company',
       });
-      return { success: true, token: accessToken };
+      return { success: true, accessToken: accessToken };
     } catch (error) {
       console.error(error);
       throw error;

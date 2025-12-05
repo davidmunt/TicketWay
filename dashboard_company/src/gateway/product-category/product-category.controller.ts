@@ -32,17 +32,17 @@ export class ProductCategoryController implements OnModuleInit {
   }
 
   @Put(':slug')
-  async updateProductCategory(
+  updateProductCategory(
     @Param('slug') slug: string,
     @Body() dto: UpdateProductCategoryDto,
   ) {
     return this.client
-      .send({ cmd: 'update_product_category' }, { slug, ...dto })
+      .send({ cmd: 'update_product_category' }, { slug, data: dto })
       .toPromise();
   }
 
   @Delete(':slug')
-  async deleteProductCategory(@Param('slug') slug: string) {
+  deleteProductCategory(@Param('slug') slug: string) {
     return this.client
       .send({ cmd: 'delete_product_category' }, { slug })
       .toPromise();

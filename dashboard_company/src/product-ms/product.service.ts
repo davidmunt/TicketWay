@@ -132,14 +132,15 @@ export class ProductService {
     }
   }
 
-  async getProducts(isActive?: boolean): Promise<ResponseProductDto[]> {
+  async getProducts(isActive?: boolean) {
     try {
       const existingCategory = await this.prisma.product.findMany({
         where: {
           isActive,
         },
       });
-      return plainToInstance(ResponseProductDto, existingCategory);
+      const responseDto = plainToInstance(ResponseProductDto, existingCategory);
+      return { products: responseDto };
     } catch (error) {
       console.error(error);
       throw error;

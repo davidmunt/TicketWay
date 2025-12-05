@@ -35,7 +35,7 @@ export class ProductController implements OnModuleInit {
     @Body() dto: UpdateProductDto,
   ) {
     return this.client
-      .send({ cmd: 'update_product' }, { slug, ...dto })
+      .send({ cmd: 'update_product' }, { slug: slug, ...dto })
       .toPromise();
   }
 

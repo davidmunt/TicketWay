@@ -18,12 +18,12 @@ export class ProductMicroserviceController {
   }
 
   @MessagePattern({ cmd: 'update_product' })
-  updateProduct(data: UpdateProductDto, slug: any) {
-    return this.productService.updateProduct(data, slug);
+  updateProduct(data: any) {
+    return this.productService.updateProduct(data, data.slug);
   }
 
   @MessagePattern({ cmd: 'delete_product' })
-  deleteProduct(slug: any) {
+  deleteProduct({ slug }: { slug: string }) {
     return this.productService.deleteProduct(slug);
   }
 
@@ -33,7 +33,7 @@ export class ProductMicroserviceController {
   }
 
   @MessagePattern({ cmd: 'get_product' })
-  getProduct(slug: any) {
+  getProduct(slug: string) {
     return this.productService.getProduct(slug);
   }
 }

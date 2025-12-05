@@ -20,12 +20,17 @@ export class ProductCategoryMicroserviceController {
   }
 
   @MessagePattern({ cmd: 'update_product_category' })
-  updateProductCategory(data: UpdateProductCategoryDto, slug: any) {
+  updateProductCategory(payload: {
+    slug: string;
+    data: UpdateProductCategoryDto;
+  }) {
+    const { slug, data } = payload;
     return this.productCategoryService.updateProductCategory(slug, data);
   }
 
   @MessagePattern({ cmd: 'delete_product_category' })
-  deleteProductCategory(slug: any) {
+  deleteProductCategory(payload: { slug: string }) {
+    const { slug } = payload;
     return this.productCategoryService.deleteProductCategory(slug);
   }
 
