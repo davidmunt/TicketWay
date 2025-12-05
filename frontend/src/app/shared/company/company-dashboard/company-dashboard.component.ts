@@ -4,7 +4,7 @@ import { CompanyProductDashboardComponent } from "../company-product-dashboard/c
 import { CompanyProductCategoryDashboardComponent } from "../company-product-category-dashboard/company-product-category-dashboard.component";
 
 @Component({
-  selector: "app-admin-dashboard-component",
+  selector: "app-company-dashboard-component",
   standalone: true,
   imports: [CommonModule, CompanyProductDashboardComponent, CompanyProductCategoryDashboardComponent],
   templateUrl: "./company-dashboard.component.html",

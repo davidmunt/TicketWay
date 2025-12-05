@@ -1,7 +1,6 @@
 <div class="category-form-container">
   <h2>{{ category && category.slug ? "Editar Categoría" : "Crear Categoría" }}</h2>
 
-  @if (categoryForm) {
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
     <!-- Nombre -->
     <div class="form-group">
@@ -31,5 +30,4 @@
       {{ category && category.slug ? "Actualizar Categoría" : "Crear Categoría" }}
     </button>
   </form>
-  }
 </div>

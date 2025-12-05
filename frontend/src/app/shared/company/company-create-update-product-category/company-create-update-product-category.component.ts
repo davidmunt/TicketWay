@@ -12,14 +12,29 @@ import { ProductCategory } from "src/app/core/models";
   imports: [CommonModule, ReactiveFormsModule],
 })
 export class CompanyCreateUpdateProductCategoryComponent implements OnInit, OnChanges {
-  @Input() category?: ProductCategory;
+  @Input() category?: ProductCategory | null = null;
   @Output() changeView = new EventEmitter<string>();
+
   categoryForm!: FormGroup;
 
   constructor(private fb: FormBuilder, private userCompanyService: UserCompanyService) {}
 
+  // ngOnInit(): void {
+  //   this.buildForm();
+  //   console.log("Categoria: ", this.category);
+  // }
+
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (changes["category"]) {
+  //     this.rebuildForm();
+  //   }
+  // }
+
   ngOnInit(): void {
     this.buildForm();
+    if (this.category) {
+      this.categoryForm.patchValue(this.category);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -38,12 +53,30 @@ export class CompanyCreateUpdateProductCategoryComponent implements OnInit, OnCh
     });
   }
 
+  private rebuildForm(): void {
+    this.buildForm();
+    if (this.category) {
+      console.log("reconstruyendo categoria: ", this.category);
+      this.categoryForm.patchValue({
+        name: this.category.name,
+        description: this.category.description,
+        image: this.category.image,
+      });
+    } else {
+      this.categoryForm.reset({
+        name: "",
+        description: "",
+        image: "",
+      });
+    }
+  }
+
   onSubmit(): void {
     const categoryData: ProductCategory = this.categoryForm.value;
     if (this.category && this.category.slug) {
       this.userCompanyService.updateProductCategory(this.category.slug, categoryData).subscribe({
         next: () => {
-          this.changeView.emit("listProductsCategories");
+          this.changeView.emit("listProductCategories");
         },
         error: (err) => {
           console.error("Error al actualizar categoria:", err);
@@ -52,7 +85,7 @@ export class CompanyCreateUpdateProductCategoryComponent implements OnInit, OnCh
     } else {
       this.userCompanyService.createProductCategory(categoryData).subscribe({
         next: () => {
-          this.changeView.emit("listProductsCategories");
+          this.changeView.emit("listProductCategories");
         },
         error: (err) => {
           console.error("Error al crear categoria:", err);

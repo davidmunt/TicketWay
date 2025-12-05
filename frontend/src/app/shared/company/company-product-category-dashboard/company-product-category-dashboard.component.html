@@ -43,10 +43,11 @@
       </div>
     </div>
   </div>
-  } @else if (view === 'createUpdateProductCategory') {
+  }
   <app-company-create-update-product-category
+    *ngIf="view === 'createUpdateProductCategory'"
     [category]="category"
+    [attr.key]="category?.slug || 'new'"
     (changeView)="changeView($event, null)"
   ></app-company-create-update-product-category>
-  }
 </div>

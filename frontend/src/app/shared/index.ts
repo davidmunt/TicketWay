@@ -26,3 +26,9 @@ export * from "./admin/admin-create-update-concert/admin-create-update-concert.c
 export * from "./admin/admin-header/admin-header.component";
 export * from "./list-cart/list-cart.component";
 export * from "./bttn-buy-add-cart/bttn-buy-add-cart.component";
+export * from "./company/company-dashboard/company-dashboard.component";
+export * from "./company/company-product-dashboard/company-product-dashboard.component";
+export * from "./company/company-product-category-dashboard/company-product-category-dashboard.component";
+export * from "./company/company-create-update-product/company-create-update-product.component";
+export * from "./company/company-create-update-product-category/company-create-update-product-category.component";
+export * from "./company/company-header/company-header.component";

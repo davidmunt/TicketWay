@@ -1,0 +1,19 @@
+<div id="header">
+  <div class="logo">
+    <a class="header-logo" routerLink="/home">TicketWay</a>
+  </div>
+  <nav>
+    <ul *ngIf="currentUser as user">
+      <li>
+        <img [src]="currentUser.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'" class="user-pic" alt="user image" />
+        <p>{{ currentUser.username }}</p>
+      </li>
+      <li>
+        <a routerLink="/companyDashboard">Company Dashboard</a>
+      </li>
+      <li>
+        <a (click)="logout()">Logout</a>
+      </li>
+    </ul>
+  </nav>
+</div>
