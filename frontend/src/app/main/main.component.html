@@ -1,5 +1,7 @@
 @if (isLoaded) { @if (usertype === 'admin') {
 <app-admin-header></app-admin-header>
+} @else if (usertype === 'company') {
+<app-company-header></app-company-header>
 } @else {
 <app-header></app-header>
 }

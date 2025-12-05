@@ -3,6 +3,7 @@ import { inject } from "@angular/core";
 import { catchError, switchMap, throwError } from "rxjs";
 import { UserService } from "../services/user.service";
 import { UserAdminService } from "../services/useradmin.service";
+import { UserCompanyService } from "../services/usercompany.service";
 import { JwtService } from "../services/jwt.service";
 import { UserTypeService } from "../services/role.service";
 
@@ -10,6 +11,7 @@ export const HttpTokenInterceptor: HttpInterceptorFn = (req, next) => {
   const jwtService = inject(JwtService);
   const userService = inject(UserService);
   const userAdminService = inject(UserAdminService);
+  const userCompanyService = inject(UserCompanyService);
   const userTypeService = inject(UserTypeService);
   const token = jwtService.getToken();
   const role = userTypeService.getUserType();
@@ -44,6 +46,27 @@ export const HttpTokenInterceptor: HttpInterceptorFn = (req, next) => {
             catchError((refreshErr) => {
               console.error("Error al refrescar token:", refreshErr);
               userAdminService.purgeAuth();
+              return throwError(() => refreshErr);
+            })
+          );
+        } else if (role === "company") {
+          return userCompanyService.refreshToken().pipe(
+            switchMap((res: any) => {
+              const newToken = res.accessToken || res.token;
+              if (newToken) {
+                jwtService.saveToken(newToken);
+                const newReq = req.clone({
+                  setHeaders: { ...headersConfig, Authorization: `Token ${newToken}` },
+                });
+                return next(newReq);
+              } else {
+                userCompanyService.purgeAuth();
+                return throwError(() => err);
+              }
+            }),
+            catchError((refreshErr) => {
+              console.error("Error al refrescar token:", refreshErr);
+              userCompanyService.purgeAuth();
               return throwError(() => refreshErr);
             })
           );

@@ -1,22 +1,8 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Input,
-  Output,
-  EventEmitter,
-} from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input, Output, EventEmitter } from "@angular/core";
 import { User, Errors } from "../../core/models";
-import { JwtService, UserService, UserAdminService, UserTypeService } from "../../core/services";
+import { JwtService, UserService, UserAdminService, UserCompanyService, UserTypeService } from "../../core/services";
 import { NoAuthGuard } from "../../core/guards";
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
@@ -34,6 +20,7 @@ export class AuthComponentComponent implements OnInit {
     private router: Router,
     private userTypeService: UserTypeService,
     private userAdminService: UserAdminService,
+    private userCompanyService: UserCompanyService,
     private userService: UserService,
     private fb: FormBuilder,
     private cd: ChangeDetectorRef
@@ -62,8 +49,7 @@ export class AuthComponentComponent implements OnInit {
   verifyForm(): boolean {
     const email = this.authForm.get("email")?.value?.trim();
     const password = this.authForm.get("password")?.value;
-    const username =
-      this.authType === "register" ? this.authForm.get("username")?.value?.trim() : null;
+    const username = this.authType === "register" ? this.authForm.get("username")?.value?.trim() : null;
     const localErrors: string[] = [];
     if (this.authType === "register" && !username) {
       localErrors.push("El nombre de usuario es obligatorio");
@@ -105,9 +91,7 @@ export class AuthComponentComponent implements OnInit {
           if (role === "admin") {
             this.userAdminService.attemptAuth("login", credentials).subscribe(
               () => {
-                this.router.navigateByUrl(
-                  this.route.snapshot.queryParams["returnUrl"] || "/adminDashboard"
-                );
+                this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/adminDashboard");
               },
               (err) => {
                 this.errors = err;
@@ -119,6 +103,17 @@ export class AuthComponentComponent implements OnInit {
             this.userService.attemptAuth("login", credentials).subscribe(
               () => {
                 this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/");
+              },
+              (err) => {
+                this.errors = err;
+                this.isSubmitting = false;
+                this.cd.markForCheck();
+              }
+            );
+          } else if (role === "company") {
+            this.userCompanyService.attemptAuth("login", credentials).subscribe(
+              () => {
+                this.router.navigateByUrl(this.route.snapshot.queryParams["returnUrl"] || "/companyDashboard");
               },
               (err) => {
                 this.errors = err;
@@ -140,9 +135,7 @@ export class AuthComponentComponent implements OnInit {
         }
       );
     } else if (this.authType === "register") {
-      const selectedType = (
-        document.querySelector('input[name="user_type"]:checked') as HTMLInputElement
-      )?.value;
+      const selectedType = (document.querySelector('input[name="user_type"]:checked') as HTMLInputElement)?.value;
       if (!selectedType) {
         this.errors = { errors: { body: "Debes seleccionar un tipo de usuario" } };
         this.isSubmitting = false;
@@ -154,6 +147,17 @@ export class AuthComponentComponent implements OnInit {
         this.userAdminService.attemptAuth("register", credentials).subscribe(
           () => {
             this.router.navigateByUrl("/adminDashboard");
+          },
+          (err) => {
+            this.errors = err;
+            this.isSubmitting = false;
+            this.cd.markForCheck();
+          }
+        );
+      } else if (selectedType === "company") {
+        this.userCompanyService.attemptAuth("register", credentials).subscribe(
+          () => {
+            this.router.navigateByUrl("/companyDashboard");
           },
           (err) => {
             this.errors = err;
