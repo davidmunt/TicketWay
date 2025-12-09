@@ -7,6 +7,17 @@ const getConfig = require("./src/config/config.js");
 async function plugin(server, config) {
   const appConfig = await getConfig();
 
+  // Necesario para Stripe Webhooks – raw body SIN modificar
+  server.addContentTypeParser("*/*", { parseAs: "buffer" }, function (req, body, done) {
+    // Solo activar rawBody si la ruta contiene "/webhook/stripe"
+    if (req.url.includes("/webhook/stripe")) {
+      req.rawBody = body; // Buffer
+      return done(null, body);
+    }
+    // Para el resto, dejar que los siguientes parsers actúen
+    done(null, body);
+  });
+
   server
     .register(cors, {
       origin: appConfig.cors.origin,
@@ -39,27 +50,20 @@ async function plugin(server, config) {
     });
   });
 
-  server.addContentTypeParser(
-    "application/json",
-    { parseAs: "string" },
-    function (req, body, done) {
-      if (!body) return done(null, {});
-      try {
-        const json = JSON.parse(body);
-        done(null, json);
-      } catch (err) {
-        err.statusCode = 400;
-        done(err, undefined);
-      }
+  server.addContentTypeParser("application/json", { parseAs: "string" }, function (req, body, done) {
+    if (!body) return done(null, {});
+    try {
+      const json = JSON.parse(body);
+      done(null, json);
+    } catch (err) {
+      err.statusCode = 400;
+      done(err, undefined);
     }
-  );
+  });
 
   // POST sin body
   server.addHook("onRequest", async (req, res) => {
-    if (
-      req.headers["content-type"] === "application/json" &&
-      req.headers["content-length"] === "0"
-    ) {
+    if (req.headers["content-type"] === "application/json" && req.headers["content-length"] === "0") {
       req.headers["content-type"] = "empty";
     }
   });

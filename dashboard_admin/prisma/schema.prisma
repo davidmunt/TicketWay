@@ -196,19 +196,6 @@ model Cart {
   status   CartStatus @default(ACTIVE)
 }
 
-model TicketType {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  concert         String    @db.ObjectId
-  name            String
-  price           Float
-  stockTotal      Int
-  stockAvailable  Int
-  status          Status     @default(PENDING)
-  isActive        Boolean    @default(true)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-}
-
 model TicketOrder {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   user         String      @db.ObjectId
@@ -222,7 +209,6 @@ model TicketOrder {
 model OrderItem {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   order         String   @db.ObjectId 
-  ticketType    String   @db.ObjectId 
   quantity      Int
   unitPrice     Float
   subtotal      Float
@@ -258,7 +244,6 @@ model Ticket {
   orderItem     String       @db.ObjectId 
   user          String       @db.ObjectId 
   concert       String       @db.ObjectId
-  ticketType    String       @db.ObjectId  
   uniqueCode    String       @unique  
   status        TicketStatus @default(VALID)
   issuedAt      DateTime     @default(now()) 
