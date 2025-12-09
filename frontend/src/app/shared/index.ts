@@ -32,3 +32,4 @@ export * from "./company/company-product-category-dashboard/company-product-cate
 export * from "./company/company-create-update-product/company-create-update-product.component";
 export * from "./company/company-create-update-product-category/company-create-update-product-category.component";
 export * from "./company/company-header/company-header.component";
+export * from "./card-info-form/card-info-form.component";

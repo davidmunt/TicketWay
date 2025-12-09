@@ -17,6 +17,7 @@
     ></app-bttn-buy-add-cart>
     <app-bttn-buy-add-cart
       [type]="'buy'"
+      [typePayment]="'buyOne'"
       [concertId]="c.concert_id"
       [ticketsQty]="this.ticketQtySelected"
       [concertPricePerTicket]="c.price"
@@ -42,26 +43,3 @@
   <h4 class="concert-description">{{ c.description }}</h4>
   <app-comment-concert [slug]="slug"></app-comment-concert>
 </div>
-
-<!-- 
-@if (concert.author.following) {
-<button class="btn btn-sm btn-outline-danger" (click)="followed.emit(false)">
-  <i class="ion-minus-round"></i>
-  Unfollow {{ concert.author.username }}
-</button>
-} @else {
-<button class="btn btn-sm btn-outline-secondary" (click)="followed.emit(true)">
-  <i class="ion-plus-round"></i>
-  Follow {{ concert.author.username }}
-</button>
-} @if (concert.favorited) {
-<button class="btn btn-sm btn-outline-primary" (click)="favorited.emit(false)">
-  <i class="ion-heart"></i>
-  Unfavorite concert <span class="counter">({{ concert.favoritesCount }})</span>
-</button>
-} @else {
-<button class="btn btn-sm btn-outline-primary" (click)="favorited.emit(true)">
-  <i class="ion-heart"></i>
-  Favorite concert <span class="counter">({{ concert.favoritesCount }})</span>
-</button>
-} -->

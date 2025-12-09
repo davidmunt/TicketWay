@@ -42,6 +42,7 @@
     <!-- Total -->
     <div class="cart-total">
       <h3 class="total">Total: {{ formatPrice(c.totalPrice) }} €</h3>
+      <app-bttn-buy-add-cart [type]="'buy'" [typePayment]="'buyCart'"></app-bttn-buy-add-cart>
     </div>
   </div>
 

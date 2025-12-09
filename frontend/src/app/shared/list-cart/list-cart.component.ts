@@ -5,13 +5,14 @@ import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { constructLoginUrlTree } from "src/app/core";
 import { RouterModule } from "@angular/router";
+import { BttnBuyAddCart } from "../../shared/bttn-buy-add-cart/bttn-buy-add-cart.component";
 
 @Component({
   selector: "app-cart-list",
   templateUrl: "./list-cart.component.html",
   styleUrls: ["./list-cart.component.css"],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BttnBuyAddCart],
 })
 export class CartListComponent implements OnInit {
   slug!: string;
