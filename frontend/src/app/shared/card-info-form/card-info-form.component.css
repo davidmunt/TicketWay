@@ -1,0 +1,73 @@
+/* Contenedor principal del formulario */
+.card-form-container {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 420px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: Arial, sans-serif;
+}
+
+/* Título */
+.card-form-container h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+}
+
+/* Grupos de formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+/* Labels */
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Inputs */
+.form-group input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #0d6efd;
+  outline: none;
+}
+
+/* Mensajes de error */
+.error {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #d93025;
+}
+
+/* Botón de envío */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  background: #0d6efd;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: #0b5ed7;
+}
+
+button[type="submit"]:disabled {
+  background: #a0c4ff;
+  cursor: not-allowed;
+}

@@ -1,0 +1,32 @@
+<div class="card-form-container">
+  <h2>Información de Pago</h2>
+  <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
+    <!-- Número de tarjeta -->
+    <div class="form-group">
+      <label for="numero">Número de tarjeta</label>
+      <input id="numero" type="text" maxlength="16" formControlName="numero" placeholder="1234567890123456" />
+      <div class="error" *ngIf="cardForm.get('numero')?.touched && cardForm.get('numero')?.invalid">
+        Introduce un número de tarjeta válido (16 dígitos).
+      </div>
+    </div>
+
+    <!-- Fecha caducidad -->
+    <div class="form-group">
+      <label for="fechaCaducidad">Fecha de caducidad</label>
+      <input id="fechaCaducidad" type="text" formControlName="fechaCaducidad" placeholder="MM/YY" />
+      <div class="error" *ngIf="cardForm.get('fechaCaducidad')?.touched && cardForm.get('fechaCaducidad')?.invalid">
+        Formato requerido: MM/YY
+      </div>
+    </div>
+
+    <!-- CVV -->
+    <div class="form-group">
+      <label for="cvv">CVV</label>
+      <input id="cvv" type="text" maxlength="4" formControlName="cvv" placeholder="123" />
+      <div class="error" *ngIf="cardForm.get('cvv')?.touched && cardForm.get('cvv')?.invalid">Introduce un CVV válido (3 o 4 dígitos).</div>
+    </div>
+
+    <!-- Botón enviar -->
+    <button type="submit" [disabled]="cardForm.invalid">Confirmar pago</button>
+  </form>
+</div>
