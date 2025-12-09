@@ -14,3 +14,5 @@ export * from "./cart.model";
 export * from "./concertCart.model";
 export * from "./product.model";
 export * from "./productcategory.model";
+export * from "./payment.model";
+export * from "./card.model";
