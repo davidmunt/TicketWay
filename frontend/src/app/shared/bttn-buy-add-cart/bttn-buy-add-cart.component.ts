@@ -4,18 +4,22 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CartService } from "../../core/services/cart.service";
 import { UserService } from "../../core/services/user.service";
 import { ProductService } from "../../core/services/product.service";
+import { PaymentService } from "../../core/services/payment.service";
 import { ProductCategoryService } from "../../core/services/productcategory.service";
 import { constructLoginUrlTree } from "src/app/core";
+import { CardInfoFormComponent } from "../../shared/card-info-form/card-info-form.component";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-bttn-buy-add-cart",
   templateUrl: "./bttn-buy-add-cart.component.html",
   styleUrls: ["./bttn-buy-add-cart.component.css"],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CardInfoFormComponent],
 })
 export class BttnBuyAddCart implements OnInit {
-  @Input() type: "buy" | "add" = "add";
+  @Input() type: "buy" | "data-payment" | "add" = "add";
+  @Input() typePayment?: "buyOne" | "buyCart" = "buyCart";
 
   @Input() concertId!: string;
   @Input() ticketsQty!: number;
@@ -31,14 +35,18 @@ export class BttnBuyAddCart implements OnInit {
   category = this.categoryService.productCategory;
 
   showSuggestion = signal(false);
+  sugestionIsProduct = signal(true);
   productQty = signal(0);
 
   isLoading = false;
   errorMessage = "";
 
+  cardInfo: any = null;
+
   constructor(
     private cartService: CartService,
     private userService: UserService,
+    private paymentService: PaymentService,
     private productService: ProductService,
     private categoryService: ProductCategoryService,
     private route: ActivatedRoute,
@@ -62,7 +70,21 @@ export class BttnBuyAddCart implements OnInit {
         this.router.navigateByUrl(constructLoginUrlTree(this.router));
         return;
       }
-      this.showSuggestion.set(true);
+      if (this.type === "add") {
+        this.sugestionIsProduct.set(true);
+        this.showSuggestion.set(true);
+        return;
+      }
+      if (this.typePayment === "buyCart") {
+        this.sugestionIsProduct.set(false);
+        this.showSuggestion.set(true);
+        return;
+      }
+      if (this.type === "buy" && this.typePayment === "buyOne") {
+        this.sugestionIsProduct.set(true);
+        this.showSuggestion.set(true);
+        return;
+      }
     });
   }
 
@@ -97,13 +119,46 @@ export class BttnBuyAddCart implements OnInit {
       });
   }
 
-  //boton pagar
-  onConfirmBuy(): void {
-    const qty = this.productQty();
-    console.log("BUY preparado → tickets + producto:", {
-      concertId: this.concertId,
-      productQty: qty,
+  procesarPago(data: any) {
+    this.cardInfo = data;
+    this.isLoading = true;
+    let products;
+    if (this.typePayment === "buyOne") {
+      const qty = this.productQty();
+      products = [
+        {
+          concert: this.concertId,
+          ticketsQty: this.ticketsQty,
+          product: this.productId,
+          productQty: qty,
+        },
+      ];
+    } else {
+      products = this.cartService.cart().concerts;
+    }
+    this.paymentService.create_payment(products, this.cardInfo).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.showSuggestion.set(false);
+        this.sugestionIsProduct.set(true);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Comment added",
+        }).then(() => {
+          this.router.navigateByUrl("/home");
+        });
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = "Error al intentar pagar";
+      },
     });
+  }
+
+  onConfirmBuy(): void {
+    this.sugestionIsProduct.set(false);
+    this.type = "data-payment";
   }
 
   closeSuggestion(): void {

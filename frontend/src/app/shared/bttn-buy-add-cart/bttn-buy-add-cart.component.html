@@ -1,12 +1,12 @@
 <!-- BOTÓN PRINCIPAL -->
 <button class="btn" (click)="onMainButtonClick()" [ngClass]="{ buy: type === 'buy', add: type === 'add' }">
-  {{ type === "buy" ? "Comprar" : "Añadir al carrito" }}
+  {{ type === "buy" ? "Buy" : "Add to cart" }}
 </button>
-<!-- SUGERENCIA DE MERCH -->
+<!-- SUGERENCIA / FORMULARIO -->
 <div class="modal" *ngIf="showSuggestion()">
-  <div class="modal-content">
+  <!-- Sugerencia de merch -->
+  <div class="modal-content" *ngIf="sugestionIsProduct() === true">
     <h2>¿Quieres llevarte también la merch del concierto?</h2>
-    <!-- Producto -->
     <div class="product-info" *ngIf="product">
       <img [src]="product().imageUrl" alt="" class="product-img" />
       <div>
@@ -14,7 +14,6 @@
         <p>{{ product().description }}</p>
         <p class="price">Precio: {{ product().price }} €</p>
         <p class="cat">Categoría: {{ category?.name }}</p>
-        <!-- Selección de cantidad -->
         <label>
           Cantidad:
           <input
@@ -28,12 +27,15 @@
         </label>
       </div>
     </div>
-
-    <!-- BOTONES -->
     <div class="actions">
-      <button class="cancel" (click)="closeSuggestion()">Cancelar</button>
+      <button class="cancel" (click)="closeSuggestion()">Cancel</button>
       <button class="confirm" *ngIf="type === 'add'" (click)="onConfirmAdd()" [disabled]="isLoading">Add to cart</button>
-      <button class="confirm buy" *ngIf="type === 'buy'" (click)="onConfirmBuy()">Buy now</button>
+      <button class="confirm buy" *ngIf="type === 'buy' && typePayment === 'buyOne'" (click)="onConfirmBuy()">Next</button>
     </div>
   </div>
+  <app-card-info-form
+    *ngIf="sugestionIsProduct() === false"
+    class="form-data-card"
+    (cardInfoSubmit)="procesarPago($event)"
+  ></app-card-info-form>
 </div>
