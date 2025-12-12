@@ -70,10 +70,12 @@ module.exports = fp(async function (fastify, opts) {
         throw new Unauthorized("Token invalido o expirado");
       }
       if (decoded.typeUser !== "user") {
-        throw new Unauthorized("Tipo de usuario no autorizado");
+        if (decoded.user.role !== "user") {
+          throw new Unauthorized("Tipo de usuario no autorizado");
+        }
       }
       const user = await fastify.prisma.user.findUnique({
-        where: { id: decoded.userId },
+        where: { id: decoded.user.id },
       });
       if (!user) throw new Unauthorized("Usuario no encontrado");
       const refreshToken = await fastify.prisma.refreshToken.findFirst({
