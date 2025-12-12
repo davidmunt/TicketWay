@@ -44,6 +44,7 @@ require("../routes/comment.router.js")(app);
 require("../routes/cart.router.js")(app);
 require("../routes/product.router.js")(app);
 require("../routes/productCategory.js")(app);
+require("../routes/payment.router.js")(app);
 
 app.listen(process.env.PORT, () => {
   console.log(`Servidor Express en el puerto ${process.env.PORT}`);

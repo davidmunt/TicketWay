@@ -95,7 +95,6 @@ const userLogin = asyncHandler(async (req, res) => {
       });
     }
     loginUser.cartSlug = cart.slug;
-    console.log("login con cartSlug ", loginUser);
     await loginUser.save();
     res.status(200).json({ user: await loginUser.toUserResponse(accessToken) });
   } catch (error) {
