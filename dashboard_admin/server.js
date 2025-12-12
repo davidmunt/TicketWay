@@ -7,15 +7,18 @@ const getConfig = require("./src/config/config.js");
 async function plugin(server, config) {
   const appConfig = await getConfig();
 
-  // Necesario para Stripe Webhooks – raw body SIN modificar
-  server.addContentTypeParser("*/*", { parseAs: "buffer" }, function (req, body, done) {
-    // Solo activar rawBody si la ruta contiene "/webhook/stripe"
+  server.addContentTypeParser("application/json", { parseAs: "buffer" }, (req, body, done) => {
     if (req.url.includes("/webhook/stripe")) {
-      req.rawBody = body; // Buffer
+      req.rawBody = body;
       return done(null, body);
     }
-    // Para el resto, dejar que los siguientes parsers actúen
-    done(null, body);
+    try {
+      const json = JSON.parse(body.toString());
+      done(null, json);
+    } catch (err) {
+      err.statusCode = 400;
+      done(err, undefined);
+    }
   });
 
   server
@@ -48,17 +51,6 @@ async function plugin(server, config) {
       message: err.message || "Internal server error",
       error: process.env.NODE_ENV === "development" ? err.stack : undefined,
     });
-  });
-
-  server.addContentTypeParser("application/json", { parseAs: "string" }, function (req, body, done) {
-    if (!body) return done(null, {});
-    try {
-      const json = JSON.parse(body);
-      done(null, json);
-    } catch (err) {
-      err.statusCode = 400;
-      done(err, undefined);
-    }
   });
 
   // POST sin body
