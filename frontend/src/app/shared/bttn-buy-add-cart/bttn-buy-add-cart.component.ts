@@ -53,7 +53,7 @@ export class BttnBuyAddCart implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
+  async ngOnInit(): Promise<void> {}
 
   ngOnChanges() {
     this.userService.currentUser.subscribe((user) => {
@@ -119,11 +119,19 @@ export class BttnBuyAddCart implements OnInit {
       });
   }
 
-  procesarPago(data: any) {
-    this.cardInfo = data;
+  async procesarPago(data: any) {
     this.isLoading = true;
+    this.cardInfo = data;
+    const stripe = data.stripe;
+    if (!stripe) {
+      this.errorMessage = "Stripe no está cargado";
+      this.isLoading = false;
+      return;
+    }
     let products;
+    let typePayment;
     if (this.typePayment === "buyOne") {
+      typePayment = "singleOrder";
       const qty = this.productQty();
       products = [
         {
@@ -135,23 +143,40 @@ export class BttnBuyAddCart implements OnInit {
       ];
     } else {
       products = this.cartService.cart().concerts;
+      typePayment = "cart";
     }
-    this.paymentService.create_payment(products, this.cardInfo).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.showSuggestion.set(false);
-        this.sugestionIsProduct.set(true);
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Comment added",
-        }).then(() => {
-          this.router.navigateByUrl("/home");
+    this.paymentService.create_payment(products, typePayment).subscribe({
+      next: async (payment) => {
+        const { error, paymentIntent } = await stripe.confirmCardPayment(payment.clientSecret, {
+          payment_method: {
+            card: this.cardInfo.element,
+            billing_details: {
+              name: this.cardInfo.name,
+            },
+          },
         });
+        if (error) {
+          this.isLoading = false;
+          this.errorMessage = error.message || "Error al procesar el pago";
+          return;
+        }
+        if (paymentIntent.status === "succeeded") {
+          this.isLoading = false;
+          this.showSuggestion.set(false);
+          this.sugestionIsProduct.set(true);
+          Swal.fire({
+            icon: "success",
+            title: "Pago completado",
+            text: "¡Tu compra se ha realizado con éxito!",
+          }).then(() => {
+            this.userService.getUserData().subscribe();
+            this.router.navigateByUrl("/home");
+          });
+        }
       },
       error: () => {
         this.isLoading = false;
-        this.errorMessage = "Error al intentar pagar";
+        this.errorMessage = "Error al iniciar el pago";
       },
     });
   }
