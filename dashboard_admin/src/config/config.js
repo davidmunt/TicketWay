@@ -16,7 +16,9 @@ async function getConfig() {
       .prop("JWT_REFRESH_SECRET", Schema.string().required())
       .prop("JWT_REFRESH_EXPIRES_IN", Schema.string().default("7d"))
       .prop("JWT_ISSUER", Schema.string().default("ticketway-api"))
-      .prop("CORSURL", Schema.string().default("http://localhost:4200")),
+      .prop("CORSURL", Schema.string().default("http://localhost:4200"))
+      .prop("STRIPE_WEBHOOK_SECRET", Schema.string().default("whsec_"))
+      .prop("STRIPE_SECRET_KEY", Schema.string().default("sk_test_")),
   });
 
   const config = {
