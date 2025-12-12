@@ -209,6 +209,7 @@ model TicketOrder {
 model OrderItem {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   order         String   @db.ObjectId 
+  concert       String   @db.ObjectId 
   quantity      Int
   unitPrice     Float
   subtotal      Float
@@ -221,8 +222,8 @@ model Payment {
   order           String   @db.ObjectId 
   amount          Float
   method          String
-  transactionRef  String
-  currency        String   @default("USD")
+  transactionRef  String   @unique
+  currency        String   @default("EUR")
   status          PaymentStatus @default(PENDING)
   paidAt          DateTime?
   createdAt       DateTime @default(now())
