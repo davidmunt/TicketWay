@@ -55,6 +55,7 @@ async function payment(server, options) {
         await tx.orderItem.create({
           data: {
             order: order.id,
+            concert: concert.id,
             quantity: item.ticketsQty,
             unitPrice: concert.price,
             subtotal: concert.price * item.ticketsQty,
@@ -77,17 +78,14 @@ async function payment(server, options) {
   async function onCreatePayment(req, reply) {
     try {
       const userId = req.userId;
-      const { payment, paymentIntentId } = req.body;
+      const { payment, paymentIntentId, typePayment } = req.body;
       if (!payment || !Array.isArray(payment.products) || payment.products.length === 0) {
         return reply.code(400).send({ message: "Productos requeridos", success: false });
       }
-      // 1. Crear order + stock reservado
       const order = await createOrderAndReserveStock(server, userId, payment.products);
-      // 2. Calcular total
       const amount = await calculateTotal(server, payment.products);
       const idempotencyKey = `order-${order.id}`;
       let paymentIntent;
-      // 3. Si el front manda paymentIntentId → reintento
       if (paymentIntentId) {
         try {
           paymentIntent = await server.stripe.paymentIntents.update(paymentIntentId, {
@@ -103,11 +101,11 @@ async function payment(server, options) {
             metadata: {
               orderId: order.id,
               userId,
+              typePayment: typePayment,
             },
           });
         }
       } else {
-        // 4. Crear uno nuevo
         paymentIntent = await server.stripe.createPaymentIntent({
           amount,
           currency: "eur",
@@ -115,10 +113,10 @@ async function payment(server, options) {
           metadata: {
             orderId: order.id,
             userId,
+            typePayment: typePayment,
           },
         });
       }
-      // 5. Registrar pago en base de datos
       await server.prisma.payment.upsert({
         where: { transactionRef: paymentIntent.id },
         create: {
@@ -133,13 +131,12 @@ async function payment(server, options) {
           amount: amount / 100,
         },
       });
-      // 6. Devolver al frontend
       return reply.send({
         success: true,
         paymentIntentId: paymentIntent.id,
         clientSecret: paymentIntent.client_secret,
         orderId: order.id,
-        reused: Boolean(paymentIntentId), // opcional
+        reused: Boolean(paymentIntentId),
       });
     } catch (err) {
       console.error("🔥 ERROR CREATE PAYMENT:", err);
@@ -150,29 +147,60 @@ async function payment(server, options) {
   server.post(
     options.prefix + "webhook/stripe",
     {
-      schema: schema.webhookStripe,
       config: { rawBody: true },
     },
     async (req, reply) => {
+      console.log("Llama a func de webhook");
       let event;
       try {
         event = server.stripe.verifyWebhook(req);
       } catch (err) {
-        console.error("❌ Webhook inválido:", err.message);
-        return reply.code(400).send({ error: "Invalid signature" });
+        console.error("❌ Error verificando webhook:", err.message);
+        return reply.code(400).send(`Webhook Error: ${err.message}`);
       }
       const data = event.data.object;
       const type = event.type;
       if (type === "payment_intent.succeeded") {
+        console.log("payment_intent.succeeded es true");
         const paymentIntentId = data.id;
         const orderId = data.metadata.orderId;
         const userId = data.metadata.userId;
+        const typePayment = data.metadata.typePayment;
+        console.log("typePayment", typePayment);
         try {
           await server.prisma.$transaction(async (tx) => {
             await tx.ticketOrder.update({
               where: { id: orderId },
               data: { status: "PAID" },
             });
+            if (typePayment === "cart") {
+              console.log("typePayment === cart");
+              await tx.cart.updateMany({
+                where: { owner: userId, isActive: true },
+                data: { status: "FINISHED", isActive: false },
+              });
+              function generateCartSlug(username, slugifyFn) {
+                const randomStr = ((Math.random() * Math.pow(36, 6)) | 0).toString(36);
+                if (username) {
+                  return `${slugifyFn(username)}-${randomStr}`;
+                }
+                return `cart-${randomStr}`;
+              }
+              const user = await tx.user.findUnique({ where: { id: userId } });
+              const newCart = await tx.cart.create({
+                data: {
+                  owner: userId,
+                  slug: generateCartSlug(user?.username, server.slugify),
+                  concerts: [],
+                  isActive: true,
+                  status: "ACTIVE",
+                },
+              });
+              await tx.user.update({
+                where: { id: userId },
+                data: { cartSlug: newCart.slug },
+              });
+            }
             await tx.payment.updateMany({
               where: { transactionRef: paymentIntentId },
               data: { status: "COMPLETED" },
@@ -187,14 +215,27 @@ async function payment(server, options) {
                   data: {
                     user: userId,
                     orderItem: item.id,
-                    qr: `${orderId}-${item.id}-${i}-${Date.now()}`,
-                    isValidated: false,
+                    concert: item.concert,
+                    uniqueCode: `${item.order}-${item.id}-${i}-${Date.now()}`,
                   },
                 });
               }
+              await tx.concert.update({
+                where: { id: item.concert },
+                data: {
+                  availableSeats: { decrement: item.quantity },
+                },
+              });
+            }
+            for (const m of merch) {
+              await tx.product.update({
+                where: { id: m.product },
+                data: {
+                  stockAvailable: { decrement: m.quantity },
+                },
+              });
             }
           });
-          console.log(`✔️ Pago completado. Orden ${orderId} confirmada.`);
         } catch (err) {
           console.error("❌ Error procesando webhook:", err);
         }
