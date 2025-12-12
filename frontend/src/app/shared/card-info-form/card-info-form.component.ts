@@ -1,41 +1,74 @@
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { Card } from "../../core/models/index";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { loadStripe, Stripe, StripeCardElement } from "@stripe/stripe-js";
+import { environment } from "../../../environments/evironment";
 
 @Component({
   selector: "app-card-info-form",
   templateUrl: "./card-info-form.component.html",
   styleUrls: ["./card-info-form.component.css"],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
 })
 export class CardInfoFormComponent implements OnInit {
-  @Output() cardInfoSubmit = new EventEmitter<Card>();
-  @Output() changeView = new EventEmitter<string>();
+  @Output() cardInfoSubmit = new EventEmitter<any>();
 
+  stripe: Stripe | null = null;
+  cardElement!: StripeCardElement;
   cardForm!: FormGroup;
+  stripeError: string = "";
+  loading = false;
 
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
+  async ngOnInit() {
     this.buildForm();
+    await this.setupStripe();
   }
 
-  private buildForm(): void {
+  private buildForm() {
     this.cardForm = this.fb.group({
-      numero: ["", [Validators.required, Validators.pattern("^[0-9]{16}$")]],
-      cvv: ["", [Validators.required, Validators.pattern("^[0-9]{3,4}$")]],
-      fechaCaducidad: ["", [Validators.required, Validators.pattern("^(0[1-9]|1[0-2])\\/([0-9]{2})$")]],
+      name: ["", Validators.required],
     });
   }
 
-  onSubmit(): void {
-    if (this.cardForm.valid) {
-      const cardData: Card = this.cardForm.value;
-      this.cardInfoSubmit.emit(cardData);
-    } else {
+  constructor(private fb: FormBuilder) {}
+
+  private async setupStripe() {
+    this.stripe = await loadStripe(environment.stripePublishableKey);
+    const elements = this.stripe!.elements();
+    this.cardElement = elements.create("card", {
+      hidePostalCode: true,
+      style: {
+        base: {
+          fontSize: "16px",
+          color: "#32325d",
+          fontFamily: `'Inter', sans-serif`,
+          "::placeholder": {
+            color: "#a0aec0",
+          },
+        },
+        invalid: {
+          color: "#e53e3e",
+        },
+      },
+    });
+    this.cardElement.mount("#card-element");
+    this.cardElement.on("change", (event) => {
+      this.stripeError = event.error ? event.error.message! : "";
+    });
+  }
+
+  onSubmit() {
+    if (this.cardForm.invalid) {
       this.cardForm.markAllAsTouched();
+      return;
     }
+    this.loading = true;
+    this.cardInfoSubmit.emit({
+      name: this.cardForm.value.name,
+      element: this.cardElement,
+      stripe: this.stripe,
+    });
+    this.loading = false;
   }
 }

@@ -1,7 +1,6 @@
-<div class="card-form-container">
+<!-- <div class="card-form-container">
   <h2>Información de Pago</h2>
   <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
-    <!-- Número de tarjeta -->
     <div class="form-group">
       <label for="numero">Número de tarjeta</label>
       <input id="numero" type="text" maxlength="16" formControlName="numero" placeholder="1234567890123456" />
@@ -10,7 +9,6 @@
       </div>
     </div>
 
-    <!-- Fecha caducidad -->
     <div class="form-group">
       <label for="fechaCaducidad">Fecha de caducidad</label>
       <input id="fechaCaducidad" type="text" formControlName="fechaCaducidad" placeholder="MM/YY" />
@@ -19,14 +17,34 @@
       </div>
     </div>
 
-    <!-- CVV -->
     <div class="form-group">
       <label for="cvv">CVV</label>
       <input id="cvv" type="text" maxlength="4" formControlName="cvv" placeholder="123" />
       <div class="error" *ngIf="cardForm.get('cvv')?.touched && cardForm.get('cvv')?.invalid">Introduce un CVV válido (3 o 4 dígitos).</div>
     </div>
 
-    <!-- Botón enviar -->
     <button type="submit" [disabled]="cardForm.invalid">Confirmar pago</button>
+  </form>
+</div> -->
+
+<div class="card-form-container">
+  <form (ngSubmit)="onSubmit()" [formGroup]="cardForm">
+    <!-- Nombre del titular -->
+    <label class="label">Nombre del titular</label>
+    <input type="text" formControlName="name" placeholder="Ej: Juan Pérez" class="input" />
+    <div class="error" *ngIf="cardForm.controls['name'].touched && cardForm.controls['name'].invalid">El nombre es obligatorio.</div>
+
+    <!-- Stripe Card Element -->
+    <label class="label">Datos de la tarjeta</label>
+    <div id="card-element" class="stripe-card-element"></div>
+
+    <!-- Error de Stripe -->
+    <div id="card-errors" class="stripe-error">{{ stripeError }}</div>
+
+    <!-- Botón -->
+    <button type="submit" class="btn-pay" [disabled]="loading || cardForm.invalid">
+      <span *ngIf="!loading">Pagar</span>
+      <div *ngIf="loading" class="spinner"></div>
+    </button>
   </form>
 </div>
