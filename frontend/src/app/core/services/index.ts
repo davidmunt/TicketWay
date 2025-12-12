@@ -15,3 +15,4 @@ export * from "./usercompany.service";
 export * from "./cart.service";
 export * from "./product.service";
 export * from "./productcategory.service";
+export * from "./payment.service";

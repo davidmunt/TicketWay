@@ -55,40 +55,52 @@ export class UserService {
   }
 
   refreshToken(): Observable<any> {
-    return this.apiService
-      .post(user_port, "/auth/refresh", undefined, { withCredentials: true })
-      .pipe(
-        tap((res: any) => {
-          this.jwtService.saveToken(res.accessToken);
-          this.auth$.next(true);
+    return this.apiService.post(user_port, "/auth/refresh", undefined, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        this.jwtService.saveToken(res.accessToken);
+        this.auth$.next(true);
+      })
+    );
+  }
+
+  getUserData(): Observable<any> {
+    const token = this.jwtService.getToken();
+    if (token) {
+      const headers = new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      });
+      return this.apiService.get(user_port, "/user", { headers }).pipe(
+        tap((data) => {
+          this.setAuth({ ...data.user, token });
         })
       );
+    } else {
+      console.error("No se ha podido conseguir el token");
+      return new Observable();
+    }
   }
 
   purgeAuth(): Observable<any> {
-    return this.apiService
-      .post(user_port, "/auth/logout", undefined, { withCredentials: true })
-      .pipe(
-        tap((res) => {
-          this.jwtService.destroyToken();
-          this.currentUserSubject.next({} as User);
-          this.isAuthenticatedSubject.next(false);
-          this.auth$.next(false);
-        })
-      );
+    return this.apiService.post(user_port, "/auth/logout", undefined, { withCredentials: true }).pipe(
+      tap((res) => {
+        this.jwtService.destroyToken();
+        this.currentUserSubject.next({} as User);
+        this.isAuthenticatedSubject.next(false);
+        this.auth$.next(false);
+      })
+    );
   }
 
   //login y register
   attemptAuth(type: string, credentials: any): Observable<User> {
     const route = type === "login" ? "/login" : "";
-    return this.apiService
-      .post(user_port, `/user${route}`, { user: credentials }, { withCredentials: true })
-      .pipe(
-        map((res: any) => {
-          this.setAuth(res.user);
-          return res.user;
-        })
-      );
+    return this.apiService.post(user_port, `/user${route}`, { user: credentials }, { withCredentials: true }).pipe(
+      map((res: any) => {
+        this.setAuth(res.user);
+        return res.user;
+      })
+    );
   }
 
   getCurrentUser(): User {
