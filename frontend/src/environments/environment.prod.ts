@@ -4,4 +4,5 @@ export const environment = {
   user_port: "3001",
   company_port: "3002",
   admin_port: "3003",
+  stripePublishableKey: "pk_live_XXXXXXXXXXXXXXXXXXXX",
 };
