@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { CommentService, UserAdminService } from "../../../core/services";
+import { UserAdminService } from "../../../core/services";
 import { CommonModule } from "@angular/common";
 import { Errors } from "src/app/core/models";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
