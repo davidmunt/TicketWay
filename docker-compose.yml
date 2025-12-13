@@ -23,5 +23,19 @@ services:
     depends_on:
       - mongodb
 
+  dashboard_admin:
+    build:
+      context: ./dashboard_admin
+      dockerfile: Dockerfile
+    container_name: dashboard_admin
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./dashboard_admin/.env
+    environment:
+      DATABASE_URL: "mongodb://admin:admin@mongodb:27017/ticketway?authSource=admin"
+    depends_on:
+      - mongodb
+
 volumes:
   mongo_data:
