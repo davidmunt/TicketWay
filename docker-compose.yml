@@ -5,11 +5,23 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
       MONGO_INITDB_DATABASE: ticketway
     volumes:
       - mongo_data:/data/db
+
+  backend_mongoose:
+    build:
+      context: ./backend_mongoose
+      dockerfile: Dockerfile
+    container_name: backend_mongoose
+    ports:
+      - "3001:3001"
+    environment:
+      MONGO_URI: "mongodb://admin:admin@mongodb:27017/ticketway?authSource=admin"
+    depends_on:
+      - mongodb
 
 volumes:
   mongo_data:
