@@ -3,18 +3,20 @@ import {
   Post,
   Body,
   Inject,
-  OnModuleInit,
   Param,
   Get,
   Put,
   Delete,
+  OnModuleInit,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
+
 import {
   CreateProductDto,
   UpdateProductDto,
   GetProductsDto,
-} from '../../product-ms/dto/index';
+} from '../../product-ms/dto';
 
 @Controller('product')
 export class ProductController implements OnModuleInit {
@@ -26,7 +28,7 @@ export class ProductController implements OnModuleInit {
 
   @Post()
   async createProduct(@Body() dto: CreateProductDto) {
-    return this.client.send({ cmd: 'create_product' }, dto).toPromise();
+    return lastValueFrom(this.client.send({ cmd: 'create_product' }, dto));
   }
 
   @Put(':slug')
@@ -34,23 +36,23 @@ export class ProductController implements OnModuleInit {
     @Param('slug') slug: string,
     @Body() dto: UpdateProductDto,
   ) {
-    return this.client
-      .send({ cmd: 'update_product' }, { slug: slug, ...dto })
-      .toPromise();
+    return lastValueFrom(
+      this.client.send({ cmd: 'update_product' }, { slug, ...dto }),
+    );
   }
 
   @Delete(':slug')
   async deleteProduct(@Param('slug') slug: string) {
-    return this.client.send({ cmd: 'delete_product' }, { slug }).toPromise();
+    return lastValueFrom(this.client.send({ cmd: 'delete_product' }, { slug }));
   }
 
   @Get('list')
   async getProducts(@Body() dto: GetProductsDto) {
-    return this.client.send({ cmd: 'get_products' }, dto).toPromise();
+    return lastValueFrom(this.client.send({ cmd: 'get_products' }, dto));
   }
 
   @Get(':slug')
   async getProduct(@Param('slug') slug: string) {
-    return this.client.send({ cmd: 'get_product' }, { slug }).toPromise();
+    return lastValueFrom(this.client.send({ cmd: 'get_product' }, { slug }));
   }
 }

@@ -14,7 +14,7 @@ import { JwtCustomModule } from '../../jwt/jwt.module';
         name: 'PRODUCT_CATEGORY_MS',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
+          host: 'product_category_ms',
           port: 4003,
         },
       },

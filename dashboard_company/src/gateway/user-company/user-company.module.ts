@@ -13,7 +13,7 @@ import { JwtCustomModule } from '../../jwt/jwt.module';
       {
         name: 'USER_COMPANY_MS',
         transport: Transport.TCP,
-        options: { host: 'localhost', port: 4001 },
+        options: { host: 'user_company_ms', port: 4001 },
       },
     ]),
   ],

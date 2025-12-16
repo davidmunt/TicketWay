@@ -4,12 +4,18 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: ticketway
     volumes:
       - mongo_data:/data/db
+    command: >
+      bash -c "
+        mongod --replSet rs0 --bind_ip_all &
+        sleep 5 &&
+        mongosh --eval 'rs.initiate({
+          _id:\"rs0\",
+          members:[{ _id:0, host:\"mongodb:27017\" }]
+        })' &&
+        wait
+      "
 
   backend_mongoose:
     build:
@@ -19,7 +25,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      MONGO_URI: "mongodb://admin:admin@mongodb:27017/ticketway?authSource=admin"
+      MONGO_URI: "mongodb://mongodb:27017/ticketway?replicaSet=rs0"
     depends_on:
       - mongodb
 
@@ -33,9 +39,49 @@ services:
     env_file:
       - ./dashboard_admin/.env
     environment:
-      DATABASE_URL: "mongodb://admin:admin@mongodb:27017/ticketway?authSource=admin"
+      DATABASE_URL: "mongodb://mongodb:27017/ticketway?replicaSet=rs0"
     depends_on:
       - mongodb
+
+  user_company_ms:
+    build: ./dashboard_company
+    container_name: user_company_ms
+    command: node dist/src/user-company-ms/main.js
+    env_file:
+      - ./dashboard_company/.env
+    depends_on:
+      - mongodb
+
+  product_ms:
+    build: ./dashboard_company
+    container_name: product_ms
+    command: node dist/src/product-ms/main.js
+    env_file:
+      - ./dashboard_company/.env
+    depends_on:
+      - mongodb
+
+  product_category_ms:
+    build: ./dashboard_company
+    container_name: product_category_ms
+    command: node dist/src/product-category-ms/main.js
+    env_file:
+      - ./dashboard_company/.env
+    depends_on:
+      - mongodb
+
+  dashboard_company_gateway:
+    build: ./dashboard_company
+    container_name: dashboard_company_gateway
+    command: node dist/src/main.js
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./dashboard_company/.env
+    depends_on:
+      - user_company_ms
+      - product_ms
+      - product_category_ms
 
 volumes:
   mongo_data:
