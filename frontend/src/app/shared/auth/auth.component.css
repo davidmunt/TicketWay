@@ -116,6 +116,31 @@
   list-style: disc;
 }
 
+.user-type {
+  text-align: left;
+  margin-top: 10px;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* menos separación */
+  margin-bottom: 6px;
+}
+
+.option-row label {
+  margin: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.option-row input[type="radio"] {
+  width: auto; /* 🔥 clave */
+  padding: 0; /* 🔥 elimina espacio extra */
+  margin: 0;
+  cursor: pointer;
+}
+
 /* ==== RESPONSIVE ==== */
 @media (max-width: 480px) {
   .auth-container {
