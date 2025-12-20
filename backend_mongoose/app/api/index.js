@@ -1,11 +1,17 @@
+const path = require("path");
+require("dotenv").config({
+  path: path.resolve(__dirname, "../../.env"),
+});
+
+console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
+console.log("REFRESH_TOKEN_SECRET:", process.env.REFRESH_TOKEN_SECRET);
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
-dotenv.config();
 const app = express();
 
 app.use(cookieParser());
@@ -13,17 +19,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: process.env.CORSURL || "http://localhost:4200",
+  origin: ["http://localhost:4200", "http://frontend:80"],
   credentials: true,
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
 const dbConfig = require("../config/database.config.js");
+
 mongoose.Promise = global.Promise;
 mongoose
   .connect(dbConfig.url, { useNewUrlParser: true })
-  .then(async () => {
+  .then(() => {
     console.log("✅ Conectado a la base de datos");
   })
   .catch((err) => {
@@ -46,6 +53,8 @@ require("../routes/product.router.js")(app);
 require("../routes/productCategory.js")(app);
 require("../routes/payment.router.js")(app);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Servidor Express en el puerto ${process.env.PORT}`);
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Servidor Express escuchando en el puerto ${PORT}`);
 });

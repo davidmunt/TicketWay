@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const registerUser = asyncHandler(async (req, res) => {
   try {
+    console.log("LLama a la funcion de register");
     const { user } = req.body;
     if (!user || !user.email || !user.username || !user.password) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
