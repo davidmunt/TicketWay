@@ -1,0 +1,3 @@
+@echo off
+echo 🚀 Iniciando Stripe webhook listener...
+stripe listen --forward-to http://localhost:3003/api/webhook/stripe

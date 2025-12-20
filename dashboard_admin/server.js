@@ -5,6 +5,7 @@ const cors = require("@fastify/cors");
 const getConfig = require("./src/config/config.js");
 
 async function plugin(server, config) {
+  const allowedOrigins = ["http://localhost:4200", "http://frontend:80"];
   const appConfig = await getConfig();
 
   server.addContentTypeParser("application/json", { parseAs: "buffer" }, (req, body, done) => {
@@ -23,10 +24,23 @@ async function plugin(server, config) {
 
   server
     .register(cors, {
-      origin: appConfig.cors.origin,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`Not allowed by CORS: ${origin}`));
+        }
+      },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
     })
+    // .register(cors, {
+    //   origin: appConfig.cors.origin,
+    //   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    //   allowedHeaders: ["Content-Type", "Authorization"],
+    // })
     .register(autoLoad, {
       dir: path.join(__dirname, "src", "plugins"),
       options: config,

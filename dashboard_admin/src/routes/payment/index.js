@@ -77,6 +77,7 @@ async function payment(server, options) {
 
   async function onCreatePayment(req, reply) {
     try {
+      console.log("LLega a la funcion de onCreatePayment");
       const userId = req.userId;
       const { payment, paymentIntentId, typePayment } = req.body;
       if (!payment || !Array.isArray(payment.products) || payment.products.length === 0) {
@@ -131,6 +132,7 @@ async function payment(server, options) {
           amount: amount / 100,
         },
       });
+      console.log("LLega al final de la funcion de onCreatePayment");
       return reply.send({
         success: true,
         paymentIntentId: paymentIntent.id,
