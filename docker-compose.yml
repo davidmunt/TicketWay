@@ -24,6 +24,8 @@ services:
     container_name: backend_mongoose
     ports:
       - "3001:3001"
+    env_file:
+      - ./backend_mongoose/.env
     environment:
       MONGO_URI: "mongodb://mongodb:27017/ticketway?replicaSet=rs0"
     depends_on:
@@ -82,6 +84,18 @@ services:
       - user_company_ms
       - product_ms
       - product_category_ms
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend_mongoose
+      - dashboard_admin
+      - dashboard_company_gateway
 
 volumes:
   mongo_data:
