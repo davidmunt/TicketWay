@@ -2,6 +2,27 @@ const fp = require("fastify-plugin");
 const schema = require("./schema");
 
 async function payment(server, options) {
+  server.get(
+    options.prefix + "payment",
+    {
+      schema: schema.getPayments,
+      onRequest: [server.authenticateUser],
+    },
+    async (req, reply) => {
+      try {
+        const payments = await server.prisma.payment.findMany({
+          orderBy: { createdAt: "desc" },
+        });
+        return reply.send(payments);
+      } catch (err) {
+        return reply.code(500).send({
+          success: false,
+          message: err.message,
+        });
+      }
+    }
+  );
+
   server.post(
     options.prefix + "payment",
     {
@@ -77,7 +98,6 @@ async function payment(server, options) {
 
   async function onCreatePayment(req, reply) {
     try {
-      console.log("LLega a la funcion de onCreatePayment");
       const userId = req.userId;
       const { payment, paymentIntentId, typePayment } = req.body;
       if (!payment || !Array.isArray(payment.products) || payment.products.length === 0) {
@@ -94,7 +114,6 @@ async function payment(server, options) {
             metadata: { orderId: order.id, userId },
           });
         } catch (err) {
-          console.warn("⚠️ No se pudo actualizar paymentIntent. Creando uno nuevo...");
           paymentIntent = await server.stripe.createPaymentIntent({
             amount,
             currency: "eur",
@@ -132,7 +151,6 @@ async function payment(server, options) {
           amount: amount / 100,
         },
       });
-      console.log("LLega al final de la funcion de onCreatePayment");
       return reply.send({
         success: true,
         paymentIntentId: paymentIntent.id,
@@ -141,7 +159,6 @@ async function payment(server, options) {
         reused: Boolean(paymentIntentId),
       });
     } catch (err) {
-      console.error("🔥 ERROR CREATE PAYMENT:", err);
       return reply.code(500).send({ success: false, message: err.message });
     }
   }
@@ -152,23 +169,19 @@ async function payment(server, options) {
       config: { rawBody: true },
     },
     async (req, reply) => {
-      console.log("Llama a func de webhook");
       let event;
       try {
         event = server.stripe.verifyWebhook(req);
       } catch (err) {
-        console.error("❌ Error verificando webhook:", err.message);
         return reply.code(400).send(`Webhook Error: ${err.message}`);
       }
       const data = event.data.object;
       const type = event.type;
       if (type === "payment_intent.succeeded") {
-        console.log("payment_intent.succeeded es true");
         const paymentIntentId = data.id;
         const orderId = data.metadata.orderId;
         const userId = data.metadata.userId;
         const typePayment = data.metadata.typePayment;
-        console.log("typePayment", typePayment);
         try {
           await server.prisma.$transaction(async (tx) => {
             await tx.ticketOrder.update({
@@ -176,7 +189,6 @@ async function payment(server, options) {
               data: { status: "PAID" },
             });
             if (typePayment === "cart") {
-              console.log("typePayment === cart");
               await tx.cart.updateMany({
                 where: { owner: userId, isActive: true },
                 data: { status: "FINISHED", isActive: false },
@@ -238,9 +250,7 @@ async function payment(server, options) {
               });
             }
           });
-        } catch (err) {
-          console.error("❌ Error procesando webhook:", err);
-        }
+        } catch (err) {}
       }
       if (type === "payment_intent.payment_failed") {
         const paymentIntentId = data.id;
@@ -248,7 +258,6 @@ async function payment(server, options) {
           where: { transactionRef: paymentIntentId },
           data: { status: "FAILED" },
         });
-        console.warn("⚠️ Pago fallido:", paymentIntentId);
       }
       reply.send({ received: true });
     }

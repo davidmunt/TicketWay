@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, ReplaySubject } from "rxjs";
 import { ApiService } from "./api.service";
 import { UserTypeService } from "./role.service";
 import { JwtService } from "./jwt.service";
-import { Artist, Category, Concert, Filters, User, UserAdmin, Venue } from "../models";
+import { Artist, Category, Concert, Filters, Payment, User, UserAdmin, Venue } from "../models";
 import { map, distinctUntilChanged, tap } from "rxjs/operators";
 import { __values } from "tslib";
 import { HttpHeaders, HttpParams } from "@angular/common/http";
@@ -16,9 +16,7 @@ const admin_port = environment.admin_port;
 })
 export class UserAdminService {
   private currentUserAdminSubject = new BehaviorSubject<UserAdmin>({} as UserAdmin);
-  public currentUserAdmin = this.currentUserAdminSubject
-    .asObservable()
-    .pipe(distinctUntilChanged());
+  public currentUserAdmin = this.currentUserAdminSubject.asObservable().pipe(distinctUntilChanged());
 
   private isAdminAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAdminAuthenticated = this.isAdminAuthenticatedSubject.asObservable();
@@ -41,35 +39,11 @@ export class UserAdminService {
   private _concerts = signal<Concert[] | null>(null);
   concerts = this._concerts.asReadonly();
 
-  constructor(
-    private apiService: ApiService,
-    private jwtService: JwtService,
-    private userTypeService: UserTypeService
-  ) {}
+  private _payments = signal<Payment[] | null>(null);
+  payments = this._payments.asReadonly();
 
-  // populate() {
-  //   const token = this.jwtService.getToken();
-  //   if (token) {
-  //     const headers = new HttpHeaders({
-  //       "Content-Type": "application/json",
-  //       Authorization: `Token ${token}`,
-  //     });
-  //     this.apiService.get(admin_port, "/api/userAdmin/data").subscribe({
-  //       next: (data) => {
-  //         return this.setAuth(data.user, token);
-  //       },
-  //       error: (err) => {
-  //         console.error("Error en populate:", err);
-  //         this.purgeAuth();
-  //       },
-  //     });
-  //   } else {
-  //     console.warn("No hay token, purgando auth");
-  //     this.purgeAuth();
-  //   }
-  // }
+  constructor(private apiService: ApiService, private jwtService: JwtService, private userTypeService: UserTypeService) {}
 
-  // user-admin.service.ts
   populate() {
     const token = this.jwtService.getToken();
 
@@ -144,23 +118,18 @@ export class UserAdminService {
 
   changeIsActiveUser(username: string, isActive: boolean): Observable<any> {
     console.log("changeIsActiveUser llamado");
-    return this.apiService
-      .put(admin_port, `/api/user/changeIsActive/${username}`, { isActive })
-      .pipe(
-        tap((response) => {
-          console.log("changeIsActiveUser llamado");
-          if (response.success === true) {
-            this._users.update((users) => {
-              return (
-                users?.map((user) => (user.username === username ? { ...user, isActive } : user)) ||
-                null
-              );
-            });
-          } else {
-            console.warn("No se actualizó isActive porque success !== true", response);
-          }
-        })
-      );
+    return this.apiService.put(admin_port, `/api/user/changeIsActive/${username}`, { isActive }).pipe(
+      tap((response) => {
+        console.log("changeIsActiveUser llamado");
+        if (response.success === true) {
+          this._users.update((users) => {
+            return users?.map((user) => (user.username === username ? { ...user, isActive } : user)) || null;
+          });
+        } else {
+          console.warn("No se actualizó isActive porque success !== true", response);
+        }
+      })
+    );
   }
 
   //artists data
@@ -206,10 +175,7 @@ export class UserAdminService {
         if (response.success === true && response.artist) {
           const updatedArtist = response.artist;
           this._artists.update((artists) => {
-            return (
-              artists?.map((art) => (art.slug === slug ? { ...art, ...updatedArtist } : art)) ||
-              null
-            );
+            return artists?.map((art) => (art.slug === slug ? { ...art, ...updatedArtist } : art)) || null;
           });
         } else {
           console.warn("No se pudo actualizar el artista:", response.message);
@@ -263,9 +229,7 @@ export class UserAdminService {
       tap((response: any) => {
         if (response.success && response.venue) {
           const updatedVenue = response.venue;
-          this._venues.update((venues) =>
-            (venues || []).map((ven) => (ven.slug === slug ? { ...ven, ...updatedVenue } : ven))
-          );
+          this._venues.update((venues) => (venues || []).map((ven) => (ven.slug === slug ? { ...ven, ...updatedVenue } : ven)));
         } else {
           console.warn("No se pudo actualizar la dirección:", response.message);
         }
@@ -321,11 +285,7 @@ export class UserAdminService {
         if (response.success === true && response.category) {
           const updatedCategory = response.category;
           this._categories.update((categories) => {
-            return (
-              categories?.map((cat) =>
-                cat.slug === slug ? { ...cat, ...updatedCategory } : cat
-              ) || null
-            );
+            return categories?.map((cat) => (cat.slug === slug ? { ...cat, ...updatedCategory } : cat)) || null;
           });
         } else {
           console.warn("No se pudo actualizar la categoría:", response.message);
@@ -338,9 +298,7 @@ export class UserAdminService {
     return this.apiService.delete(admin_port, `/api/category/${slug}`).pipe(
       tap((response: any) => {
         if (response.success === true) {
-          this._categories.update(
-            (categories) => categories?.filter((cat) => cat.slug !== slug) || null
-          );
+          this._categories.update((categories) => categories?.filter((cat) => cat.slug !== slug) || null);
         } else {
           console.warn("No se pudo eliminar la categoría:", response.message);
         }
@@ -391,9 +349,7 @@ export class UserAdminService {
         if (response.success === true && response.concert) {
           const updatedConcert = response.concert;
           this._concerts.update((concerts) => {
-            return (
-              concerts?.map((c) => (c.slug === slug ? { ...c, ...updatedConcert } : c)) || null
-            );
+            return concerts?.map((c) => (c.slug === slug ? { ...c, ...updatedConcert } : c)) || null;
           });
         } else {
           console.warn("No se pudo actualizar el concierto:", response.message);
@@ -410,6 +366,16 @@ export class UserAdminService {
         } else {
           console.warn("No se pudo eliminar el concierto:", response.message);
         }
+      })
+    );
+  }
+
+  //payments data
+  getAllPayments(): Observable<Payment[]> {
+    return this.apiService.get(admin_port, "/api/payment").pipe(
+      map((response: { payments: Payment[] }) => response.payments),
+      tap((payments: Payment[]) => {
+        this._payments.set(payments);
       })
     );
   }

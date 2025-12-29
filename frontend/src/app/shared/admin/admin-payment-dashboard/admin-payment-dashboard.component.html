@@ -1,0 +1,32 @@
+<div class="user-dashboard-container">
+  <h2 class="dashboard-title">User Management</h2>
+
+  <div class="user-table">
+    <!-- Header row -->
+    <div class="user-table-header">
+      <div class="header-cell">Image</div>
+      <div class="header-cell">Username</div>
+      <div class="header-cell">Email</div>
+      <div class="header-cell">Is Active</div>
+    </div>
+
+    <!-- User rows -->
+    <div class="user-row" *ngFor="let user of users()">
+      <div class="cell image-cell">
+        <img
+          [src]="user.image || 'assets/imgs/default-avatar.png'"
+          [alt]="user.username"
+          class="user-avatar"
+        />
+      </div>
+      <div class="cell username-cell">{{ user.username }}</div>
+      <div class="cell email-cell">{{ user.email }}</div>
+      <div class="cell active-cell">
+        <select [value]="user.isActive" (change)="onIsActiveChange($event, user.username)">
+          <option [value]="true">true</option>
+          <option [value]="false">false</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

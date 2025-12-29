@@ -15,6 +15,7 @@ export * from "./profile/profile.component";
 export * from "./settings/settings.component";
 export * from "./admin/admin-dashboard/admin-dashboard.component";
 export * from "./admin/admin-user-dashboard/admin-user-dashboard.component";
+export * from "./admin/admin-payment-dashboard/admin-payment-dashboard.component";
 export * from "./admin/admin-artist-dashboard/admin-artist-dashboard.component";
 export * from "./admin/admin-create-update-artist/admin-create-update-artist.component";
 export * from "./admin/admin-category-dashboard/admin-category-dashboard.component";

@@ -19,6 +19,14 @@ const paymentResponse = S.object()
 const webhookResponse = S.object().prop("received", S.boolean().default(true));
 
 module.exports = {
+  getPayments: {
+    description: "Obtener todos los pagos",
+    tags: ["Payment"],
+    response: {
+      200: S.array().items(paymentItem),
+      500: S.object().prop("success", S.boolean().default(false)).prop("message", S.string()),
+    },
+  },
   createPayment: {
     description: "Crear o reintentar un pago con Stripe PaymentIntent",
     tags: ["Payment"],
