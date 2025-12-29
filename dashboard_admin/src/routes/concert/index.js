@@ -1,5 +1,6 @@
 const fp = require("fastify-plugin");
 const schema = require("./schema");
+const axios = require("axios");
 
 async function concert(server, options) {
   server.route({
@@ -71,6 +72,28 @@ async function concert(server, options) {
     schema: schema.createConcert,
     handler: onCreateConcert,
   });
+  async function createEmbedding(description) {
+    try {
+      const response = await axios.post(
+        "http://localhost:1234/v1/embeddings",
+        {
+          model: "text-embedding-gte-small",
+          input: description,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 10000,
+        }
+      );
+      return response.data.data[0].embedding;
+    } catch (error) {
+      server.log.error(error.response?.data || error.message);
+      throw new Error("Error creando embedding");
+    }
+  }
+
   async function onCreateConcert(req, reply) {
     try {
       const { name, date, price, description, images, venue, category, artist, availableSeats, status } = req.body;
@@ -82,6 +105,9 @@ async function concert(server, options) {
           message: "Los campos 'name', 'date', 'price', 'description', 'venue' y 'category' son obligatorios",
           success: false,
         });
+      }
+      if (description) {
+        const embedding = await createEmbedding(description);
       }
       if (images && !Array.isArray(images)) {
         return reply.code(400).send({ message: "El campo 'images' debe ser un array", success: false });
@@ -145,6 +171,7 @@ async function concert(server, options) {
           category,
           artist: artist,
           product: randomProduct.id,
+          embedding,
           availableSeats: availableSeats || 0,
           status: status || "PENDING",
           isActive: true,
